@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './navigation.dart';
+import './main_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return MaterialApp(
-      title: "Portio",
+      title: "Porsio",
       theme: ThemeData(
         primaryColor: Colors.deepPurple,
         primaryColorDark: Colors.deepPurple[900],
@@ -15,7 +16,8 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.orange[300]
       ),
       debugShowCheckedModeBanner: false,
-      home: Navigation(),
+      home: //MainScreen(),
+      Navigation(),
     );
   }
 }

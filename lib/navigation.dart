@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutterapp/homeScreen.dart';
+import './homeScreen.dart';
 import './discover.dart';
 import './cart.dart';
 import './share.dart';
@@ -35,7 +35,7 @@ class PortioHomeState extends State<Navigation> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: Color(value)),
-          title: Text('Portio', style: optionStyle,),
+          title: Text('Porsio', style: optionStyle,),
           ),
         body: _widgetPages.elementAt(_selectedIndex),
         drawer: DrawerWidget(),
