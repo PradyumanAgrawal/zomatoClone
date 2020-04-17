@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'main_screen.dart';
-import 'login_screen.dart';
-=======
-import './navigation.dart';
-import './main_screen.dart';
->>>>>>> 428aa1570540b58d1a64fcf38d9aeb93182ef7e7
+import 'navigation.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -25,8 +20,4 @@ class MyApp extends StatelessWidget {
       Navigation(),
     );
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 428aa1570540b58d1a64fcf38d9aeb93182ef7e7
