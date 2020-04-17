@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'main.dart';
 import 'login_screen.dart';
 import 'login_email.dart';
+=======
+>>>>>>> 428aa1570540b58d1a64fcf38d9aeb93182ef7e7
 
 class MainScreen extends StatefulWidget {
   MainScreen();
