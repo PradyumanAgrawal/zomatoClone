@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'login_screen.dart';
+import 'login_email.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   MainScreen();
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+
+      
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,7 +20,7 @@ class MainScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Padding(padding:EdgeInsets.only(top: 320)),
+              Padding(padding:EdgeInsets.only(top: 50)),
               Image.asset('assets/images/LOGO2.png',height: 200,width:200,),
                Expanded(
                  child:Column(
@@ -28,7 +38,13 @@ class MainScreen extends StatelessWidget {
                   style:TextStyle(color: Color.fromARGB(255, 255, 255, 255),fontSize: 15,) ,),
                   splashColor: Color.fromARGB(255, 144, 28, 238),                  
                   elevation: 10,
-                  onPressed: (){}),
+                  onPressed:(){
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login()),
+                         );
+                     }
+                  ),
                   RaisedButton(
                   materialTapTargetSize: MaterialTapTargetSize.padded,
                   padding: EdgeInsets.only(left: 120,right: 120),
@@ -39,7 +55,12 @@ class MainScreen extends StatelessWidget {
                   color: Color.fromARGB(255, 90, 14, 151),
                   elevation: 10,
                   splashColor: Color.fromARGB(255, 144, 28, 238),
-                  onPressed: (){}),
+                  onPressed: (){
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginEmail()),
+                         );
+                  }),
                  ],
                ))
 
