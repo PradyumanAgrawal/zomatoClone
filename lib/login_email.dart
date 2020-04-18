@@ -71,23 +71,29 @@ class _LoginEmailState extends State<LoginEmail> {
                     //forgot password screen
                   },
                   
-                  splashColor: Color.fromARGB(255, 144, 28, 238) ,
+                  
                   textColor: Colors.white,
                   child: Text('Forgot Password'),
                 );
+      final signUpButton = FlatButton(
+        padding: EdgeInsets.all(10),
+        onPressed: (){}, 
+        color: Color.fromARGB(255, 255, 255, 255),
+
+        child: Text("SignUP",style: TextStyle(fontSize: 20),));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color.fromARGB(255, 144, 28, 238),
           body: Center(
         
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding: EdgeInsets.only(left: 20,right: 20),
-                  height: 280,
-                  width: 250,
+                  height: 350,
+                  width: double.infinity,
                   child: Column(
                     children: <Widget>[
                       Padding(padding: EdgeInsets.only(top:10,bottom:10)),
@@ -95,12 +101,24 @@ class _LoginEmailState extends State<LoginEmail> {
                       passwordField,
                       loginButton,
                       forgotPassword,
+                      Center(
+                        child: Row(
+        children: <Widget>[
+          Padding(padding: EdgeInsets.only(right:10,left:20)),
+          Text("Don't have an account?"),
+          signUpButton
+
+        ],
+      ),
+                      )
                     ],
                   ),
             color:Color.fromARGB(255, 144, 28, 238) ,
 
           ),
+          
         ),
+    
         
       ),
     );
