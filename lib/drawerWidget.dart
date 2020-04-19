@@ -10,7 +10,7 @@ class DrawerWidget extends StatelessWidget {
                   DrawerHeader(
                     child: Text('User Name'),
                     decoration: BoxDecoration(
-                      color: Colors.deepPurple[100],
+                    color: Colors.deepPurple[100],
                     ),
                   ),
                   ListTile(

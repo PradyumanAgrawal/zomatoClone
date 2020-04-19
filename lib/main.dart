@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'navigation.dart';
+import './route_generator.dart';
 
 
 void main() => runApp(MyApp());
@@ -16,8 +16,9 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.orange[300]
       ),
       debugShowCheckedModeBanner: false,
-      home: //MainScreen(),
-      Navigation(),
+      initialRoute: '/',
+      //'/main_screen',
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }

@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
-import 'login_email.dart';
-import 'login_screen.dart';
 
-
-class MainScreen extends StatefulWidget {
+class MainScreen extends StatelessWidget {
   MainScreen();
-
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-
-      
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +9,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Padding(padding:EdgeInsets.only(top: 50)),
+              Padding(padding:EdgeInsets.only(top: 320)),
               Image.asset('assets/images/LOGO2.png',height: 200,width:200,),
                Expanded(
                  child:Column(
@@ -38,13 +27,7 @@ class _MainScreenState extends State<MainScreen> {
                   style:TextStyle(color: Color.fromARGB(255, 255, 255, 255),fontSize: 15,) ,),
                   splashColor: Color.fromARGB(255, 144, 28, 238),                  
                   elevation: 10,
-                  onPressed:(){
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                         );
-                     }
-                  ),
+                  onPressed: (){}),
                   RaisedButton(
                   materialTapTargetSize: MaterialTapTargetSize.padded,
                   padding: EdgeInsets.only(left: 120,right: 120),
@@ -55,12 +38,7 @@ class _MainScreenState extends State<MainScreen> {
                   color: Color.fromARGB(255, 90, 14, 151),
                   elevation: 10,
                   splashColor: Color.fromARGB(255, 144, 28, 238),
-                  onPressed: (){
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginEmail()),
-                         );
-                  }),
+                  onPressed: (){}),
                  ],
                ))
 
