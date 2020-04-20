@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'product.dart';
+import 'description.dart';
+import 'main.dart';
 
 
 class Discover extends StatefulWidget {
@@ -9,6 +11,9 @@ class Discover extends StatefulWidget {
 }
 
 class _DiscoverState extends State<Discover> {
+
+  var productList = new List<Product>();
+
   @override
   Widget build(BuildContext context) {
 
@@ -112,20 +117,18 @@ class _DiscoverState extends State<Discover> {
               ),
             ],
           ),
-          itemCard('iPhone 11','assets/iphone11.jpg', true,'86000'),
-          itemCard('Headphones','assets/headphones.jpg', !true,'20000'),
-          itemCard('Laptop','assets/laptop.jpg', true,'150000'),
-          itemCard('iPhone 11','assets/airpods.jpg', !true,'15000'),
-          itemCard('Dress','assets/dress.jpg', true,'5000'),
-          Container(
-          )
+          itemCard('iPhone 11','assets/iphone11.jpg', true,'86000', context),
+          itemCard('Headphones','assets/headphones.jpg', !true,'20000',context),
+          itemCard('Laptop','assets/laptop.jpg', true,'150000',context),
+          itemCard('iPhone 11','assets/airpods.jpg', !true,'15000',context),
+          itemCard('Dress','assets/dress.jpg', true,'5000',context),
         ],
       ),
     );
   }
 }
 
-Widget itemCard (String name, String imgPath, bool isFav, String price){
+Widget itemCard (String name, String imgPath, bool isFav, String price, BuildContext context){
   return Material(
     elevation: 1,
     borderRadius: BorderRadius.circular(5),
@@ -152,13 +155,18 @@ Widget itemCard (String name, String imgPath, bool isFav, String price){
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
-                      width: 90,
-                      child: Text(
-                        name,
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context,'/description');
+                      },
+                      child: Container(
+                        width: 90,
+                        child: Text(
+                          name,
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold
+                          ),
                         ),
                       ),
                     ),
