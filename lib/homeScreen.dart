@@ -11,6 +11,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<String> photos = [
+    'assets/airpods.jpg',
+    'assets/dress.jpg',
+    'assets/headphones.jpg',
+    'assets/iphone.png',
+    'assets/iphone11.jpg',
+    'assets/laptop.jpg'
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             actions: <Widget>[
               IconButton(
-                  icon: Icon(
-                    Icons.notifications,
-                    color: Colors.white,
-                  ),
-                  onPressed: null)
+                icon: Icon(
+                  Icons.notifications,
+                  color: Colors.white,
+                ),
+                onPressed: () {},
+              )
             ],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -84,10 +93,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
-                    Text(
-                      "View All",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 12.0),
+                    OutlineButton(
+                      onPressed: () {},
+                      child: Text(
+                        "View All",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12.0),
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
                     ),
                   ],
                 ),
@@ -95,14 +109,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 height: 200.0,
                 child: Carousel(
+                  onImageTap: null,
                   boxFit: BoxFit.cover,
-                  images: [
-                    Image.asset("assets/images/LOGO2.png"),
-                    Image.asset("assets/images/LOGO2.png"),
-                    Image.asset("assets/images/LOGO2.png"),
-                    Image.asset("assets/images/LOGO2.png"),
-                    Image.asset("assets/images/LOGO2.png"),
-                  ],
+                  images: List.generate(photos.length, (index) {
+                    return Image.asset(photos[index]);
+                  }),
                   autoplay: true,
                   dotSize: 5.0,
                   dotColor: Colors.black,
@@ -122,54 +133,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
-                    Text(
-                      "Explore",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 12.0),
+                    OutlineButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Explore",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12.0),
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 10.0),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    _singleProd("item 1"),
-                    _singleProd("item 2"),
-                  ],
-                ),
-              ),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    _singleProd("item 1"),
-                    _singleProd("item 2"),
-                  ],
-                ),
-              ),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    _singleProd("item 1"),
-                    _singleProd("item 2"),
-                  ],
-                ),
-              ),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    _singleProd("item 1"),
-                    _singleProd("item 2"),
-                  ],
-                ),
-              ),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    _singleProd("item 1"),
-                    _singleProd("item 2"),
-                  ],
-                ),
+              Column(
+                children: List.generate(7, (index) {
+                  return Padding(
+                    padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        _singleProd("Index $index"),
+                        _singleProd("Index $index"),
+                      ],
+                    ),
+                  );
+                }),
               ),
             ],
           )),
@@ -179,22 +169,39 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _singleProd(name) {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Container(
-            width: 170.0,
-            height: 170.0,
+    return InkWell(
+      onTap: () {},
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width * 0.48,
+            height: MediaQuery.of(context).size.width * 0.48,
             decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage("assets/images/LOGO2.png"),
                   fit: BoxFit.cover),
             ),
           ),
-        ),
-        Text(name),
-      ],
+          Row(
+            children: <Widget>[
+              FlatButton(
+                  color: Colors.purple[700].withOpacity(.5),
+                  child: Icon(
+                    Icons.add_shopping_cart,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0))),
+              IconButton(
+                icon: Icon(Icons.favorite, color: Colors.red.withOpacity(0.5)),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
