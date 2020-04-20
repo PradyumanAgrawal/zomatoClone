@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import './route_generator.dart';
 import 'navigation.dart';
 import 'login_email.dart';
 import 'description.dart';
 import 'discover.dart';
+
 
 
 void main() => runApp(MyApp());
@@ -19,6 +21,9 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.orange[300]
       ),
       debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      //'/main_screen',
+      onGenerateRoute: RouteGenerator.generateRoute,
       //home: //MainScreen(),
       //Navigation(),
       //initialRoute: '/description',
@@ -27,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/description': (context) => Description(),
         '/discover': (context) => Discover(),
       },
+
     );
   }
 }

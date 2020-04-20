@@ -4,8 +4,8 @@ import './homeScreen.dart';
 import './discover.dart';
 import './cart.dart';
 import './share.dart';
-import './drawerWidget.dart';
 import './description.dart';
+
 
 class Navigation extends StatefulWidget {
   @override
@@ -33,13 +33,7 @@ class PortioHomeState extends State<Navigation> {
     const value = 0xFF4A148C;
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Color(value)),
-          title: Text('Porsio', style: optionStyle,),
-          ),
         body: _widgetPages.elementAt(_selectedIndex),
-        drawer: DrawerWidget(),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
