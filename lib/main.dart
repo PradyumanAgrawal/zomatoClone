@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'navigation.dart';
 import 'login_email.dart';
+import 'description.dart';
+import 'discover.dart';
 
 
 void main() => runApp(MyApp());
@@ -17,8 +19,14 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.orange[300]
       ),
       debugShowCheckedModeBanner: false,
-      home: //MainScreen(),
-      Navigation(),
+      //home: //MainScreen(),
+      //Navigation(),
+      //initialRoute: '/description',
+      routes: {
+        '/': (context) => Navigation(),
+        '/description': (context) => Description(),
+        '/discover': (context) => Discover(),
+      },
     );
   }
 }

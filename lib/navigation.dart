@@ -5,6 +5,7 @@ import './discover.dart';
 import './cart.dart';
 import './share.dart';
 import './drawerWidget.dart';
+import './description.dart';
 
 class Navigation extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class PortioHomeState extends State<Navigation> {
   List<Widget> _widgetPages = <Widget>[
     HomeScreen(),
     Discover(),
-    Cart(),
+    Description(),
     Share(),
   ];
   void _onItemTapped(int index) {
