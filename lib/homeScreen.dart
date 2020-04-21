@@ -81,7 +81,51 @@ class _HomeScreenState extends State<HomeScreen> {
           SliverList(
               delegate: SliverChildListDelegate(
             <Widget>[
-              SizedBox(height: 5.0),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      "Top Stores Nearby",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15.0),
+                    ),
+                    OutlineButton(
+                      onPressed: () {},
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Filter",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12.0),
+                          ),
+                          Icon(Icons.location_on),
+                        ],
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.08,
+                //decoration: BoxDecoration(color: Colors.red),
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 30,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {},
+                        child: Container(
+                          padding: EdgeInsets.all(5.0),
+                          child: CircleAvatar(backgroundColor: Colors.pink[200]),
+                        ),
+                      );
+                    }),
+              ),
               Padding(
                 padding: EdgeInsets.all(10.0),
                 child: Row(
