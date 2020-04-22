@@ -6,7 +6,6 @@ import './cart.dart';
 import './share.dart';
 import './description.dart';
 
-
 class Navigation extends StatefulWidget {
   @override
   PortioHomeState createState() => PortioHomeState();
@@ -16,24 +15,27 @@ class PortioHomeState extends State<Navigation> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle = TextStyle(
       fontSize: 25, color: Color(0xFF000000), fontWeight: FontWeight.normal);
-  List<Widget> _widgetPages = <Widget>[
-    HomeScreen(),
-    Discover(),
-    Description(),
-    Share(),
-  ];
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     const value = 0xFF4A148C;
     return MaterialApp(
       home: Scaffold(
-        body: _widgetPages.elementAt(_selectedIndex),
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: <Widget>[
+            HomeScreen(),
+            Discover(),
+            Cart(),
+            Description(),
+            //Share,
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -70,7 +72,7 @@ class PortioHomeState extends State<Navigation> {
           onTap: _onItemTapped,
         ),
       ),
-    debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
