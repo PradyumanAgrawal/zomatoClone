@@ -142,7 +142,9 @@ class _DescriptionState extends State<Description> {
                           ),
                         ),
                       ),
-                      VerticalDivider(),
+                      VerticalDivider(
+                        color: Colors.grey.withOpacity(1),
+                      ),
                       Flexible(
                         flex: 1,
                       child: Center(
@@ -161,7 +163,12 @@ class _DescriptionState extends State<Description> {
                     ],
                   )
               ),
-              SizedBox(height: 20.0),
+              Divider(
+                color: Colors.purple.withOpacity(0.5),
+                height: 30,
+                indent: 50,
+                endIndent: 50,
+              ),
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -217,7 +224,12 @@ class _DescriptionState extends State<Description> {
                     ],
                   )
               ),
-              SizedBox(height: 20.0),
+              Divider(
+                  color: Colors.purple.withOpacity(0.5),
+                  height: 40,
+                  indent: 50,
+                  endIndent: 50,
+                ),
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -314,7 +326,12 @@ class _DescriptionState extends State<Description> {
                     ],
                   )
               ),
-              SizedBox(height: 20.0),
+              Divider(
+                color: Colors.purple.withOpacity(0.5),
+                height: 30,
+                indent: 50,
+                endIndent: 50,
+              ),
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -327,7 +344,13 @@ class _DescriptionState extends State<Description> {
                   ),
                 ),
               ),
-              SizedBox(height: 200,)
+              SizedBox(height: 200,),
+              Divider(
+                color: Colors.purple.withOpacity(0.5),
+                height: 30,
+                indent: 50,
+                endIndent: 50,
+              ),
             ],
           )
         ],
