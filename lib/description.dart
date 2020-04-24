@@ -117,7 +117,7 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(height: 10.0),
               Padding(
-                padding: const EdgeInsets.only(left:15.0),
+                padding: EdgeInsets.only(left:15.0),
                 child: Text('Product Name',
                   style: TextStyle(
                       fontSize: 25.0,
@@ -129,24 +129,34 @@ class _DescriptionState extends State<Description> {
               SizedBox(height: 10.0),
               Padding(padding: EdgeInsets.only(left: 15.0, right: 15.0),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Container(
-                        width: (MediaQuery.of(context).size.width / 4 + MediaQuery.of(context).size.width / 2) - 20.0,
-                        child: Text('Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                          style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontSize: 12.0,
-                            color: Colors.grey.withOpacity(0.8),
+                      Flexible(
+                        flex: 2,
+                      child: Container(
+                          child: Text('Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey.withOpacity(0.8),
+                            ),
                           ),
                         ),
                       ),
-                      SizedBox(width: 10,),
-                      Text('price/-',
-                        style: TextStyle(
-                            fontSize: 25.0,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold
-                        ),
+                      VerticalDivider(),
+                      Flexible(
+                        flex: 1,
+                      child: Center(
+                        child: Container(
+                            child: Text(
+                              'price/-',
+                              style: TextStyle(
+                                  fontSize: 25.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ),
+                      ),
                       ),
                     ],
                   )
@@ -167,7 +177,7 @@ class _DescriptionState extends State<Description> {
               SizedBox(height: 20.0),
               Padding(
                   padding:  EdgeInsets.only(left: 15.0),
-                  child: Row(
+                  child: Wrap(
                     children: <Widget>[
                       InkWell(
                         onTap: () {},
@@ -203,7 +213,7 @@ class _DescriptionState extends State<Description> {
                               color: Colors.purple,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   )
               ),
@@ -229,7 +239,7 @@ class _DescriptionState extends State<Description> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                            width: 100,
+                            width: MediaQuery.of(context).size.width * 1/3,
                             child: Text(
                               'Shop Name :',
                               style: TextStyle(
@@ -237,12 +247,13 @@ class _DescriptionState extends State<Description> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 20,),
-                          Container(
-                            child: Text(
-                              'shop name enterprice',
-                              style: TextStyle(
-                                color: Colors.grey,
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                'shop name enterprice',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           )
@@ -253,7 +264,7 @@ class _DescriptionState extends State<Description> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                            width: 100,
+                            width:MediaQuery.of(context).size.width * 1/3,
                             child: Text(
                               'Address :',
                               style: TextStyle(
@@ -261,14 +272,13 @@ class _DescriptionState extends State<Description> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 20,),
-                          Container(
-
-                            width: 200,
-                            child: Text(
-                              'shop address xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                              style: TextStyle(
-                                color: Colors.grey,
+                          Expanded(
+                              child: Container(
+                              child: Text(
+                                'shop address xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           )
@@ -279,7 +289,7 @@ class _DescriptionState extends State<Description> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                            width: 100,
+                            width: MediaQuery.of(context).size.width * 1/3,
                             child: Text(
                               'Contact info :',
                               style: TextStyle(
@@ -287,14 +297,14 @@ class _DescriptionState extends State<Description> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 20,),
-                          Container(
-
-                            width: 200,
-                            child: Text(
-                              'contact details',
-                              style: TextStyle(
-                                color: Colors.grey,
+                          Expanded(
+                            child: Container(
+                              width: 200,
+                              child: Text(
+                                'contact details',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           ),
@@ -326,40 +336,57 @@ class _DescriptionState extends State<Description> {
           elevation: 7.0,
           color: Colors.white70,
           child: Container(
-              height: 50.0,
+              height: 40.0,
               width: MediaQuery.of(context).size.width,
               color: Colors.white,
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(width: 10.0),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        height: 50.0,
-                        width: 50.0,
-                        color: Colors.white,
-                        child: Icon(
-                          Icons.share,
-                          color: Colors.purple,
+                    //SizedBox(width: 10.0),
+                    Flexible(
+                      flex: 20,
+                        child: InkWell(
+                        onTap: () {},
+                        child: Center(
+                          child: Container(
+                            height: 40.0,
+                            width: 50.0,
+                            color: Colors.white,
+                            child: Icon(
+                              Icons.share,
+                              color: Colors.purple,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        height: 50.0,
-                        width: 50.0,
-                        color: Colors.white,
-                        child: Icon(
-                          Icons.call,
-                          color: Colors.purple,
+                    Flexible(
+                      flex: 20,
+                        child: InkWell(
+                        onTap: () {},
+                        child: Center(
+                          child: Container(
+                            height: 40.0,
+                            width: 50.0,
+                            color: Colors.white,
+                            child: Icon(
+                              Icons.call,
+                              color: Colors.purple,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    Container(
-                        color: Colors.purpleAccent,
-                        width: MediaQuery.of(context).size.width - 130.0,
+                    Flexible(
+                      flex: 60,
+                      child: Container(
+                        decoration : BoxDecoration(
+                          color: Colors.purpleAccent,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            bottomLeft: Radius.circular(10)
+                          )
+                        ),
                         child: Center(
                             child: FlatButton(
                               onPressed: () {},
@@ -372,7 +399,7 @@ class _DescriptionState extends State<Description> {
                                   Text(
                                     'Add to Cart',
                                     style: TextStyle(
-                                        fontSize: 18.0,
+                                        fontSize: 15.0,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold
                                     ),
@@ -380,7 +407,8 @@ class _DescriptionState extends State<Description> {
                                 ],
                               ),
                             )
-                        )
+                          )
+                      ),
                     )
                   ]
               )
