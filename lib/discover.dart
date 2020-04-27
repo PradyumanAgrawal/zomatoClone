@@ -53,6 +53,7 @@ class _DiscoverState extends State<Discover> {
                     padding: EdgeInsets.only(left: 15, right: 15),
                     child: Material(
                       elevation: 5.0,
+                      shadowColor: Colors.purple,
                       borderRadius: BorderRadius.circular(5),
                       child: TextFormField(
                         decoration: InputDecoration(
@@ -118,10 +119,15 @@ class _DiscoverState extends State<Discover> {
             ],
           ),
           itemCard('iPhone 11','assets/iphone11.jpg', true,'86000', context),
+          SizedBox(height:10),
           itemCard('Headphones','assets/headphones.jpg', !true,'20000',context),
+          SizedBox(height:10),
           itemCard('Laptop','assets/laptop.jpg', true,'150000',context),
+          SizedBox(height:10),
           itemCard('iPhone 11','assets/airpods.jpg', !true,'15000',context),
+          SizedBox(height:10),
           itemCard('Dress','assets/dress.jpg', true,'5000',context),
+          SizedBox(height:10),
         ],
       ),
     );
@@ -130,121 +136,171 @@ class _DiscoverState extends State<Discover> {
 
 Widget itemCard (String name, String imgPath, bool isFav, String price, BuildContext context){
   return Material(
-    elevation: 1,
-    borderRadius: BorderRadius.circular(5),
+    elevation: 2,
+    borderRadius: BorderRadius.circular(10),
+    shadowColor: Colors.purple,
     child: Padding(
-      padding: EdgeInsets.only(left: 15, right: 15, top: 15),
+      padding: EdgeInsets.only(left: 5, right: 5, top: 15, bottom: 10),
       child: Container( //card
         height: 180,
         width: double.infinity,
-        color: Colors.white70,
+        color: Colors.white,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Container(
-              width: 140.0,
-              height: 150.0,
-              decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(imgPath), fit: BoxFit.contain)),
+            Flexible(
+              flex:  12,
+              child: Container(
+                height: 150.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                      image: AssetImage(imgPath), fit: BoxFit.contain)),
+              ),
             ),
             SizedBox(width: 4.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context,'/description');
-                      },
-                      child: Container(
-                        width: 90,
-                        child: Text(
-                          name,
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 115),
-                    Material(
-                      elevation: isFav ? 2 : 0,
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: isFav ? Colors.white : Colors.grey.withOpacity(0.2),
-                        ),
-                        child: Center(
-                          child: IconButton(
-                            icon: isFav ? Icon(Icons.favorite,color: Colors.red,) : Icon(Icons.favorite_border),
-                            iconSize: 16,
-                            onPressed: () {
-                              //itemCard(name, imgPath, !isFav); //TODO figure out how to use the button
-                            } ,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(height: 20,),
-                Container(
-                  width: 175,
-                  child: Text(
-                      'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
-                ),
-                SizedBox(height: 5,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(width: 87,),
-                    Container(
-                      height: 40,
-                      width: 50,
-                      color: Colors.purple,
-                      child: Center(
-                        child: Text(
-                          price,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 40,
-                      width: 100,
-                      color: Colors.purple[300],
-                      child: Center(
-                        child: FlatButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Add To Cart',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12
+            Flexible(
+              flex: 20,
+                child: Container(
+                child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(height: 10,),
+                          Flexible(
+                              child: Row(                        
+                              children: <Widget>[
+                                Flexible(
+                                  flex: 8,
+                                  child: InkWell(
+                                  onTap: () {
+                                      Navigator.pushNamed(context,'/description');
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width*(2/3)*(3/4) - 10,
+                                      child: Text(
+                                        name,
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 2,
+                                    child: Container(
+                                      child: Material(
+                                        elevation: isFav ? 2 : 0,
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.width*(1/3)*(1/4),
+                                          width: MediaQuery.of(context).size.width*(1/3)*(1/4),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width*(1/3)*(1/8)),
+                                            color: isFav ? Colors.white : Colors.grey.withOpacity(0.2),
+                                          ),
+                                          child: Center(
+                                            child: IconButton(
+                                              icon: isFav ? Icon(Icons.favorite,color: Colors.red,) : Icon(Icons.favorite_border),
+                                              iconSize: MediaQuery.of(context).size.width*(1/3)*(1/8) - 1,
+                                              onPressed: () {
+                                                //itemCard(name, imgPath, !isFav); //TODO figure out how to use the button
+                                              } ,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
-                        ),
-                      )
-                    )
-                  ],
-                )
-              ],
+                          SizedBox(height: 20,),
+                          Flexible(
+                              child: Container(
+                              width: MediaQuery.of(context).size.width*2/3,
+                              child: Text(
+                                  'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20,),
+                          Flexible(
+                              child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Flexible(
+                                  flex: 1,
+                                  child: Material(
+                                    elevation: 7,
+                                    borderRadius: BorderRadius.circular(10),
+                                    shadowColor: Colors.purple,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.purple,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                        ),
+                                      ),
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width*(1/3)*(1.7/3),
+                                      child: Center(
+                                        child: Text(
+                                          price,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 2,
+                                  child: Material(
+                                    elevation: 7,
+                                    borderRadius : BorderRadius.circular(10),
+                                    shadowColor: Colors.purple,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.purple[300],
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(10),
+                                          bottomRight: Radius.circular(10)
+                                        ),
+                                      ),
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width*(1/3)*(2.7/3),
+                                      child: Center(
+                                        child: FlatButton(
+                                          onPressed: () {},
+                                          child: Text(
+                                            'Add To Cart',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+              ),
             )
+            
           ]
         ),
       ),
