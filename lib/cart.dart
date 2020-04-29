@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/drawerWidget.dart';
 
 class Cart extends StatefulWidget {
-  Cart({Key key}) : super(key: key);
+  final String userEmail;
+  Cart({Key key, @required this.userEmail}) : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -26,7 +27,7 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurple[100],
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(userEmail: widget.userEmail,),
       bottomSheet: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
         height: MediaQuery.of(context).size.height * 0.08,

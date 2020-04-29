@@ -3,8 +3,8 @@ import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key, this.title}) : super(key: key);
-  final String title;
+  final String userEmail;
+  HomeScreen({Key key, @required this.userEmail}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(userEmail: widget.userEmail,),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(

@@ -35,9 +35,9 @@ class  NavigationState extends State<Navigation> {
         body: IndexedStack(
           index: _selectedIndex,
           children: <Widget>[
-            HomeScreen(),
+            HomeScreen(userEmail: widget.userEmail,),
             Discover(),
-            Cart(),
+            Cart(userEmail: widget.userEmail,),
             Description(),
             //Share,
           ],
