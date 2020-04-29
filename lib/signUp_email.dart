@@ -1,5 +1,4 @@
-import 'dart:html';
-
+//import 'dart:html';
 import 'package:flutter/material.dart';
 
 class SignUP extends StatefulWidget {
@@ -14,7 +13,7 @@ class _SignUPState extends State<SignUP> {
                         child: TextFormField(
                           obscureText: false,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(bottom: 10,top:10),
+                            contentPadding: EdgeInsets.all(10),
                             border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(

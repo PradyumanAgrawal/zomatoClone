@@ -6,15 +6,20 @@ import './cart.dart';
 import './share.dart';
 import './description.dart';
 
+
 class Navigation extends StatefulWidget {
+ final String userEmail;
+  Navigation({
+    Key key,
+    @required this.userEmail,
+  }) : super(key: key);
   @override
-  PortioHomeState createState() => PortioHomeState();
+   NavigationState createState() =>  NavigationState();
 }
 
-class PortioHomeState extends State<Navigation> {
+class  NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(
-      fontSize: 25, color: Color(0xFF000000), fontWeight: FontWeight.normal);
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -23,6 +28,7 @@ class PortioHomeState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.userEmail);
     const value = 0xFF4A148C;
     return MaterialApp(
       home: Scaffold(

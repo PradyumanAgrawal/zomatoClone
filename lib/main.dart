@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 import './route_generator.dart';
-import 'navigation.dart';
-import 'login_email.dart';
-import 'description.dart';
-import 'discover.dart';
-
-
 
 void main() => runApp(MyApp());
 
@@ -27,18 +21,8 @@ class MyApp extends StatelessWidget {
         )
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      //'/main_screen',
+      initialRoute:'/',
       onGenerateRoute: RouteGenerator.generateRoute,
-      //home: //MainScreen(),
-      //Navigation(),
-      //initialRoute: '/description',
-      routes: {
-        '/': (context) => Navigation(),
-        '/description': (context) => Description(),
-        '/discover': (context) => Discover(),
-      },
-
     );
   }
 }
