@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginEmail extends StatefulWidget {
   @override
@@ -17,6 +18,13 @@ class _LoginEmailState extends State<LoginEmail> {
     textColor: Colors.white,
     child: Text('Forgot Password'),
   );
+
+  Future<void> _saveData({userEmail: '',password: '',loggedIn: ''}) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("userEmail", userEmail);
+    prefs.setString("loggedIn", loggedIn);
+    prefs.setString("password", password);
+  }
 
   void _showAlertDialog(context) {
     showDialog(
@@ -53,6 +61,7 @@ class _LoginEmailState extends State<LoginEmail> {
             .user;
         Navigator.of(context).pop();
         if (user != null) {
+          _saveData(userEmail: _email, password: _password, loggedIn: "yes");
           Navigator.of(context).pushNamed('/navigation', arguments: user.email);
         }
       } catch (e) {
