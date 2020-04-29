@@ -1,24 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/loading.dart';
 import './main_screen.dart';
 import './navigation.dart';
+import './login_email.dart';
+import './signUp_email.dart';
+import './login_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    // Getting arguments passed in while calling Navigator.pushNamed
-    //final args = settings.arguments;
-
+    final args = settings.arguments;
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => Navigation());
-      case '/main_screen':
           return MaterialPageRoute(
             builder: (_) => MainScreen(),
           ); 
-
-        // If args is not of the correct type, return an error page.
-        // You can also throw an exception while in development.
+      case '/login_screen':
+          return MaterialPageRoute(
+            builder: (_) => Login(),
+          );
+      case '/login_email':
+          return MaterialPageRoute(
+            builder: (_) => LoginEmail(),
+          );
+      case '/signUp_email':
+          return MaterialPageRoute(
+            builder: (_) => SignUP(),
+          );
+      case '/loading':
+          return MaterialPageRoute(
+            builder: (_) => Loading(),
+          );
+      case '/navigation':
+        return MaterialPageRoute(builder: (_) => Navigation(
+          userEmail: args,
+        ));
       default:
-        // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
     }
   }

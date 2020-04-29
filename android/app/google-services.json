@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "707821148409",
+    "firebase_url": "https://porsio-3829b.firebaseio.com",
+    "project_id": "porsio-3829b",
+    "storage_bucket": "porsio-3829b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707821148409:android:358b7df1c204a10378ea28",
+        "android_client_info": {
+          "package_name": "com.example.my_flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707821148409-rt8e1563e7pu6188k429lf8mn1aalbkf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpzJP7sYISdYYmBjs8QKZS0eo5z0gk9Fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707821148409-rt8e1563e7pu6188k429lf8mn1aalbkf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
