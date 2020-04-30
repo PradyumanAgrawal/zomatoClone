@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'myApp.dart';
 
 class LoginEmail extends StatefulWidget {
   @override
@@ -62,7 +63,7 @@ class _LoginEmailState extends State<LoginEmail> {
         Navigator.of(context).pop();
         if (user != null) {
           _saveData(userEmail: _email, password: _password, loggedIn: "yes");
-          Navigator.of(context).pushNamed('/navigation', arguments: user.email);
+          Navigator.of(context).pushNamedAndRemoveUntil('/navigation', (Route<dynamic> route) => false);
         }
       } catch (e) {
         print(e.message);
