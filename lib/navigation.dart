@@ -8,10 +8,8 @@ import './description.dart';
 
 
 class Navigation extends StatefulWidget {
- final String userEmail;
   Navigation({
     Key key,
-    @required this.userEmail,
   }) : super(key: key);
   @override
    NavigationState createState() =>  NavigationState();
@@ -26,59 +24,81 @@ class  NavigationState extends State<Navigation> {
     });
   }
 
+  /* Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit an App'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No'),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('Yes'),
+          ),
+        ],
+      ),
+    )) ?? false;
+  } */
+
   @override
   Widget build(BuildContext context) {
-    print(widget.userEmail);
     const value = 0xFF4A148C;
-    return MaterialApp(
-      home: Scaffold(
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: <Widget>[
-            HomeScreen(userEmail: widget.userEmail,),
-            Discover(),
-            Cart(userEmail: widget.userEmail,),
-            Description(),
-            //Share,
-          ],
+    return new WillPopScope(
+          onWillPop: ()async => false,
+          child: MaterialApp(
+        home: Scaffold(
+          body: IndexedStack(
+            index: _selectedIndex,
+            children: <Widget>[
+              HomeScreen(),
+              Discover(),
+              Cart(),
+              Description(),
+              //Share,
+            ],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home,
+                  color: Color(value),
+                ),
+                title: Text('Home'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.favorite,
+                  color: Color(value),
+                ),
+                title: Text('Discover'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Color(value),
+                ),
+                title: Text('Cart'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.share,
+                  color: Color(value),
+                ),
+                title: Text('Share'),
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.black,
+            onTap: _onItemTapped,
+          ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: Color(value),
-              ),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.favorite,
-                color: Color(value),
-              ),
-              title: Text('Discover'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.shopping_cart,
-                color: Color(value),
-              ),
-              title: Text('Cart'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.share,
-                color: Color(value),
-              ),
-              title: Text('Share'),
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.black,
-          onTap: _onItemTapped,
-        ),
+        debugShowCheckedModeBanner: false,
       ),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

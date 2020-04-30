@@ -8,45 +8,44 @@ import './login_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
+    var args = settings.arguments;
     switch (settings.name) {
-      case '/':
-          return MaterialPageRoute(
-            builder: (_) => MainScreen(),
-          ); 
-      case '/login_screen':
-          return MaterialPageRoute(
-            builder: (_) => Login(),
-          );
-      case '/login_email':
-          return MaterialPageRoute(
-            builder: (_) => LoginEmail(),
-          );
-      case '/signUp_email':
-          return MaterialPageRoute(
-            builder: (_) => SignUP(),
-          );
-      case '/loading':
-          return MaterialPageRoute(
-            builder: (_) => Loading(),
-          );
       case '/navigation':
-        return MaterialPageRoute(builder: (_) => Navigation(
-          userEmail: args,
-        ));
+        return MaterialPageRoute(builder: (_) => Navigation());
+      case '/main_screen':
+        return MaterialPageRoute(
+          builder: (_) => MainScreen(),
+        );
+      case '/login_screen':
+        return MaterialPageRoute(
+          builder: (_) => Login(),
+        );
+      case '/login_email':
+        return MaterialPageRoute(
+          builder: (_) => LoginEmail(),
+        );
+      case '/signUp_email':
+        return MaterialPageRoute(
+          builder: (_) => SignUP(),
+        );
+      case '/loading':
+        return MaterialPageRoute(
+          builder: (_) => Loading(),
+        );
       default:
         return _errorRoute();
     }
   }
 
-  static Route<dynamic> _errorRoute() {
+  static Route<void> _errorRoute() {
     return MaterialPageRoute(builder: (_) {
+      //SystemNavigator.pop();
       return Scaffold(
         appBar: AppBar(
-          title: Text('Error'),
+          title: Text('/'),
         ),
         body: Center(
-          child: Text('ERROR'),
+          child: Text('/'),
         ),
       );
     });
