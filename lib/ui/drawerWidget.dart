@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'myApp.dart';
 
 class DrawerWidget extends StatefulWidget {
-
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
+  AuthService auth = new AuthService();
   String userEmail;
 
   Future<void> _readEmail() async {
@@ -19,7 +20,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   }
 
   Future<void> _logout(context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -38,10 +38,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               FlatButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    prefs.setString("loggedIn", "no");
+                    auth.logout();
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                            builder: (context) => MyApp(loggedIn: false)),
+                            builder: (context) => MyApp()),
                         (Route<dynamic> route) => false);
                   },
                   child: Text('Yes',

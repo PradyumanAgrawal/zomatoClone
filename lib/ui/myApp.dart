@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import './route_generator.dart';
+import 'package:my_flutter_app/functionalities/route_generator.dart';
 
 class MyApp extends StatefulWidget {
-  final bool loggedIn;
+  //final bool loggedIn;
   MyApp({
     Key key,
-    @required this.loggedIn,
+    //@required this.loggedIn,
   }) : super(key: key);
 
   @override
@@ -30,7 +30,8 @@ class _MyAppState extends State<MyApp> {
             endIndent: 40,
           )),
       debugShowCheckedModeBanner: false,
-      initialRoute: widget.loggedIn ? '/navigation' : '/main_screen',
+      initialRoute: //widget.loggedIn ? '/navigation' :
+          '/main_screen',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
