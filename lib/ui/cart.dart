@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/drawerWidget.dart';
+import 'package:my_flutter_app/ui/drawerWidget.dart';
 
 class Cart extends StatefulWidget {
   Cart({Key key}) : super(key: key);
@@ -45,7 +45,7 @@ class _CartState extends State<Cart> {
                 elevation: 10.0,
                 color: Colors.deepPurple[900],
                 child: Text(
-                  "        Place Order        ",
+                  "Place Order",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 25.0,

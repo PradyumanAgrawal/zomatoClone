@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'product.dart';
-import 'description.dart';
-import 'main.dart';
+import 'package:my_flutter_app/ui/description.dart';
+import '../main.dart';
 
 
 class Discover extends StatefulWidget {

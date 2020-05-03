@@ -26,6 +26,10 @@ dependencies:
   carousel_pro: ^1.0.0
   firebase_auth: ^0.16.0
   shared_preferences: ^0.5.7
+  firebase_core: ^0.4.4+3
+  firebase_analytics: ^5.0.11
+  # cloud_firestore:
+  google_sign_in: ^4.4.4
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'myApp.dart';
+import 'package:my_flutter_app/functionalities/auth.dart';
 
 class LoginEmail extends StatefulWidget {
   @override
@@ -9,6 +7,7 @@ class LoginEmail extends StatefulWidget {
 }
 
 class _LoginEmailState extends State<LoginEmail> {
+  AuthService auth = new AuthService();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _email, _password;
 
@@ -19,13 +18,6 @@ class _LoginEmailState extends State<LoginEmail> {
     textColor: Colors.white,
     child: Text('Forgot Password'),
   );
-
-  Future<void> _saveData({userEmail: '',password: '',loggedIn: ''}) async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("userEmail", userEmail);
-    prefs.setString("loggedIn", loggedIn);
-    prefs.setString("password", password);
-  }
 
   void _showAlertDialog(context) {
     showDialog(
@@ -56,17 +48,13 @@ class _LoginEmailState extends State<LoginEmail> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Navigator.of(context).pushNamed('/loading');
-      try {
-        FirebaseUser user = (await FirebaseAuth.instance
-                .signInWithEmailAndPassword(email: _email, password: _password))
-            .user;
+      bool value =
+          await auth.signInWithEmail(email: _email, password: _password);
+      if (value == true) {
         Navigator.of(context).pop();
-        if (user != null) {
-          _saveData(userEmail: _email, password: _password, loggedIn: "yes");
-          Navigator.of(context).pushNamedAndRemoveUntil('/navigation', (Route<dynamic> route) => false);
-        }
-      } catch (e) {
-        print(e.message);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            '/navigation', (Route<dynamic> route) => false);
+      } else {
         Navigator.of(context).pop();
         _showAlertDialog(context);
       }

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/loading.dart';
-import './main_screen.dart';
-import './navigation.dart';
-import './login_email.dart';
-import './signUp_email.dart';
-import './login_screen.dart';
+import 'package:my_flutter_app/ui/google_signin.dart';
+import 'package:my_flutter_app/ui/loading.dart';
+import 'package:my_flutter_app/ui/main_screen.dart';
+import 'package:my_flutter_app/ui/navigation.dart';
+import 'package:my_flutter_app/ui/login_email.dart';
+import 'package:my_flutter_app/ui/signUp_email.dart';
+import 'package:my_flutter_app/ui/login_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     var args = settings.arguments;
     switch (settings.name) {
-      case '/navigation':
-        return MaterialPageRoute(builder: (_) => Navigation());
       case '/main_screen':
         return MaterialPageRoute(
           builder: (_) => MainScreen(),
@@ -19,6 +18,10 @@ class RouteGenerator {
       case '/login_screen':
         return MaterialPageRoute(
           builder: (_) => Login(),
+        );
+      case '/google_signin':
+        return MaterialPageRoute(
+          builder: (_) => GoogleSignIn(),
         );
       case '/login_email':
         return MaterialPageRoute(
@@ -32,6 +35,8 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Loading(),
         );
+      case '/navigation':
+        return MaterialPageRoute(builder: (_) => Navigation());
       default:
         return _errorRoute();
     }

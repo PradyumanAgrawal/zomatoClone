@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/auth.dart';
 
 
 class Login extends StatefulWidget {
@@ -7,6 +8,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  AuthService auth = new AuthService();
   double bottonPadding = 10;
   double topPadding = 20;
   double rightpadding = 40;
@@ -55,7 +57,9 @@ class _LoginState extends State<Login> {
                     width: double.infinity,
                     child: RaisedButton(
                       color: Color.fromARGB(255, 255, 255, 255),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/google_signin');
+                        },
                       child: Center(
                         child: Row(
                           children: <Widget>[
