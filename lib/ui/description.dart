@@ -348,85 +348,86 @@ class _DescriptionState extends State<Description> {
         ],
       ),
       bottomNavigationBar: Material(
-          elevation: 7.0,
-          color: Colors.white70,
-          child: Container(
-              height: 40.0,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //SizedBox(width: 10.0),
-                    Flexible(
-                      flex: 20,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Center(
-                          child: Container(
-                            height: 40.0,
-                            width: 50.0,
-                            color: Colors.white,
-                            child: Icon(
-                              Icons.share,
-                              color: Colors.purple,
-                            ),
-                          ),
-                        ),
-                      ),
+        elevation: 7.0,
+        color: Colors.white70,
+        child: Container(
+          height: 40.0,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            //SizedBox(width: 10.0),
+            Flexible(
+              flex: 20,
+              child: InkWell(
+                onTap: () {},
+                child: Center(
+                  child: Container(
+                    height: 40.0,
+                    width: 50.0,
+                    color: Colors.white,
+                    child: Icon(
+                      Icons.share,
+                      color: Colors.purple,
                     ),
-                    Flexible(
-                      flex: 20,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Center(
-                          child: Container(
-                            height: 40.0,
-                            width: 50.0,
-                            color: Colors.white,
-                            child: Icon(
-                              Icons.call,
-                              color: Colors.purple,
-                            ),
-                          ),
-                        ),
-                      ),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 20,
+              child: InkWell(
+                onTap: () {},
+                child: Center(
+                  child: Container(
+                    height: 40.0,
+                    width: 50.0,
+                    color: Colors.white,
+                    child: Icon(
+                      Icons.call,
+                      color: Colors.purple,
                     ),
-                    Flexible(
-                      flex: 60,
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.purpleAccent,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  bottomLeft: Radius.circular(10))),
-                          child: Center(
-                              child: FlatButton(
-                            onPressed: () {
-                              
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.shopping_cart,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  'Add to Cart',
-                                  style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ))),
-                    )
-                  ]))),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 60,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.purpleAccent,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10))),
+                child: Center(
+                  child: FlatButton(
+                    onPressed: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Add to Cart',
+                          style: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]),
+        ),
+      ),
     );
   }
 }

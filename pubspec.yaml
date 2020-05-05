@@ -53,6 +53,7 @@ flutter:
   assets:
     - assets/images/LOGO2.png
     - assets/
+    - assets/typeIcons/
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

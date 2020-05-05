@@ -9,6 +9,7 @@ import 'package:my_flutter_app/ui/login_email.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
 import 'package:my_flutter_app/ui/login_screen.dart';
 import 'package:my_flutter_app/ui/imageViewer.dart';
+import 'package:my_flutter_app/ui/cart.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -53,6 +54,10 @@ class RouteGenerator {
       case '/navigation':
         return MaterialPageRoute(
           builder: (_) => Navigation(),
+        );
+        case '/cart':
+        return MaterialPageRoute(
+          builder: (_) => Cart(),
         );
       default:
         return _errorRoute();

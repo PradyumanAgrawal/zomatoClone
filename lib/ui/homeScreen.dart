@@ -63,7 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     hintText: "Search",
                     fillColor: Colors.white,
                     filled: true,
-                    suffixIcon: Icon(Icons.search, color: Colors.purple),
+                    suffixIcon: Icon(Icons.search,
+                     color: Colors.purple),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide(color: Colors.transparent),
@@ -122,6 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {
                           DocumentSnapshot document = snapshot.data.documents[index];
+                          String type = document['type'];
                           return InkWell(
                             onTap: () {
                               print(index);
@@ -133,9 +135,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Container(
+                                    decoration : BoxDecoration(
+                                       shape : BoxShape.circle,
+                                       color : Colors.pink[200],
+                                    ),
+                                   
+                                    width:45,
                                     padding: EdgeInsets.all(5.0),
-                                    child: CircleAvatar(
-                                        backgroundColor: Colors.pink[200]),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Image.asset('assets/typeIcons/$type.png'),
+                                    ),
                                   ),
                                   Text( document.documentID,
                                       style: TextStyle(
