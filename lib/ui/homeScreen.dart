@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -104,24 +105,47 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Icon(Icons.location_on),
                         ],
-                      ),                    
+                      ),
                     ),
                   ],
                 ),
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 0.08,
+                height: MediaQuery.of(context).size.height * 0.12,
                 //decoration: BoxDecoration(color: Colors.red),
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 30,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {},
-                        child: Container(
-                          padding: EdgeInsets.all(5.0),
-                          child: CircleAvatar(backgroundColor: Colors.pink[200]),
-                        ),
+                child: StreamBuilder(
+                    stream: Firestore.instance.collection('shops').snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return const Text('Loading...');
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot document = snapshot.data.documents[index];
+                          return InkWell(
+                            onTap: () {
+                              print(index);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(left: 4, right: 4),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.all(5.0),
+                                    child: CircleAvatar(
+                                        backgroundColor: Colors.pink[200]),
+                                  ),
+                                  Text( document.documentID,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      )),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       );
                     }),
               ),
@@ -137,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
                     OutlineButton(
-                      onPressed: () {},                  
+                      onPressed: () {},
                       child: Text(
                         "View All",
                         style: TextStyle(
@@ -184,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         "Explore",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 12.0),
-                      ),                  
+                      ),
                     ),
                   ],
                 ),
