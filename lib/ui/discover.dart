@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'product.dart';
 import 'package:my_flutter_app/ui/description.dart';
 import '../main.dart';
-
+import 'package:my_flutter_app/functionalities/route_generator.dart';
 
 class Discover extends StatefulWidget {
     @override
@@ -25,7 +25,7 @@ class _DiscoverState extends State<Discover> {
               Container(
                 height: 150,
                 width: double.infinity,
-                color: Colors.deepPurple[300],
+                color: Colors.deepPurple[800],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -60,7 +60,7 @@ class _DiscoverState extends State<Discover> {
                           border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.search ,
-                            color: Colors.purple[300],
+                            color: Colors.purple,
                             size: 30,
                           ),
                           contentPadding: EdgeInsets.only(left: 15,top: 15),
@@ -108,7 +108,9 @@ class _DiscoverState extends State<Discover> {
                     child: Padding(
                         padding: EdgeInsets.only(bottom: 10, top: 5),
                         child: FlatButton(
-                          onPressed: () {} ,
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/description');
+                          } ,
                           child: Text("Sort"),
                           textColor: Colors.grey,
                         )
@@ -173,7 +175,7 @@ Widget itemCard (String name, String imgPath, bool isFav, String price, BuildCon
                                   flex: 8,
                                   child: InkWell(
                                   onTap: () {
-                                      Navigator.pushNamed(context,'/description');
+                                      Navigator.of(context).pushNamed('/description');
                                     },
                                     child: Container(
                                       width: MediaQuery.of(context).size.width*(2/3)*(3/4) - 10,

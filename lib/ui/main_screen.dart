@@ -55,9 +55,10 @@ class _MainScreenState extends State<MainScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Padding(
-                                padding: EdgeInsets.only(
-                              bottom: 50,
-                            )),
+                              padding: EdgeInsets.only(
+                                bottom: 50,
+                              ),
+                            ),
                             RaisedButton(
                                 color: Color.fromARGB(255, 90, 14, 151),
                                 padding: EdgeInsets.only(left: 120, right: 120),

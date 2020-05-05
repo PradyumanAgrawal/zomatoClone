@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
         slivers: <Widget>[
           SliverAppBar(
             floating: true,
-            pinned: false,
+            pinned: true,
             snap: true,
             backgroundColor: Colors.deepPurple[800],
             title: Text(
@@ -57,19 +57,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)),
                 ),
-                child: TextField(
+                child: TextFormField(
                   decoration: InputDecoration(
                     hintText: "Search",
                     fillColor: Colors.white,
                     filled: true,
-                    suffixIcon: Icon(Icons.search),
+                    suffixIcon: Icon(Icons.search, color: Colors.purple),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide(color: Colors.transparent),
                     ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16.0,
-                      vertical: 16.0,
+                      vertical: 14.0,
                     ),
                   ),
                 ),
@@ -93,6 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     OutlineButton(
                       onPressed: () {},
+                      shape: StadiumBorder(),
+                      splashColor: Colors.purple,
                       child: Row(
                         children: <Widget>[
                           Text(
@@ -102,9 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Icon(Icons.location_on),
                         ],
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                      ),                    
                     ),
                   ],
                 ),
@@ -137,14 +137,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
                     OutlineButton(
-                      onPressed: () {},
+                      onPressed: () {},                  
                       child: Text(
                         "View All",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 12.0),
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                      shape: StadiumBorder(),
+                      splashColor: Colors.purple,
                     ),
                   ],
                 ),
@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   autoplay: true,
                   dotSize: 5.0,
                   dotColor: Colors.black,
-                  dotIncreasedColor: Colors.red,
+                  dotIncreasedColor: Colors.purple,
                   dotBgColor: Colors.transparent,
                   indicatorBgPadding: 2.0,
                 ),
@@ -178,13 +178,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     OutlineButton(
                       onPressed: () {},
+                      shape: StadiumBorder(),
+                      splashColor: Colors.purple,
                       child: Text(
                         "Explore",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 12.0),
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                      ),                  
                     ),
                   ],
                 ),

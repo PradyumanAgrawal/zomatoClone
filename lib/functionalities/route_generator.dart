@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/ui/google_signin.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
+import 'package:my_flutter_app/ui/homescreen.dart';
+import 'package:my_flutter_app/ui/description.dart';
 import 'package:my_flutter_app/ui/navigation.dart';
 import 'package:my_flutter_app/ui/login_email.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
 import 'package:my_flutter_app/ui/login_screen.dart';
+import 'package:my_flutter_app/ui/imageViewer.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -14,6 +17,18 @@ class RouteGenerator {
       case '/main_screen':
         return MaterialPageRoute(
           builder: (_) => MainScreen(),
+        );
+      case '/imageViewer':
+        return MaterialPageRoute(
+          builder: (_) => ImageViewer(args),
+        );
+      case '/description':
+        return MaterialPageRoute(
+          builder: (_) => Description(),
+        );
+      case '/homeScreen':
+        return MaterialPageRoute(
+          builder: (_) => HomeScreen(),
         );
       case '/login_screen':
         return MaterialPageRoute(
@@ -36,7 +51,9 @@ class RouteGenerator {
           builder: (_) => Loading(),
         );
       case '/navigation':
-        return MaterialPageRoute(builder: (_) => Navigation());
+        return MaterialPageRoute(
+          builder: (_) => Navigation(),
+        );
       default:
         return _errorRoute();
     }

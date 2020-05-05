@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
           )),
       debugShowCheckedModeBanner: false,
       initialRoute: //widget.loggedIn ? '/navigation' :
-          '/main_screen',
+          '/description',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

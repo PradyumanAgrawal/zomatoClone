@@ -30,6 +30,8 @@ dependencies:
   firebase_analytics: ^5.0.11
   # cloud_firestore:
   google_sign_in: ^4.4.4
+  photo_view: ^0.9.2
+
 
 dev_dependencies:
   flutter_test:
@@ -50,13 +52,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/LOGO2.png
-    - assets/iphone11.jpg
-    - assets/iphone.png
-    - assets/airpods.jpg
-    - assets/dress.jpg
-    - assets/headphones.jpg
-    - assets/laptop.jpg
-
+    - assets/
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
