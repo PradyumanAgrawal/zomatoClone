@@ -8,7 +8,6 @@ import 'package:my_flutter_app/ui/navigation.dart';
 import 'package:my_flutter_app/ui/login_email.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
 import 'package:my_flutter_app/ui/login_screen.dart';
-import 'package:my_flutter_app/ui/imageViewer.dart';
 import 'package:my_flutter_app/ui/cart.dart';
 
 class RouteGenerator {
@@ -18,10 +17,6 @@ class RouteGenerator {
       case '/main_screen':
         return MaterialPageRoute(
           builder: (_) => MainScreen(),
-        );
-      case '/imageViewer':
-        return MaterialPageRoute(
-          builder: (_) => ImageViewer(args),
         );
       case '/description':
         return MaterialPageRoute(

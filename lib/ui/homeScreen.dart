@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
         slivers: <Widget>[
           SliverAppBar(
             floating: true,
-            pinned: true,
+            pinned: false,
             snap: true,
             backgroundColor: Colors.deepPurple[800],
             title: Text(
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     filled: true,
                     suffixIcon: Icon(Icons.search,
                      color: Colors.purple),
-                    enabledBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide(color: Colors.transparent),
                     ),

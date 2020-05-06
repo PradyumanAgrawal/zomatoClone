@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import './imageViewer.dart';
 
 class Description extends StatefulWidget {
   @override
@@ -50,8 +51,11 @@ class _DescriptionState extends State<Description> {
                       child: InkWell(
                         onTap: () {
                           print('pressed');
-                          Navigator.of(context).pushNamed('/imageViewer',
-                              arguments: photos[index]);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) =>ImageViewer(data: photos[index]))
+                          );
+                          /* Navigator.of(context).pushNamed('/imageViewer',
+                              arguments: photos[index].toString()); */
                         },
                         child: Carousel(
                             onImageTap: null,
