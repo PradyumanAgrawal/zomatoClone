@@ -4,11 +4,19 @@ import 'package:carousel_pro/carousel_pro.dart';
 import './imageViewer.dart';
 
 class Description extends StatefulWidget {
+
+  BuildContext navContext;
+  Description({BuildContext navContext})
+  {
+    this.navContext = navContext;
+  }
+
   @override
   _DescriptionState createState() => _DescriptionState();
 }
 
 class _DescriptionState extends State<Description> {
+ 
   int photoIndex = 0;
   List<String> photos = [
     'assets/airpods.jpg',
@@ -51,11 +59,7 @@ class _DescriptionState extends State<Description> {
                       child: InkWell(
                         onTap: () {
                           print('pressed');
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) =>ImageViewer(data: photos[index]))
-                          );
-                          /* Navigator.of(context).pushNamed('/imageViewer',
-                              arguments: photos[index].toString()); */
+                          Navigator.of(context).pushNamed('/imageViewer',arguments: photos[index]);   
                         },
                         child: Carousel(
                             onImageTap: null,
@@ -83,7 +87,9 @@ class _DescriptionState extends State<Description> {
                           IconButton(
                             icon: Icon(Icons.arrow_back),
                             color: Colors.black,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
                           Material(
                             elevation: 4.0,

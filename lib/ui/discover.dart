@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'product.dart';
-import 'package:my_flutter_app/ui/description.dart';
-import '../main.dart';
 import 'package:my_flutter_app/functionalities/route_generator.dart';
 
 class Discover extends StatefulWidget {
+  BuildContext navContext;
+  Discover({BuildContext navContext})
+  {
+    this.navContext = navContext;
+  }
     @override
   _DiscoverState createState() => _DiscoverState();
 }
@@ -109,7 +112,7 @@ class _DiscoverState extends State<Discover> {
                         padding: EdgeInsets.only(bottom: 10, top: 5),
                         child: FlatButton(
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/description');
+                            Navigator.of(widget.navContext).pushNamed('/description');
                           } ,
                           child: Text("Sort"),
                           textColor: Colors.grey,
@@ -120,15 +123,15 @@ class _DiscoverState extends State<Discover> {
               ),
             ],
           ),
-          itemCard('iPhone 11','assets/iphone11.jpg', true,'86000', context),
+          itemCard('iPhone 11','assets/iphone11.jpg', true,'86000', widget.navContext),
           SizedBox(height:10),
-          itemCard('Headphones','assets/headphones.jpg', !true,'20000',context),
+          itemCard('Headphones','assets/headphones.jpg', !true,'20000',widget.navContext),
           SizedBox(height:10),
-          itemCard('Laptop','assets/laptop.jpg', true,'150000',context),
+          itemCard('Laptop','assets/laptop.jpg', true,'150000',widget.navContext),
           SizedBox(height:10),
-          itemCard('iPhone 11','assets/airpods.jpg', !true,'15000',context),
+          itemCard('iPhone 11','assets/airpods.jpg', !true,'15000',widget.navContext),
           SizedBox(height:10),
-          itemCard('Dress','assets/dress.jpg', true,'5000',context),
+          itemCard('Dress','assets/dress.jpg', true,'5000',widget.navContext),
           SizedBox(height:10),
         ],
       ),

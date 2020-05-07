@@ -6,16 +6,15 @@ import './cart.dart';
 import './share.dart';
 import './description.dart';
 
-
 class Navigation extends StatefulWidget {
   Navigation({
     Key key,
   }) : super(key: key);
   @override
-   NavigationState createState() =>  NavigationState();
+  NavigationState createState() => NavigationState();
 }
 
-class  NavigationState extends State<Navigation> {
+class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -48,53 +47,61 @@ class  NavigationState extends State<Navigation> {
   Widget build(BuildContext context) {
     const value = 0xFF4A148C;
     return new WillPopScope(
-          onWillPop: ()async => false,
-          child: MaterialApp(
+      onWillPop: () async => false,
+      child: MaterialApp(
         home: Scaffold(
           body: IndexedStack(
             index: _selectedIndex,
             children: <Widget>[
               HomeScreen(),
-              Discover(),
+              Discover(
+                navContext: context,
+              ),
               Cart(),
-              Description(),
-              //Share,
+              //Description(navContext: context,),
+              Share(),
             ],
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                  color: Color(value),
-                ),
-                title: Text('Home'),
+          bottomNavigationBar: Material(
+            elevation: 7.0,
+            color: Colors.white70,
+            child: Container(
+              child: BottomNavigationBar(
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.home,
+                      color: Color(value),
+                    ),
+                    title: Text('Home'),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.favorite,
+                      color: Color(value),
+                    ),
+                    title: Text('Discover'),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.shopping_cart,
+                      color: Color(value),
+                    ),
+                    title: Text('Cart'),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.share,
+                      color: Color(value),
+                    ),
+                    title: Text('Share'),
+                  ),
+                ],
+                currentIndex: _selectedIndex,
+                selectedItemColor: Colors.black,
+                onTap: _onItemTapped,
               ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.favorite,
-                  color: Color(value),
-                ),
-                title: Text('Discover'),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: Color(value),
-                ),
-                title: Text('Cart'),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.share,
-                  color: Color(value),
-                ),
-                title: Text('Share'),
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.black,
-            onTap: _onItemTapped,
+            ),
           ),
         ),
         debugShowCheckedModeBanner: false,

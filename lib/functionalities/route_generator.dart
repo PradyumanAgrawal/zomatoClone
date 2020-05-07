@@ -8,7 +8,10 @@ import 'package:my_flutter_app/ui/navigation.dart';
 import 'package:my_flutter_app/ui/login_email.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
 import 'package:my_flutter_app/ui/login_screen.dart';
+import 'package:my_flutter_app/ui/discover.dart';
+import 'package:my_flutter_app/ui/imageViewer.dart';
 import 'package:my_flutter_app/ui/cart.dart';
+import 'package:my_flutter_app/ui/share.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -18,9 +21,17 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => MainScreen(),
         );
+      case '/imageViewer':
+        return MaterialPageRoute(
+          builder: (_) => ImageViewer(data: args),
+        );
       case '/description':
         return MaterialPageRoute(
           builder: (_) => Description(),
+        );
+      case '/discover':
+        return MaterialPageRoute(
+          builder: (_) => Discover(),
         );
       case '/homeScreen':
         return MaterialPageRoute(
@@ -50,9 +61,13 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Navigation(),
         );
-        case '/cart':
+      case '/cart':
         return MaterialPageRoute(
           builder: (_) => Cart(),
+        );
+        case '/share':
+        return MaterialPageRoute(
+          builder: (_) => Share(),
         );
       default:
         return _errorRoute();
