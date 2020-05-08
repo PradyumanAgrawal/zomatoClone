@@ -162,7 +162,7 @@ class _DiscoverState extends State<Discover> {
                               document['name'],
                               document['catalogue'][0],
                               document['isFav'],
-                              document['price'],
+                              '\u{20B9}'+ document['price'],
                               document,
                               widget.navContext);
                         },
@@ -222,7 +222,7 @@ Widget itemCard(String name, String imgPath, bool isFav, String price,DocumentSn
                             flex: 8,
                             child: InkWell(
                               onTap: () {
-                                Navigator.of(context).pushNamed('/description');
+                                Navigator.of(context).pushNamed('/description', arguments: document);
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width *

@@ -27,7 +27,7 @@ class RouteGenerator {
         );
       case '/description':
         return MaterialPageRoute(
-          builder: (_) => Description(),
+          builder: (_) => Description(document: args),
         );
       case '/discover':
         return MaterialPageRoute(

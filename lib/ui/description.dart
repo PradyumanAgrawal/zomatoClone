@@ -2,28 +2,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import './imageViewer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Description extends StatefulWidget {
-
-  BuildContext navContext;
-  Description({BuildContext navContext})
-  {
-    this.navContext = navContext;
+  DocumentSnapshot document;
+  Description({DocumentSnapshot document}) {
+    this.document = document;
   }
 
   @override
-  _DescriptionState createState() => _DescriptionState();
+  _DescriptionState createState() => _DescriptionState(document);
 }
 
 class _DescriptionState extends State<Description> {
- 
+  DocumentSnapshot document;
   int photoIndex = 0;
-  List<String> photos = [
-    'assets/airpods.jpg',
-    'assets/dress.jpg',
-    'assets/headphones.jpg',
-    'assets/iphone.jpg'
-  ];
+  List<String> photos = [];
+  bool isFav;
+  _DescriptionState(DocumentSnapshot document) {
+    this.document = document;
+    //this.photos.addAll(document['catalogue']);
+    for(int i = 0; i < document['catalogue'].length; i++)
+      {
+        String img = document['catalogue'][i];
+        photos.add(img);
+      }
+    this.isFav = document['isFav'];
+  }
 
   void _previousImage() {
     setState(() {
@@ -59,13 +64,14 @@ class _DescriptionState extends State<Description> {
                       child: InkWell(
                         onTap: () {
                           print('pressed');
-                          Navigator.of(context).pushNamed('/imageViewer',arguments: photos[index]);   
+                          Navigator.of(context).pushNamed('/imageViewer',
+                              arguments: photos[index]);
                         },
                         child: Carousel(
                             onImageTap: null,
                             boxFit: BoxFit.cover,
                             images: List.generate(photos.length, (index) {
-                              return Image.asset(photos[index]);
+                              return Image.network(photos[index]);
                             }),
                             autoplay: false,
                             dotSize: 5.0,
@@ -92,18 +98,31 @@ class _DescriptionState extends State<Description> {
                             },
                           ),
                           Material(
-                            elevation: 4.0,
+                            elevation: isFav ? 2 : 0,
                             borderRadius: BorderRadius.circular(20.0),
                             child: Container(
                               height: 40.0,
                               width: 40.0,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20.0)),
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  color: isFav
+                                        ? Colors.white
+                                        : Colors.grey.withOpacity(0.2),
+                                  ),
                               child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.favorite),
-                                color: Colors.red,
-                              ),
+                                      icon: isFav
+                                          ? Icon(
+                                              Icons.favorite,
+                                              color: Colors.red,
+                                            )
+                                          : Icon(Icons.favorite_border),
+                                      onPressed: () {
+                                        Firestore.instance.collection('products').document(document.documentID).updateData({'isFav':!isFav });
+                                        setState(() {
+                                          isFav = !isFav;
+                                        });
+                                      },
+                                    ),
                             ),
                           ),
                         ],
@@ -124,7 +143,7 @@ class _DescriptionState extends State<Description> {
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
-                  'Product Name',
+                  document['name'],
                   style: TextStyle(
                       fontSize: 25.0,
                       color: Colors.black,
@@ -157,7 +176,7 @@ class _DescriptionState extends State<Description> {
                         child: Center(
                           child: Container(
                             child: Text(
-                              'price/-',
+                              '\u{20B9}'+document['price'],
                               style: TextStyle(
                                   fontSize: 25.0,
                                   color: Colors.black,
