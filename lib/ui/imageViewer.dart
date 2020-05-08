@@ -19,7 +19,7 @@ class _ImageViewerState extends State<ImageViewer> {
       body: SafeArea(
         child: Stack(children: <Widget>[
           PhotoView(
-            imageProvider: AssetImage(widget.data),
+            imageProvider: NetworkImage(widget.data),
             minScale: PhotoViewComputedScale.contained * 0.8,
             maxScale: PhotoViewComputedScale.covered * 2,
             enableRotation: false,
