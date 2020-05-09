@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/ui/google_signin.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
 import 'package:my_flutter_app/ui/homescreen.dart';
@@ -40,10 +39,6 @@ class RouteGenerator {
       case '/login_screen':
         return MaterialPageRoute(
           builder: (_) => Login(),
-        );
-      case '/google_signin':
-        return MaterialPageRoute(
-          builder: (_) => GoogleSignIn(),
         );
       case '/login_email':
         return MaterialPageRoute(

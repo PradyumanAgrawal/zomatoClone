@@ -30,8 +30,7 @@ class _MyAppState extends State<MyApp> {
             endIndent: 40,
           )),
       debugShowCheckedModeBanner: false,
-      initialRoute:'/navigation',
-          //'/homeScreen',
+      initialRoute:'/main_screen',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

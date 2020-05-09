@@ -64,7 +64,7 @@ class _LoginEmailState extends State<LoginEmail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 144, 28, 238),
+      backgroundColor: Colors.deepPurple,
       body: Center(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
@@ -99,7 +99,7 @@ class _LoginEmailState extends State<LoginEmail> {
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
                                       color: Colors.black, width: 10)),
-                              hintText: "xyz@gmail.com",
+                              hintText: "xyz@email.com",
                               fillColor: Colors.white,
                               focusColor: Colors.white,
                               filled: true,
@@ -148,7 +148,7 @@ class _LoginEmailState extends State<LoginEmail> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'LOGIN',
+                              'Login',
                               style: TextStyle(fontSize: 20),
                             ),
                           ),
@@ -165,15 +165,15 @@ class _LoginEmailState extends State<LoginEmail> {
                       Text("Don't have an account?",
                           style: TextStyle(color: Colors.white)),
                       SizedBox(width: 10),
-                      FlatButton(
+                      ActionChip(
                         padding: EdgeInsets.all(10),
                         onPressed: () {
                           Navigator.of(context).pushNamed('/signUp_email');
                         },
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        child: Text(
+                        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                        label: Text(
                           "Sign Up",
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                         ),
                       ),
                     ],
@@ -181,7 +181,6 @@ class _LoginEmailState extends State<LoginEmail> {
                 )
               ],
             ),
-            color: Color.fromARGB(255, 144, 28, 238),
           ),
         ),
       ),
