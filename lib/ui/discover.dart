@@ -148,7 +148,7 @@ class _DiscoverState extends State<Discover> {
             delegate: SliverChildListDelegate(
               <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height*20,
+                  height: MediaQuery.of(context).size.height * 20,
                   child: StreamBuilder(
                     stream: FirestoreService().getProducts(),
                     builder: (context, snapshot) {
@@ -158,13 +158,14 @@ class _DiscoverState extends State<Discover> {
                         itemCount: snapshot.data.documents.length,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          DocumentSnapshot document = snapshot.data.documents[index];
+                          DocumentSnapshot document =
+                              snapshot.data.documents[index];
                           return itemCard(
                               document['name'],
                               document['catalogue'][0],
                               document['description'],
                               document['isFav'],
-                              '\u{20B9}'+ document['price'],
+                              '\u{20B9}' + document['price'],
                               document,
                               widget.navContext);
                         },
@@ -181,8 +182,8 @@ class _DiscoverState extends State<Discover> {
   }
 }
 
-Widget itemCard(String name, String imgPath, String description, bool isFav, String price,DocumentSnapshot document,
-    BuildContext context) {
+Widget itemCard(String name, String imgPath, String description, bool isFav,
+    String price, DocumentSnapshot document, BuildContext context) {
   return Material(
     elevation: 2,
     borderRadius: BorderRadius.circular(10),
@@ -221,10 +222,11 @@ Widget itemCard(String name, String imgPath, String description, bool isFav, Str
                       child: Row(
                         children: <Widget>[
                           Flexible(
-                            flex: 8,
+                            flex: 7,
                             child: InkWell(
                               onTap: () {
-                                Navigator.of(context).pushNamed('/description', arguments: document);
+                                Navigator.of(context).pushNamed('/description',
+                                    arguments: document);
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width *
@@ -240,6 +242,11 @@ Widget itemCard(String name, String imgPath, String description, bool isFav, Str
                               ),
                             ),
                           ),
+                          SizedBox(width: 10,),
+                          // Flexible(
+                          //   flex: 1,
+                          //   child: SizedBox(),
+                          // ),
                           Flexible(
                             flex: 2,
                             child: Container(
@@ -276,7 +283,8 @@ Widget itemCard(String name, String imgPath, String description, bool isFav, Str
                                                   (1 / 8) -
                                               1,
                                       onPressed: () {
-                                        FirestoreService().changeFav(document.documentID, isFav);
+                                        FirestoreService().changeFav(
+                                            document.documentID, isFav);
                                       },
                                     ),
                                   ),
@@ -295,7 +303,7 @@ Widget itemCard(String name, String imgPath, String description, bool isFav, Str
                         width: MediaQuery.of(context).size.width * 2 / 3,
                         child: Text(
                           description,
-                         // 'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                          // 'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                           textAlign: TextAlign.left,
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
@@ -309,7 +317,11 @@ Widget itemCard(String name, String imgPath, String description, bool isFav, Str
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Flexible(
-                            flex: 1,
+                            flex: 5,
+                            child: Container()
+                          ),
+                          Flexible(
+                            flex: 10,
                             child: Material(
                               elevation: 7,
                               borderRadius: BorderRadius.circular(10),
@@ -322,9 +334,9 @@ Widget itemCard(String name, String imgPath, String description, bool isFav, Str
                                       bottomLeft: Radius.circular(10)),
                                 ),
                                 height: 40,
-                                width: MediaQuery.of(context).size.width *
-                                    (1 / 3) *
-                                    (1.7 / 3),
+                                // width: MediaQuery.of(context).size.width *
+                                //     (1 / 3) *
+                                //     (1.7 / 3),
                                 child: Center(
                                   child: Text(
                                     price,
@@ -338,7 +350,7 @@ Widget itemCard(String name, String imgPath, String description, bool isFav, Str
                             ),
                           ),
                           Flexible(
-                            flex: 2,
+                            flex: 16,
                             child: Material(
                               elevation: 7,
                               borderRadius: BorderRadius.circular(10),
