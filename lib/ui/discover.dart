@@ -162,6 +162,7 @@ class _DiscoverState extends State<Discover> {
                           return itemCard(
                               document['name'],
                               document['catalogue'][0],
+                              document['description'],
                               document['isFav'],
                               '\u{20B9}'+ document['price'],
                               document,
@@ -180,7 +181,7 @@ class _DiscoverState extends State<Discover> {
   }
 }
 
-Widget itemCard(String name, String imgPath, bool isFav, String price,DocumentSnapshot document,
+Widget itemCard(String name, String imgPath, String description, bool isFav, String price,DocumentSnapshot document,
     BuildContext context) {
   return Material(
     elevation: 2,
@@ -293,7 +294,8 @@ Widget itemCard(String name, String imgPath, bool isFav, String price,DocumentSn
                       child: Container(
                         width: MediaQuery.of(context).size.width * 2 / 3,
                         child: Text(
-                          'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                          description,
+                         // 'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                           textAlign: TextAlign.left,
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),

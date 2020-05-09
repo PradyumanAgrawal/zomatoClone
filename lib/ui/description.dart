@@ -162,7 +162,8 @@ class _DescriptionState extends State<Description> {
                         flex: 2,
                         child: Container(
                           child: Text(
-                            'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                            document['description'],
+                            //'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                             style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey.withOpacity(0.8),
