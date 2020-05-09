@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import './imageViewer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -22,11 +23,10 @@ class _DescriptionState extends State<Description> {
   _DescriptionState(DocumentSnapshot document) {
     this.document = document;
     //this.photos.addAll(document['catalogue']);
-    for(int i = 0; i < document['catalogue'].length; i++)
-      {
-        String img = document['catalogue'][i];
-        photos.add(img);
-      }
+    for (int i = 0; i < document['catalogue'].length; i++) {
+      String img = document['catalogue'][i];
+      photos.add(img);
+    }
     this.isFav = document['isFav'];
   }
 
@@ -104,25 +104,27 @@ class _DescriptionState extends State<Description> {
                               height: 40.0,
                               width: 40.0,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  color: isFav
-                                        ? Colors.white
-                                        : Colors.grey.withOpacity(0.2),
-                                  ),
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: isFav
+                                    ? Colors.white
+                                    : Colors.grey.withOpacity(0.2),
+                              ),
                               child: IconButton(
-                                      icon: isFav
-                                          ? Icon(
-                                              Icons.favorite,
-                                              color: Colors.red,
-                                            )
-                                          : Icon(Icons.favorite_border),
-                                      onPressed: () {
-                                        Firestore.instance.collection('products').document(document.documentID).updateData({'isFav':!isFav });
-                                        setState(() {
-                                          isFav = !isFav;
-                                        });
-                                      },
-                                    ),
+                                icon: isFav
+                                    ? Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                      )
+                                    : Icon(Icons.favorite_border),
+                                onPressed: () {
+                                  FirestoreService().changeFav(document.documentID, isFav);
+                                  setState(
+                                    () {
+                                      isFav = !isFav;
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -176,7 +178,7 @@ class _DescriptionState extends State<Description> {
                         child: Center(
                           child: Container(
                             child: Text(
-                              '\u{20B9}'+document['price'],
+                              '\u{20B9}' + document['price'],
                               style: TextStyle(
                                   fontSize: 25.0,
                                   color: Colors.black,

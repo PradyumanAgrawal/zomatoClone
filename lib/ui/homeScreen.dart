@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -115,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height * 0.12,
                 //decoration: BoxDecoration(color: Colors.red),
                 child: StreamBuilder(
-                    stream: Firestore.instance.collection('shops').snapshots(),
+                    stream:  FirestoreService().getStores(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) return const Text('Loading...');
                       return ListView.builder(

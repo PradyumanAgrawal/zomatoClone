@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -149,7 +150,7 @@ class _DiscoverState extends State<Discover> {
                 Container(
                   height: MediaQuery.of(context).size.height*20,
                   child: StreamBuilder(
-                    stream:Firestore.instance.collection('products').snapshots(),
+                    stream: FirestoreService().getProducts(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) return const Text('Loading...');
                       return ListView.builder(
@@ -274,7 +275,7 @@ Widget itemCard(String name, String imgPath, bool isFav, String price,DocumentSn
                                                   (1 / 8) -
                                               1,
                                       onPressed: () {
-                                        Firestore.instance.collection('products').document(document.documentID).updateData({'isFav':!isFav });
+                                        FirestoreService().changeFav(document.documentID, isFav);
                                       },
                                     ),
                                   ),
