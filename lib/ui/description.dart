@@ -4,6 +4,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import './imageViewer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Description extends StatefulWidget {
   DocumentSnapshot document;
@@ -71,7 +72,14 @@ class _DescriptionState extends State<Description> {
                             onImageTap: null,
                             boxFit: BoxFit.cover,
                             images: List.generate(photos.length, (index) {
-                              return Image.network(photos[index]);
+                              return CachedNetworkImage(
+                                imageUrl: photos[index],
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              );
+                              //Image.network(photos[index]);
                             }),
                             autoplay: false,
                             dotSize: 5.0,
@@ -117,7 +125,8 @@ class _DescriptionState extends State<Description> {
                                       )
                                     : Icon(Icons.favorite_border),
                                 onPressed: () {
-                                  FirestoreService().changeFav(document.documentID, isFav);
+                                  FirestoreService()
+                                      .changeFav(document.documentID, isFav);
                                   setState(
                                     () {
                                       isFav = !isFav;
