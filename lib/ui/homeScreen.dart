@@ -5,7 +5,8 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key}) : super(key: key);
+  BuildContext navContext;
+  HomeScreen({Key key, BuildContext navContext}){this.navContext=navContext;} //: super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -64,8 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     hintText: "Search",
                     fillColor: Colors.white,
                     filled: true,
-                    suffixIcon: Icon(Icons.search,
-                     color: Colors.purple),
+                    suffixIcon: Icon(Icons.search, color: Colors.purple),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide(color: Colors.transparent),
@@ -116,14 +116,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height * 0.12,
                 //decoration: BoxDecoration(color: Colors.red),
                 child: StreamBuilder(
-                    stream:  FirestoreService().getStores(),
+                    stream: FirestoreService().getStores(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) return const Text('Loading...');
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {
-                          DocumentSnapshot document = snapshot.data.documents[index];
+                          DocumentSnapshot document =
+                              snapshot.data.documents[index];
                           String type = document['type'];
                           return InkWell(
                             onTap: () {
@@ -136,19 +137,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Container(
-                                    decoration : BoxDecoration(
-                                       shape : BoxShape.circle,
-                                       color : Colors.pink[200],
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.pink[200],
                                     ),
-                                   
-                                    width: MediaQuery.of(context).size.height/13,
+                                    width:
+                                        MediaQuery.of(context).size.height / 13,
                                     padding: EdgeInsets.all(5.0),
                                     child: Padding(
                                       padding: const EdgeInsets.all(4.0),
-                                      child: Image.asset('assets/typeIcons/$type.png'),
+                                      child: Image.asset(
+                                          'assets/typeIcons/$type.png'),
                                     ),
                                   ),
-                                  Text( document.documentID,
+                                  Text(document.documentID,
                                       style: TextStyle(
                                         fontSize: 10,
                                       )),
@@ -225,20 +227,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(height: 10.0),
-              Column(
-                children: List.generate(7, (index) {
-                  return Padding(
-                    padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        _singleProd("Index $index"),
-                        _singleProd("Index $index"),
-                      ],
-                    ),
-                  );
-                }),
+              Container(
+                //height: MediaQuery.of(context).size.height * 10,
+                child: StreamBuilder(
+                  stream: FirestoreService().getProducts(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return const Text('Loading...');
+                    return Center(
+                      child: Wrap(
+                        runSpacing: 2,
+                        spacing:2,
+                        children : List.generate(snapshot.data.documents.length,(index){
+                          DocumentSnapshot document = snapshot.data.documents[index];
+                          return  _singleProd("Index $index", document, widget.navContext);
+                        })
+                      ),
+                    );
+                  },
+                ),
               ),
+              // Column(
+              //   children: List.generate(7, (index) {
+              //     return Padding(
+              //       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //         children: <Widget>[
+              //           _singleProd("Index $index", ''),
+              //           _singleProd("Index $index", ''),
+              //         ],
+              //       ),
+              //     );
+              //   }),
+              // ),
             ],
           )),
         ],
@@ -246,39 +267,66 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _singleProd(name) {
+  _singleProd(name, DocumentSnapshot document, BuildContext navContext) {
     return InkWell(
-      onTap: () {},
-      child: Stack(
-        alignment: Alignment.topRight,
-        children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width * 0.48,
-            height: MediaQuery.of(context).size.width * 0.48,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/images/LOGO2.png"),
-                  fit: BoxFit.cover),
+      onTap: () {
+        Navigator.of(navContext).pushNamed('/description', arguments: document);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.46,
+          child: Material(
+            elevation: 0,
+            //color: Colors.grey,
+            borderRadius: BorderRadius.circular(25),
+            shadowColor: Colors.purple,
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.46,
+                  height: MediaQuery.of(context).size.width * 0.46,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(document['catalogue']
+                          [0]), //AssetImage("assets/images/LOGO2.png"),
+                      fit: BoxFit.contain,
+                    ),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    // FlatButton(
+                    //     color: Colors.purple[700].withOpacity(.5),
+                    //     child: Icon(
+                    //       Icons.add_shopping_cart,
+                    //       color: Colors.white,
+                    //     ),
+                    //     onPressed: () {},
+                    //     shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(30.0))),
+                    IconButton(
+                      icon: document['isFav']
+                          ? Icon(
+                              Icons.favorite,
+                              color: Colors.red.withOpacity(0.7),
+                            )
+                          : Icon(Icons.favorite_border,
+                              color: Colors.grey[900].withOpacity(0.7)),
+                      onPressed: () {
+                        FirestoreService()
+                            .changeFav(document.documentID, document['isFav']);
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          Row(
-            children: <Widget>[
-              FlatButton(
-                  color: Colors.purple[700].withOpacity(.5),
-                  child: Icon(
-                    Icons.add_shopping_cart,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {},
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0))),
-              IconButton(
-                icon: Icon(Icons.favorite, color: Colors.red.withOpacity(0.5)),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

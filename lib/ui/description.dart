@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
-import './imageViewer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Description extends StatefulWidget {
   DocumentSnapshot document;
@@ -74,8 +74,8 @@ class _DescriptionState extends State<Description> {
                             images: List.generate(photos.length, (index) {
                               return CachedNetworkImage(
                                 imageUrl: photos[index],
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
+                                placeholder: (context, url) => SpinKitChasingDots(color:  Colors.purple,),
+                                    //CircularProgressIndicator(),
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.error),
                               );

@@ -53,7 +53,9 @@ class NavigationState extends State<Navigation> {
           body: IndexedStack(
             index: _selectedIndex,
             children: <Widget>[
-              HomeScreen(),
+              HomeScreen(
+                navContext: context,
+              ),
               Discover(
                 navContext: context,
               ),
