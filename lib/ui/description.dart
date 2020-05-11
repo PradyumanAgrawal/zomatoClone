@@ -64,7 +64,7 @@ class _DescriptionState extends State<Description> {
                       height: 275.0,
                       child: InkWell(
                         onTap: () {
-                          print('pressed');
+                          //print('pressed');
                           Navigator.of(context).pushNamed('/imageViewer',
                               arguments: photos[index]);
                         },
@@ -442,12 +442,14 @@ class _DescriptionState extends State<Description> {
                         bottomLeft: Radius.circular(10))),
                 child: Center(
                   child: FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      FirestoreService().addToCart(document.documentID , 1);
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(
-                          Icons.shopping_cart,
+                          Icons.add_shopping_cart,
                           color: Colors.white,
                         ),
                         SizedBox(
