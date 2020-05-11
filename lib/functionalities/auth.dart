@@ -17,7 +17,10 @@ class AuthService {
           .user;
       if (user != null) {
         localData.saveData(
-            userEmail: email, password: password, loggedIn: "yes");
+            userEmail: email,
+            password: password,
+            loggedIn: "yes",
+            uid: user.uid);
         return true;
       }
       return false;
@@ -37,7 +40,10 @@ class AuthService {
       //updateUserData(user);
       if (user != null) {
         localData.saveData(
-            userEmail: email, password: password, loggedIn: "yes");
+            userEmail: email,
+            password: password,
+            loggedIn: "yes",
+            uid: user.uid);
         return true;
       }
       return false;
@@ -52,6 +58,7 @@ class AuthService {
     prefs.setString("loggedIn", "no");
     prefs.setString("userEmail", null);
     prefs.setString("password", null);
+    prefs.setString('uid', null);
     try {
       await _auth.signOut();
       await _googleSignIn.signOut();
@@ -72,7 +79,8 @@ class AuthService {
       );
 
       FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
-      localData.saveData(userEmail: user.email, password: '', loggedIn: "yes");
+      localData.saveData(
+          userEmail: user.email, password: '', loggedIn: "yes", uid: user.uid);
       print("user name: ${user.displayName}");
       //updateUserData(user);
       return true;
