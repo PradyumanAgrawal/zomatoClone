@@ -35,7 +35,7 @@ class _CartState extends State<Cart> {
               flex: 40,
               child: Center(
                 child: Text(
-                  'Rs '+'\u{20B9}'+totalPrice.toString(),
+                  'Rs ' + '\u{20B9}' + totalPrice.toString(),
                   style: TextStyle(
                     color: Colors.purpleAccent,
                     fontWeight: FontWeight.bold,
@@ -114,25 +114,38 @@ class _CartState extends State<Cart> {
                                     color: Colors.purple,
                                   ),
                                 );
-                              return Column(
-                                children: List.generate(
-                                  document['cart'].length,
-                                  (index) {
-                                    String productId =
-                                        document['cart'].keys.toList()[index];
-                                    int quantity =
-                                        document['cart'].values.toList()[index];
-                                    for (int i = 0;i < snapshot.data.documents.length;i++) 
-                                    {
-                                      if (snapshot.data.documents[i].documentID == productId) {
-                                        //print(productId + " " + '$quantity');
-                                        setState(){
-                                          totalPrice += int.parse(snapshot.data.documents[i]['price'])*quantity;
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: List.generate(
+                                    document['cart'].length,
+                                    (index) {
+                                      String productId =
+                                          document['cart'].keys.toList()[index];
+                                      int quantity =
+                                          document['cart'].values.toList()[index];
+                                      for (int i = 0;
+                                          i < snapshot.data.documents.length;
+                                          i++) {
+                                        if (snapshot
+                                                .data.documents[i].documentID ==
+                                            productId) {
+                                          //print(productId + " " + '$quantity');
+                                          setState() {
+                                            totalPrice += int.parse(snapshot
+                                                    .data.documents[i]['price']) *
+                                                quantity;
+                                          }
+
+                                          return product(
+                                              widget.navContext,
+                                              index,
+                                              snapshot.data.documents[i],
+                                              quantity);
                                         }
-                                        return product(widget.navContext,index,snapshot.data.documents[i], quantity);
                                       }
-                                    }
-                                  },
+                                    },
+                                  ),
                                 ),
                               );
                             },
@@ -174,13 +187,19 @@ class _CartState extends State<Cart> {
                       children: <Widget>[
                         Flexible(
                           flex: 1,
-                          child: Container(
-                              decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(productDoc['catalogue'][0]),
-                              fit: BoxFit.contain,
-                            ),
-                          )),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/description',
+                                  arguments: productDoc);
+                            },
+                            child: Container(
+                                decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(productDoc['catalogue'][0]),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+                          ),
                         ),
                         Flexible(
                           flex: 2,
@@ -193,7 +212,9 @@ class _CartState extends State<Cart> {
                                   child: Container(
                                     child: InkWell(
                                       onTap: () {
-                                        Navigator.of(context).pushNamed('/description', arguments: productDoc);
+                                        Navigator.of(context).pushNamed(
+                                            '/description',
+                                            arguments: productDoc);
                                       },
                                       child: Text(
                                         productDoc['name'],
@@ -245,8 +266,7 @@ class _CartState extends State<Cart> {
                                     size: 0,
                                   ),
                             onPressed: () {
-                              if(quantity>1)
-                              {
+                              if (quantity > 1) {
                                 int newQuantity = quantity - 1;
                                 FirestoreService().addToCart(
                                     productDoc.documentID, newQuantity, true);
