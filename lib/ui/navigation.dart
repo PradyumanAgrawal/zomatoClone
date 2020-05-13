@@ -59,7 +59,9 @@ class NavigationState extends State<Navigation> {
               Discover(
                 navContext: context,
               ),
-              Cart(),
+              Cart(
+                navContext: context,
+              ),
               //Description(navContext: context,),
               Share(),
             ],

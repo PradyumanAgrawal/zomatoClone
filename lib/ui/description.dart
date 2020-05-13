@@ -5,6 +5,7 @@ import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Description extends StatefulWidget {
   DocumentSnapshot document;
@@ -74,8 +75,11 @@ class _DescriptionState extends State<Description> {
                             images: List.generate(photos.length, (index) {
                               return CachedNetworkImage(
                                 imageUrl: photos[index],
-                                placeholder: (context, url) => SpinKitChasingDots(color:  Colors.purple,),
-                                    //CircularProgressIndicator(),
+                                placeholder: (context, url) =>
+                                    SpinKitChasingDots(
+                                  color: Colors.purple,
+                                ),
+                                //CircularProgressIndicator(),
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.error),
                               );
@@ -168,7 +172,7 @@ class _DescriptionState extends State<Description> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Flexible(
-                        flex: 2,
+                        flex: 20,
                         child: Container(
                           child: Text(
                             document['description'],
@@ -184,13 +188,13 @@ class _DescriptionState extends State<Description> {
                         color: Colors.grey.withOpacity(1),
                       ),
                       Flexible(
-                        flex: 1,
+                        flex: 10,
                         child: Center(
                           child: Container(
                             child: Text(
                               '\u{20B9}' + document['price'],
                               style: TextStyle(
-                                  fontSize: 25.0,
+                                  fontSize: 22.0,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -443,7 +447,10 @@ class _DescriptionState extends State<Description> {
                 child: Center(
                   child: FlatButton(
                     onPressed: () {
-                      FirestoreService().addToCart(document.documentID , 1);
+                      print('pressed');
+                      FirestoreService().addToCart(document.documentID, 1,false).then((onValue){
+                        //TODO add toast on completion
+                      });
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

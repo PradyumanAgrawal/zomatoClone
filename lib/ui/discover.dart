@@ -397,7 +397,9 @@ Widget itemCard(String name, String imgPath, String description, bool isFav,
                                         (2.7 / 3),
                                     child: Center(
                                       child: FlatButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          FirestoreService().addToCart(document.documentID, 1,false);
+                                        },
                                         child: Text(
                                           'Add To Cart',
                                           style: TextStyle(

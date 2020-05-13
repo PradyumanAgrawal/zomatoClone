@@ -24,7 +24,16 @@ class FirestoreService {
     db.collection('products').document(docId).updateData({'isFav': !isFav});
   }
 
-  bool addToCart(String productId, int quantity) {
+  Future<Stream> getUser() async{
+    String user;
+    await LocalData().getUid().then((Uid){
+      user = Uid.toString();
+    });
+    //return db.collection('user').where('uid' ,isEqualTo: user).snapshots();
+    return db.collection('user').snapshots();
+  }
+
+  Future<bool> addToCart(String productId, int quantity, bool updating) async {
     Future<String> email = LocalData().getUserEmail().then((userEmail)
     {
       db.collection('users').where('email', isEqualTo: userEmail).getDocuments().then((QuerySnapshot document) 
@@ -32,10 +41,25 @@ class FirestoreService {
         if (document.documents.isNotEmpty) {
           String userId = document.documents[0].documentID;
           Map cart = document.documents[0]['cart'];
-          cart['$productId'] = quantity;
-          //cart.addEntries({'$productId' : quantity})
-          db.collection('users').document(userId).updateData({'cart': cart});
-          return true;
+          if(updating)
+          {
+            if(quantity == 0)
+              cart.remove(productId);
+            else
+              cart['$productId'] = quantity; // updating the quantity of the product in the cart
+            //cart.addEntries({'$productId' : quantity})
+            db.collection('users').document(userId).updateData({'cart': cart});
+            return true;
+          }
+          else{
+            if(cart.containsKey(productId))
+              return true; //product is already in the cart
+            else{
+              cart['$productId'] = quantity; // adding a new entry in the map
+              db.collection('users').document(userId).updateData({'cart': cart});
+              return true;
+            }
+          }
         }
         else return false;
       });
@@ -43,6 +67,5 @@ class FirestoreService {
       print('error: ' + error);
       return false;
     });
-    return false;
   }
 }
