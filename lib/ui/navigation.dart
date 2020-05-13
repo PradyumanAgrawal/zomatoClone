@@ -5,6 +5,7 @@ import './discover.dart';
 import './cart.dart';
 import './share.dart';
 import './description.dart';
+import 'discover1.dart';
 
 
 class Navigation extends StatefulWidget {
@@ -55,7 +56,7 @@ class  NavigationState extends State<Navigation> {
             index: _selectedIndex,
             children: <Widget>[
               HomeScreen(),
-              Discover(),
+              Discover1(),
               Cart(),
               Description(),
               //Share,

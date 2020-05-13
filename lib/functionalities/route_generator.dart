@@ -54,6 +54,10 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Navigation(),
         );
+        case '/discover1':
+        return MaterialPageRoute(
+          builder: (_) => MainScreen(),
+        );
       default:
         return _errorRoute();
     }
