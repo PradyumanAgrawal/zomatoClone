@@ -115,6 +115,35 @@ class _CartState extends State<Cart> {
                             color: Colors.purple,
                           ));
                         DocumentSnapshot document = snapshot.data;
+                        if(document['cart'].isEmpty)
+                          return Center(
+                            child:Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  width: MediaQuery.of(context).size.width-100,
+                                  height: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/images/emptyCart.png'),
+                                      //colorFilter: ColorFilter.mode(Colors.purple, BlendMode.color),
+                                    ),
+                                  )
+                                  ),
+                                Center(
+                                  child: Text(
+                                    'Add products in your cart to see them here...',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontWeight: FontWeight.bold,
+                                    ),  
+                                  ),
+                                ),
+                              ],
+                            )
+                          );
                         return Container(
                           child: StreamBuilder(
                             stream: FirestoreService().getProducts(),
