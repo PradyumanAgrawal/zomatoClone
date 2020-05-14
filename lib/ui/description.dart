@@ -1,20 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Description extends StatefulWidget {
+  DocumentSnapshot document;
+  Description({DocumentSnapshot document}) {
+    this.document = document;
+  }
+
   @override
-  _DescriptionState createState() => _DescriptionState();
+  _DescriptionState createState() => _DescriptionState(document);
 }
 
 class _DescriptionState extends State<Description> {
+  DocumentSnapshot document;
   int photoIndex = 0;
-  List<String> photos = [
-    'assets/airpods.jpg',
-    'assets/dress.jpg',
-    'assets/headphones.jpg',
-    'assets/iphone.jpg'
-  ];
+  List<String> photos = [];
+  bool isFav;
+  _DescriptionState(DocumentSnapshot document) {
+    this.document = document;
+    //this.photos.addAll(document['catalogue']);
+    for (int i = 0; i < document['catalogue'].length; i++) {
+      String img = document['catalogue'][i];
+      photos.add(img);
+    }
+    this.isFav = document['isFav'];
+  }
 
   void _previousImage() {
     setState(() {
@@ -49,7 +65,7 @@ class _DescriptionState extends State<Description> {
                       height: 275.0,
                       child: InkWell(
                         onTap: () {
-                          print('pressed');
+                          //print('pressed');
                           Navigator.of(context).pushNamed('/imageViewer',
                               arguments: photos[index]);
                         },
@@ -57,7 +73,17 @@ class _DescriptionState extends State<Description> {
                             onImageTap: null,
                             boxFit: BoxFit.cover,
                             images: List.generate(photos.length, (index) {
-                              return Image.asset(photos[index]);
+                              return CachedNetworkImage(
+                                imageUrl: photos[index],
+                                placeholder: (context, url) =>
+                                    SpinKitChasingDots(
+                                  color: Colors.purple,
+                                ),
+                                //CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              );
+                              //Image.network(photos[index]);
                             }),
                             autoplay: false,
                             dotSize: 5.0,
@@ -79,20 +105,38 @@ class _DescriptionState extends State<Description> {
                           IconButton(
                             icon: Icon(Icons.arrow_back),
                             color: Colors.black,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
                           Material(
-                            elevation: 4.0,
+                            elevation: isFav ? 2 : 0,
                             borderRadius: BorderRadius.circular(20.0),
                             child: Container(
                               height: 40.0,
                               width: 40.0,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20.0)),
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: isFav
+                                    ? Colors.white
+                                    : Colors.grey.withOpacity(0.2),
+                              ),
                               child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.favorite),
-                                color: Colors.red,
+                                icon: isFav
+                                    ? Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                      )
+                                    : Icon(Icons.favorite_border),
+                                onPressed: () {
+                                  FirestoreService()
+                                      .changeFav(document.documentID, isFav);
+                                  setState(
+                                    () {
+                                      isFav = !isFav;
+                                    },
+                                  );
+                                },
                               ),
                             ),
                           ),
@@ -114,7 +158,7 @@ class _DescriptionState extends State<Description> {
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
-                  'Product Name',
+                  document['name'],
                   style: TextStyle(
                       fontSize: 25.0,
                       color: Colors.black,
@@ -128,10 +172,11 @@ class _DescriptionState extends State<Description> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Flexible(
-                        flex: 2,
+                        flex: 20,
                         child: Container(
                           child: Text(
-                            'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                            document['description'],
+                            //'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                             style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey.withOpacity(0.8),
@@ -143,13 +188,13 @@ class _DescriptionState extends State<Description> {
                         color: Colors.grey.withOpacity(1),
                       ),
                       Flexible(
-                        flex: 1,
+                        flex: 10,
                         child: Center(
                           child: Container(
                             child: Text(
-                              'price/-',
+                              '\u{20B9}' + document['price'],
                               style: TextStyle(
-                                  fontSize: 25.0,
+                                  fontSize: 22.0,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -348,85 +393,91 @@ class _DescriptionState extends State<Description> {
         ],
       ),
       bottomNavigationBar: Material(
-          elevation: 7.0,
-          color: Colors.white70,
-          child: Container(
-              height: 40.0,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //SizedBox(width: 10.0),
-                    Flexible(
-                      flex: 20,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Center(
-                          child: Container(
-                            height: 40.0,
-                            width: 50.0,
-                            color: Colors.white,
-                            child: Icon(
-                              Icons.share,
-                              color: Colors.purple,
-                            ),
-                          ),
-                        ),
-                      ),
+        elevation: 7.0,
+        color: Colors.white70,
+        child: Container(
+          height: 40.0,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            //SizedBox(width: 10.0),
+            Flexible(
+              flex: 20,
+              child: InkWell(
+                onTap: () {},
+                child: Center(
+                  child: Container(
+                    height: 40.0,
+                    width: 50.0,
+                    color: Colors.white,
+                    child: Icon(
+                      Icons.share,
+                      color: Colors.purple,
                     ),
-                    Flexible(
-                      flex: 20,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Center(
-                          child: Container(
-                            height: 40.0,
-                            width: 50.0,
-                            color: Colors.white,
-                            child: Icon(
-                              Icons.call,
-                              color: Colors.purple,
-                            ),
-                          ),
-                        ),
-                      ),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 20,
+              child: InkWell(
+                onTap: () {},
+                child: Center(
+                  child: Container(
+                    height: 40.0,
+                    width: 50.0,
+                    color: Colors.white,
+                    child: Icon(
+                      Icons.call,
+                      color: Colors.purple,
                     ),
-                    Flexible(
-                      flex: 60,
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.purpleAccent,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  bottomLeft: Radius.circular(10))),
-                          child: Center(
-                              child: FlatButton(
-                            onPressed: () {
-                              
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.shopping_cart,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  'Add to Cart',
-                                  style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ))),
-                    )
-                  ]))),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 60,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.purpleAccent,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10))),
+                child: Center(
+                  child: FlatButton(
+                    onPressed: () {
+                      print('pressed');
+                      FirestoreService().addToCart(document.documentID, 1,false).then((onValue){
+                        //TODO add toast on completion
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.add_shopping_cart,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Add to Cart',
+                          style: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]),
+        ),
+      ),
     );
   }
 }

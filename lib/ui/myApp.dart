@@ -30,8 +30,7 @@ class _MyAppState extends State<MyApp> {
             endIndent: 40,
           )),
       debugShowCheckedModeBanner: false,
-      initialRoute: //widget.loggedIn ? '/navigation' :
-          '/navigation',
+      initialRoute:'/navigation',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

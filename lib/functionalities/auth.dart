@@ -17,7 +17,33 @@ class AuthService {
           .user;
       if (user != null) {
         localData.saveData(
-            userEmail: email, password: password, loggedIn: "yes");
+            userEmail: email,
+            password: password,
+            loggedIn: "yes",
+            uid: user.uid);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.message);
+      return false;
+    }
+  }
+
+  Future<bool> signUpWithEmail({email: '', password: ''}) async {
+    try {
+      FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      ))
+          .user;
+      //updateUserData(user);
+      if (user != null) {
+        localData.saveData(
+            userEmail: email,
+            password: password,
+            loggedIn: "yes",
+            uid: user.uid);
         return true;
       }
       return false;
@@ -29,9 +55,10 @@ class AuthService {
 
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString("loggedIn", "no");
-      prefs.setString("userEmail", null);
-      prefs.setString("password", null);
+    prefs.setString("loggedIn", "no");
+    prefs.setString("userEmail", null);
+    prefs.setString("password", null);
+    prefs.setString('uid', null);
     try {
       await _auth.signOut();
       await _googleSignIn.signOut();
@@ -42,7 +69,6 @@ class AuthService {
 
   Future<bool> googleSignIn() async {
     try {
-      
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
       GoogleSignInAuthentication googleAuth =
           await googleSignInAccount.authentication;
@@ -53,7 +79,8 @@ class AuthService {
       );
 
       FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
-      localData.saveData(userEmail: user.email, password: '', loggedIn: "yes");
+      localData.saveData(
+          userEmail: user.email, password: '', loggedIn: "yes", uid: user.uid);
       print("user name: ${user.displayName}");
       //updateUserData(user);
       return true;

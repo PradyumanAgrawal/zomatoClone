@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/ui/google_signin.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
 import 'package:my_flutter_app/ui/homescreen.dart';
@@ -8,7 +7,11 @@ import 'package:my_flutter_app/ui/navigation.dart';
 import 'package:my_flutter_app/ui/login_email.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
 import 'package:my_flutter_app/ui/login_screen.dart';
+import 'package:my_flutter_app/ui/discover.dart';
 import 'package:my_flutter_app/ui/imageViewer.dart';
+import 'package:my_flutter_app/ui/cart.dart';
+import 'package:my_flutter_app/ui/share.dart';
+import 'package:my_flutter_app/ui/discover1.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,11 +23,15 @@ class RouteGenerator {
         );
       case '/imageViewer':
         return MaterialPageRoute(
-          builder: (_) => ImageViewer(args),
+          builder: (_) => ImageViewer(data: args),
         );
       case '/description':
         return MaterialPageRoute(
-          builder: (_) => Description(),
+          builder: (_) => Description(document: args),
+        );
+      case '/discover':
+        return MaterialPageRoute(
+          builder: (_) => Discover(),
         );
       case '/homeScreen':
         return MaterialPageRoute(
@@ -33,10 +40,6 @@ class RouteGenerator {
       case '/login_screen':
         return MaterialPageRoute(
           builder: (_) => Login(),
-        );
-      case '/google_signin':
-        return MaterialPageRoute(
-          builder: (_) => GoogleSignIn(),
         );
       case '/login_email':
         return MaterialPageRoute(
@@ -54,9 +57,17 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Navigation(),
         );
+      case '/cart':
+        return MaterialPageRoute(
+          builder: (_) => Cart(),
+        );
+        case '/share':
+        return MaterialPageRoute(
+          builder: (_) => Share(),
+        );
         case '/discover1':
         return MaterialPageRoute(
-          builder: (_) => MainScreen(),
+          builder: (_) => Discover1(),
         );
       default:
         return _errorRoute();

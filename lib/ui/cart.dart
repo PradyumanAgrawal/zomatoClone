@@ -1,60 +1,76 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/ui/drawerWidget.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Cart extends StatefulWidget {
-  Cart({Key key}) : super(key: key);
+  BuildContext navContext;
+  Cart({Key key, BuildContext navContext}) {
+    this.navContext = navContext;
+  } //: super(key: key);
 
   @override
   _CartState createState() => _CartState();
 }
 
 class _CartState extends State<Cart> {
-  var q = <int> [1,2,3,4];
-  void add(index){
-    setState(() {
-      q[index]+=1;
-    });
-  }
-  void subtract(index){
-    if(q[index]>=1){
-    setState(() {
-      q[index]-=1;
-    });
-    }
-  }
   @override
   Widget build(BuildContext context) {
+    int totalPrice = 0;
     return Scaffold(
-      backgroundColor: Colors.deepPurple[100],
+      //backgroundColor: Colors.deepPurple[100],
       drawer: DrawerWidget(),
-      bottomSheet: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
-        height: MediaQuery.of(context).size.height * 0.08,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              "Rs. x,xxx",
-              style: TextStyle(
-                  color: Colors.deepPurple[900],
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.normal),
-            ),
-            RaisedButton(
-                elevation: 10.0,
-                color: Colors.deepPurple[900],
+      bottomSheet: Material(
+        elevation: 7.0,
+        color: Colors.white70,
+        child: Container(
+          height: 40.0,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            //SizedBox(width: 10.0),
+            Flexible(
+              flex: 40,
+              child: Center(
                 child: Text(
-                  "Place Order",
+                  'Rs ' + '\u{20B9}' + totalPrice.toString(),
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.normal),
+                    color: Colors.purpleAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                onPressed: () {},
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0))),
-          ],
+              ),
+            ),
+            Flexible(
+              flex: 60,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.purpleAccent,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10))),
+                child: Center(
+                  child: FlatButton(
+                    onPressed: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Place Order',
+                          style: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]),
         ),
       ),
       body: CustomScrollView(
@@ -75,13 +91,71 @@ class _CartState extends State<Cart> {
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
+                Container(
+                  child: StreamBuilder(
+                      stream: Firestore.instance
+                          .collection('users')
+                          .document('1')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData)
+                          return Center(
+                              child: SpinKitChasingDots(
+                            color: Colors.purple,
+                          ));
+                        DocumentSnapshot document = snapshot.data;
+                        return Container(
+                          child: StreamBuilder(
+                            stream: FirestoreService().getProducts(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Center(
+                                  child: SpinKitChasingDots(
+                                    color: Colors.purple,
+                                  ),
+                                );
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: List.generate(
+                                    document['cart'].length,
+                                    (index) {
+                                      String productId =
+                                          document['cart'].keys.toList()[index];
+                                      int quantity =
+                                          document['cart'].values.toList()[index];
+                                      for (int i = 0;
+                                          i < snapshot.data.documents.length;
+                                          i++) {
+                                        if (snapshot
+                                                .data.documents[i].documentID ==
+                                            productId) {
+                                          //print(productId + " " + '$quantity');
+                                          setState() {
+                                            totalPrice += int.parse(snapshot
+                                                    .data.documents[i]['price']) *
+                                                quantity;
+                                          }
+
+                                          return product(
+                                              widget.navContext,
+                                              index,
+                                              snapshot.data.documents[i],
+                                              quantity);
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
+                ),
                 SizedBox(
                   height: 4.0,
                 ),
-                _product(context, 0),
-                _product(context, 1),
-                _product(context, 2),
-                _product(context, 3),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.09)
               ],
             ),
@@ -91,71 +165,161 @@ class _CartState extends State<Cart> {
     );
   }
 
-  _product(context,index) {
+  product(context, index, DocumentSnapshot productDoc, int quantity) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Card(
-        elevation: 20.0,
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.28,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.all(4.0),
-                      width: MediaQuery.of(context).size.height * 0.2,
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("assets/iphone.png")),
-                      ),
-                    ),
-                    Text(
-                      "Product Name",
-                      style: TextStyle(
-                          fontSize: 20, color: Colors.deepPurple[900]),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "Price: Rs. x,xxx",
-                      style:
-                          TextStyle(fontSize: 20, color: Colors.deepPurple[900]),
-                    ),
-                    Text(
-                      "This is Product description\nThis is Product description",
-                      style:
-                          TextStyle(fontSize: 12, color: Colors.deepPurple[900]),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
+        children: <Widget>[
+          Material(
+            elevation: 2,
+            shadowColor: Colors.purple,
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: Column(
                 children: <Widget>[
-                  Text("Quantity ", style:
-                          TextStyle(fontSize: 15, color: Colors.deepPurple[900])),
-                  IconButton(icon: (q[index]>1)? Icon(Icons.remove, color: Colors.red) : Icon(Icons.delete, color: Colors.red,), onPressed:(){subtract(index);} ),
-                  Text("${q[index]}", style: TextStyle(fontWeight:FontWeight.bold),),
-                  IconButton(icon: Icon(Icons.add, color: Colors.green), onPressed: (){add(index);}),
+                  Flexible(
+                    flex: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Flexible(
+                          flex: 1,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/description',
+                                  arguments: productDoc);
+                            },
+                            child: Container(
+                                decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(productDoc['catalogue'][0]),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 2,
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Flexible(
+                                  flex: 20,
+                                  child: Container(
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).pushNamed(
+                                            '/description',
+                                            arguments: productDoc);
+                                      },
+                                      child: Text(
+                                        productDoc['name'],
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 10,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      'Price: ' +
+                                          '\u{20B9}' +
+                                          (int.parse(productDoc['price']) *
+                                                  quantity)
+                                              .toString(),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.deepPurple[900]),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Quantity :",
+                            style:
+                                TextStyle(fontSize: 15, color: Colors.black)),
+                        IconButton(
+                            icon: (quantity > 1)
+                                ? Icon(Icons.remove, color: Colors.red)
+                                : Icon(
+                                    Icons.fiber_manual_record,
+                                    color: Colors.white,
+                                    size: 0,
+                                  ),
+                            onPressed: () {
+                              if (quantity > 1) {
+                                int newQuantity = quantity - 1;
+                                FirestoreService().addToCart(
+                                    productDoc.documentID, newQuantity, true);
+                              }
+                            }),
+                        Text(
+                          '$quantity',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                            icon: Icon(Icons.add, color: Colors.green),
+                            onPressed: () {
+                              int newQuantity = quantity + 1;
+                              FirestoreService().addToCart(
+                                  productDoc.documentID, newQuantity, true);
+                            }),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            top: -10,
+            right: -10,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+              width: MediaQuery.of(context).size.height / 15,
+              child: Center(
+                child: IconButton(
+                  onPressed: () {
+                    FirestoreService()
+                        .addToCart(productDoc.documentID, 0, true);
+                  },
+                  icon: Icon(Icons.delete),
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
+        ],
+        overflow: Overflow.visible,
       ),
     );
   }
