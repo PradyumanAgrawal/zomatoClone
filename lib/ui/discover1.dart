@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'discover.dart';
 
 class Discover1 extends StatefulWidget {
   @override
@@ -6,62 +9,8 @@ class Discover1 extends StatefulWidget {
 }
 
 class _Discover1State extends State<Discover1> {
-  List<String> catagories = [
-   "Shirt",
-   "Pant",
-   "T-shirt",
-   "Sports Wear",
-   "Shirt",
-   "Pant",
-   "T-shirt",
-   "Sports Wear",
-   "Shirt",
-   "Pant",
-   "T-shirt",
-   "Sports Wear",
-   ];
-   List<String> shops = [
-   "Mufti",
-   "Jagadamba",
-   "Nike",
-   ] ;
-   Widget catag(catagory){
-     return Container(
-            child: Column(
-              children: <Widget>[
-                Padding(padding: EdgeInsets.all(0)), 
-                ListTile(
-                  onTap: (){},
-        title: Text(catagory),
-        ),
-        Divider(
-          height: 0,
-          thickness: 1,
-          color: Colors.deepPurpleAccent, 
-        )
-        ],
-       ),
-       );
-   } 
-   Widget shopNames(shop){
-     return Container(
-            child: Column(
-              children: <Widget>[
-                Padding(padding: EdgeInsets.all(0)), 
-                ListTile(
-                  onTap: (){},
-        title: Text(shop),
-        ),
-        Divider(
-          height: 0,
-          thickness: 1,
-          color: Colors.deepPurpleAccent, 
-        )
-        ],
-       ),
-       );
-   } 
-
+  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,16 +31,91 @@ class _Discover1State extends State<Discover1> {
         ]),
       ),
       body: TabBarView(children:[
-        
-        ListView(children: 
-        catagories.map((catagory){
-          return catag(catagory); 
-        }).toList() 
+        StreamBuilder(
+          stream: FirestoreService().getCategories(),
+          builder: (context,snapshot){
+            if (!snapshot.hasData) return const Text('Loading...');
+            return  ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot document =
+                              snapshot.data.documents[index];
+                          String type = document['type'];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                   
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.all(0),
+                                  padding: EdgeInsets.all(15),
+                                  child: Text(document.documentID,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      )
+                                      ),
+                                ),
+                              
+                              ),
+                              Divider(
+                                    color: Colors.deepPurpleAccent,
+                                    thickness: 0,
+                                    height: 0,
+                                  )
+                            ],
+                          );
+                        },
+                      );
+           
+
+          },
+                
         ),
-        ListView(children: 
-        shops.map((shop){
-          return shopNames(shop) ; 
-        }).toList() 
+         StreamBuilder(
+          stream: FirestoreService().getStores(),
+          builder: (context,snapshot){
+            if (!snapshot.hasData) return const Text('Loading...');
+            return  ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot document =
+                              snapshot.data.documents[index];
+                          String type = document['type'];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  print(index);
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.all(0),
+                                  padding: EdgeInsets.all(15),
+                                  child: Text(document.documentID,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      )
+                                      ),
+                                ),
+                              
+                              ),
+                              Divider(
+                                    color: Colors.deepPurpleAccent,
+                                    thickness: 0,
+                                    height: 0,
+                                  )
+                            ],
+                          );
+                        },
+                      );
+           
+
+          },
+                
         ),
       ]),
     )
