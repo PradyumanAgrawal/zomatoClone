@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/ui/drawerWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
+
 
 class Cart extends StatefulWidget {
   BuildContext navContext;
@@ -13,6 +15,16 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+
+  String userId;
+  @override
+	void initState() {
+		super.initState();
+		LocalData().getUid().then((value){
+      this.userId = value;
+    });
+	}
+
   @override
   Widget build(BuildContext context) {
     int totalPrice = 0;
@@ -91,11 +103,11 @@ class _CartState extends State<Cart> {
               <Widget>[
                 Container(
                   child: StreamBuilder(
-                      stream: //Stream.fromFuture(FirestoreService().getUser()), 
-                      Firestore.instance
-                          .collection('users')
-                          .document('1')
-                          .snapshots(),
+                      stream: FirestoreService().getUser(userId),
+                      // Firestore.instance
+                      //     .collection('users')
+                      //     .document('1')
+                      //     .snapshots(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData)
                           return Center(
@@ -116,9 +128,7 @@ class _CartState extends State<Cart> {
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
-                                  children: List.generate(
-                                    document['cart'].length,
-                                    (index) {
+                                  children: List.generate(document['cart'].length,(index) {
                                       //TODO find a better way to handle
                                       String productId =
                                           document['cart'].keys.toList()[index];
