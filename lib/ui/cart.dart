@@ -6,9 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Cart extends StatefulWidget {
   BuildContext navContext;
-  Cart({Key key, BuildContext navContext}) {
-    this.navContext = navContext;
-  } //: super(key: key);
+  Cart({Key key, this.navContext}) : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -93,7 +91,8 @@ class _CartState extends State<Cart> {
               <Widget>[
                 Container(
                   child: StreamBuilder(
-                      stream: Firestore.instance
+                      stream: //Stream.fromFuture(FirestoreService().getUser()), 
+                      Firestore.instance
                           .collection('users')
                           .document('1')
                           .snapshots(),
@@ -120,6 +119,7 @@ class _CartState extends State<Cart> {
                                   children: List.generate(
                                     document['cart'].length,
                                     (index) {
+                                      //TODO find a better way to handle
                                       String productId =
                                           document['cart'].keys.toList()[index];
                                       int quantity =
@@ -175,6 +175,15 @@ class _CartState extends State<Cart> {
             shadowColor: Colors.purple,
             borderRadius: BorderRadius.circular(10),
             child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.white, Colors.purple[100]],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomRight,
+                  stops: [0.8,1],
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
               padding: EdgeInsets.only(top: 10, bottom: 10),
               height: MediaQuery.of(context).size.height * 0.3,
               child: Column(

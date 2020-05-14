@@ -30,7 +30,7 @@ class FirestoreService {
       user = Uid.toString();
     });
     //return db.collection('user').where('uid' ,isEqualTo: user).snapshots();
-    return db.collection('user').snapshots();
+    return db.collection('users').document(user).snapshots();
   }
 
   Future<bool> addToCart(String productId, int quantity, bool updating) async {
