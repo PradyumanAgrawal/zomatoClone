@@ -5,7 +5,6 @@ import 'package:my_flutter_app/ui/drawerWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 
-
 class Cart extends StatefulWidget {
   BuildContext navContext;
   Cart({Key key, this.navContext}) : super(key: key);
@@ -15,15 +14,7 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-
   String userId;
-  @override
-	void initState() {
-		super.initState();
-		LocalData().getUid().then((value){
-      this.userId = value;
-    });
-	}
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +38,7 @@ class _CartState extends State<Cart> {
                 child: Text(
                   'Rs ' + '\u{20B9}' + totalPrice.toString(),
                   style: TextStyle(
-                    color: Colors.purpleAccent,
+                    color: Colors.deepPurple,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -57,7 +48,7 @@ class _CartState extends State<Cart> {
               flex: 60,
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.purpleAccent,
+                    color: Colors.deepPurple,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10))),
@@ -102,95 +93,119 @@ class _CartState extends State<Cart> {
             delegate: SliverChildListDelegate(
               <Widget>[
                 Container(
-                  child: StreamBuilder(
-                      stream: FirestoreService().getUser(userId),
-                      // Firestore.instance
-                      //     .collection('users')
-                      //     .document('1')
-                      //     .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData)
-                          return Center(
-                              child: SpinKitChasingDots(
-                            color: Colors.purple,
-                          ));
-                        DocumentSnapshot document = snapshot.data;
-                        if(document['cart'].isEmpty)
-                          return Center(
-                            child:Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  width: MediaQuery.of(context).size.width-100,
-                                  height: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    
-                                    image: DecorationImage(
-                                      image: AssetImage('assets/images/emptyCart.png'),
-                                      //colorFilter: ColorFilter.mode(Colors.purple, BlendMode.color),
-                                    ),
-                                  )
-                                  ),
-                                Center(
-                                  child: Text(
-                                    'Add products in your cart to see them here...',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontWeight: FontWeight.bold,
-                                    ),  
-                                  ),
-                                ),
-                              ],
-                            )
-                          );
-                        return Container(
-                          child: StreamBuilder(
-                            stream: FirestoreService().getProducts(),
+                  child: FutureBuilder(
+                    future: LocalData().getUid(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        userId = snapshot.data;
+                        return StreamBuilder(
+                            stream: FirestoreService().getUser(userId),
+                            // Firestore.instance
+                            //     .collection('users')
+                            //     .document('1')
+                            //     .snapshots(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData)
                                 return Center(
-                                  child: SpinKitChasingDots(
-                                    color: Colors.purple,
-                                  ),
-                                );
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: List.generate(document['cart'].length,(index) {
-                                      //TODO find a better way to handle
-                                      String productId =
-                                          document['cart'].keys.toList()[index];
-                                      int quantity =
-                                          document['cart'].values.toList()[index];
-                                      for (int i = 0;
-                                          i < snapshot.data.documents.length;
-                                          i++) {
-                                        if (snapshot
-                                                .data.documents[i].documentID ==
-                                            productId) {
-                                          //print(productId + " " + '$quantity');
-                                          setState() {
-                                            totalPrice += int.parse(snapshot
-                                                    .data.documents[i]['price']) *
-                                                quantity;
-                                          }
+                                    child: SpinKitChasingDots(
+                                  color: Colors.purple,
+                                ));
+                              DocumentSnapshot document = snapshot.data;
+                              if (document['cart'].isEmpty)
+                                return Center(
+                                    child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                100,
+                                        height:
+                                            MediaQuery.of(context).size.width,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/images/emptyCart.png'),
+                                            //colorFilter: ColorFilter.mode(Colors.purple, BlendMode.color),
+                                          ),
+                                        )),
+                                    Center(
+                                      child: Text(
+                                        'Add products in your cart to see them here...',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ));
+                              return Container(
+                                child: StreamBuilder(
+                                  stream: FirestoreService().getProducts(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData)
+                                      return Center(
+                                        child: SpinKitChasingDots(
+                                          color: Colors.purple,
+                                        ),
+                                      );
+                                    var productList =
+                                        document['cart'].keys.toList();
+                                    var quantityList =
+                                        document['cart'].values.toList();
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: List.generate(
+                                          document['cart'].length,
+                                          (index) {
+                                            //TODO find a better way to handle
+                                            String productId = productList[index];
+                                            int quantity = quantityList[index];
+                                            
+                                            for (int i = 0;
+                                                i <
+                                                    snapshot
+                                                        .data.documents.length;
+                                                i++) {
+                                              if (snapshot.data.documents[i]
+                                                      .documentID ==
+                                                  productId) {
+                                                //print(productId + " " + '$quantity');
+                                                setState() {
+                                                  totalPrice += int.parse(
+                                                          snapshot.data
+                                                                  .documents[i]
+                                                              ['price']) *
+                                                      quantity;
+                                                }
 
-                                          return product(
-                                              widget.navContext,
-                                              index,
-                                              snapshot.data.documents[i],
-                                              quantity);
-                                        }
-                                      }
-                                    },
-                                  ),
+                                                return product(
+                                                    widget.navContext,
+                                                    index,
+                                                    snapshot.data.documents[i],
+                                                    quantity);
+                                              }
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               );
-                            },
+                            });
+                      } else {
+                        return Center(
+                          child: SpinKitChasingDots(
+                            color: Colors.purple,
                           ),
                         );
-                      }),
+                      }
+                    },
+                  ),
                 ),
                 SizedBox(
                   height: 4.0,
@@ -219,7 +234,7 @@ class _CartState extends State<Cart> {
                   colors: [Colors.white, Colors.purple[100]],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomRight,
-                  stops: [0.8,1],
+                  stops: [0.8, 1],
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
