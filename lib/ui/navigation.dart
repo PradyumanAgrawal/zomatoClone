@@ -5,6 +5,7 @@ import './discover.dart';
 import './cart.dart';
 import './share.dart';
 import './description.dart';
+import 'package:my_flutter_app/functionalities/location_service.dart';
 
 class Navigation extends StatefulWidget {
   Navigation({
@@ -16,11 +17,29 @@ class Navigation extends StatefulWidget {
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
+  String address = '';
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+  Future<void> printLoc() async{
+    var loc = await LocationService().getLocation();
+    String add = await LocationService().getAddress(loc);
+    setState(() {
+      address = add;
+    });
+    print('------------------');
+    print(loc.latitude);
+    print(add.replaceAll(' ', '').substring(0,20));
+    print('------------------');
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    printLoc();
   }
 
   /* Future<bool> _onWillPop() async {
@@ -54,6 +73,7 @@ class NavigationState extends State<Navigation> {
             index: _selectedIndex,
             children: <Widget>[
               HomeScreen(
+                add: address,
                 navContext: context,
               ),
               Discover(
