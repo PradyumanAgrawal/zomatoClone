@@ -24,43 +24,42 @@ class FirestoreService {
     db.collection('products').document(docId).updateData({'isFav': !isFav});
   }
 
-  Stream getUser(String userId){
+  Stream getUser(String userId) {
     return db.collection('users').document(userId).snapshots();
   }
 
-  Future<bool> addToCart(String productId, int quantity, bool updating) async {
-    Future<String> email = LocalData().getUserEmail().then((userEmail)
-    {
-      db.collection('users').where('email', isEqualTo: userEmail).getDocuments().then((QuerySnapshot document) 
-      {
+  Future<int> addToCart(String productId, int quantity, bool updating) async {
+    Future<String> email = LocalData().getUserEmail().then((userEmail) {
+      db.collection('users').where('email', isEqualTo: userEmail).getDocuments().then((QuerySnapshot document) {
         if (document.documents.isNotEmpty) {
           String userId = document.documents[0].documentID;
           Map cart = document.documents[0]['cart'];
-          if(updating)
-          {
-            if(quantity == 0)
+          if (updating) {
+            if (quantity == 0)
               cart.remove(productId);
             else
-              cart['$productId'] = quantity; // updating the quantity of the product in the cart
+              cart['$productId'] =
+                  quantity; // updating the quantity of the product in the cart
             //cart.addEntries({'$productId' : quantity})
             db.collection('users').document(userId).updateData({'cart': cart});
-            return true;
-          }
-          else{
-            if(cart.containsKey(productId))
-              return true; //product is already in the cart
-            else{
+            return 3; // cart updated
+          } else {
+            if (cart.containsKey(productId))
+              return 1; //product is already in the cart
+            else {
               cart['$productId'] = quantity; // adding a new entry in the map
-              db.collection('users').document(userId).updateData({'cart': cart});
-              return true;
+              db
+                  .collection('users')
+                  .document(userId)
+                  .updateData({'cart': cart});
+              return 2; //added a new product in the cart
             }
           }
         }
-        else return false;
+      }).catchError((error) {
+        print('error: ' + error);
+        return false;
       });
-    }).catchError((error){
-      print('error: ' + error);
-      return false;
     });
   }
 }

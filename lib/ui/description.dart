@@ -449,7 +449,28 @@ class _DescriptionState extends State<Description> {
                     onPressed: () {
                       print('pressed');
                       FirestoreService().addToCart(document.documentID, 1,false).then((onValue){
-                        //TODO add toast on completion
+                        if(onValue == 2)
+                        {
+                          // Fluttertoast.showToast(
+                          // msg: "Product added to the cart",
+                          // toastLength: Toast.LENGTH_SHORT,
+                          // gravity: ToastGravity.BOTTOM,
+                          // timeInSecForIosWeb: 1,
+                          // backgroundColor: Colors.grey,
+                          // textColor: Colors.white,
+                          );  
+                        }
+                        else if(onValue == 1)
+                        {
+                          Fluttertoast.showToast(
+                          msg: "Product is already in the cart",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.grey,
+                          textColor: Colors.white,
+                          );  
+                        }
                       });
                     },
                     child: Row(
