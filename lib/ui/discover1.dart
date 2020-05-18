@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'discover.dart';
+import 'catagories_product.dart';
 
 class Discover1 extends StatefulWidget {
   @override
@@ -41,14 +42,21 @@ class _Discover1State extends State<Discover1> {
                         itemBuilder: (context, index) {
                           DocumentSnapshot document =
                               snapshot.data.documents[index];
-                          String type = document['type'];
+                          List type = document['products'];
+                      
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               InkWell(
                                 onTap: () {
-                                   
-                                },
+                              Navigator.push(
+                                        context,
+                                     MaterialPageRoute(
+                                    builder: (context) => CatagoriesProduct(),
+                                       ),
+        );
+                          print(type);  
+      },
                                 child: Container(
                                   margin: EdgeInsets.all(0),
                                   padding: EdgeInsets.all(15),
