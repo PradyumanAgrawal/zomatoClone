@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'discover.dart';
-import 'catagories_product.dart';
+
 
 class Discover1 extends StatefulWidget {
   @override
@@ -49,12 +49,12 @@ class _Discover1State extends State<Discover1> {
                             children: <Widget>[
                               InkWell(
                                 onTap: () {
-                              Navigator.push(
-                                        context,
-                                     MaterialPageRoute(
-                                    builder: (context) => CatagoriesProduct(),
-                                       ),
-        );
+                             // Navigator.push(
+                               //         context,
+                                 //    MaterialPageRoute(
+                                    //builder: (context) => CatagoriesProduct(),
+                                   //    ),
+      //  );
                           print(type);  
       },
                                 child: Container(
