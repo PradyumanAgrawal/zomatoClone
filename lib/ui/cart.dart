@@ -5,6 +5,7 @@ import 'package:my_flutter_app/ui/drawerWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 
+
 class Cart extends StatefulWidget {
   BuildContext navContext;
   Cart({Key key, this.navContext}) : super(key: key);
