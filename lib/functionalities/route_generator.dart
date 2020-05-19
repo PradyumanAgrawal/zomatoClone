@@ -11,6 +11,7 @@ import 'package:my_flutter_app/ui/discover.dart';
 import 'package:my_flutter_app/ui/imageViewer.dart';
 import 'package:my_flutter_app/ui/cart.dart';
 import 'package:my_flutter_app/ui/share.dart';
+import 'package:my_flutter_app/ui/discover1.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -63,6 +64,10 @@ class RouteGenerator {
         case '/share':
         return MaterialPageRoute(
           builder: (_) => Share(),
+        );
+        case '/discover1':
+        return MaterialPageRoute(
+          builder: (_) => Discover1(),
         );
       default:
         return _errorRoute();
