@@ -25,6 +25,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
             content: Text(
               'Logout ?',
               style: TextStyle(

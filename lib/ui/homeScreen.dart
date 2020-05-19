@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:my_flutter_app/functionalities/location_service.dart';
 import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -66,6 +70,102 @@ class HomeScreenState extends State<HomeScreen> {
         });
   }
 
+  void _locationDialog(context) {
+    int centerx = 0, centery = 0;
+    GoogleMapController mapController;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            clipBehavior: Clip.hardEdge,
+            contentPadding: EdgeInsets.all(0),
+            insetPadding: EdgeInsets.all(0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            backgroundColor: Colors.white,
+            titleTextStyle: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black),
+            content: FutureBuilder(
+              future: LocalData().getLocation(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  var campos = CameraPosition(
+                    target: snapshot.data,
+                    zoom: 15,
+                  );
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      GoogleMap(
+                        rotateGesturesEnabled: true,
+                        initialCameraPosition: campos,
+                        onMapCreated: (controller) {
+                          mapController = controller;
+                          mapController
+                              .getScreenCoordinate(snapshot.data)
+                              .then((value) {
+                            setState(() {
+                              centerx = value.x;
+                              centery = value.y;
+                            });
+                          });
+                        },
+                      ),
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.deepPurple,
+                        size: 50,
+                      ),
+                    ],
+                  );
+                } else {
+                  return Center(
+                    child: SpinKitChasingDots(
+                      color: Colors.purple,
+                    ),
+                  );
+                }
+              },
+            ),
+            actions: <Widget>[
+              ActionChip(
+                backgroundColor: Colors.deepPurple,
+                label: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(
+                    'Set Location',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+                onPressed: () {
+                  mapController
+                      .getLatLng(ScreenCoordinate(x: centerx, y: centery))
+                      .then((loc) {
+                    print(loc);
+                    LocationService().getAddress(loc).then((addrs) {
+                      setState(() {
+                        widget.add = addrs;
+                      });
+                    });
+                  });
+                },
+              ),
+              Material(
+                child: IconButton(
+                    icon:
+                        Icon(Icons.close, color: Colors.deepPurple, size: 30.0),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +190,7 @@ class HomeScreenState extends State<HomeScreen> {
                   : ActionChip(
                       backgroundColor: Colors.white,
                       label: Text(
-                          widget.add.replaceAll(' ', '').substring(0, 15) +
+                          widget.add.replaceAll(' ', '').substring(0, 10) +
                               '...',
                           style: TextStyle(color: Colors.deepPurple)),
                       onPressed: () {
@@ -153,7 +253,10 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     OutlineButton(
                       onPressed: () {
-                        Navigator.of(widget.navContext).pushNamed('/filter_location', arguments: widget.add);
+                        _locationDialog(context);
+                        /* Navigator.of(widget.navContext).pushNamed(
+                            '/filter_location',
+                            arguments: widget.add); */
                       },
                       shape: StadiumBorder(),
                       splashColor: Colors.purple,
