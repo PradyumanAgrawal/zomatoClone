@@ -28,7 +28,7 @@ dependencies:
   shared_preferences: ^0.5.7
   firebase_core: ^0.4.4+3
   firebase_analytics: ^5.0.11
-  cloud_firestore: ^0.12.9+5
+  cloud_firestore: ^0.13.5
   google_sign_in: ^4.4.4
   photo_view: ^0.9.2
   cached_network_image: ^2.2.0+1
@@ -37,6 +37,11 @@ dependencies:
   location: ^3.0.2
   google_maps_flutter: ^0.5.27+3
   geocoder: ^0.2.1
+<<<<<<< HEAD
+=======
+  provider: ^4.1.2
+  # geoflutterfire: ^2.1.0
+>>>>>>> 7c893bf7d7cbcdec18c337cffdd3211ecc5b4c92
 
 dev_dependencies:
   flutter_test:

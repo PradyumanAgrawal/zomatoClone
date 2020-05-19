@@ -14,46 +14,53 @@ class _MainScreenState extends State<MainScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height * .2),
-                child: Image.asset(
-                  'assets/images/LOGO2.png',
-                  height: 200,
-                  width: 200,
-                ),
-              ),
-              FutureBuilder(
-                  future: localData.checkLoggedIn(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data == true) {
-                        return RaisedButton(
-                            color: Color.fromARGB(255, 90, 14, 151),
-                            padding: EdgeInsets.only(left: 120, right: 120),
-                            child: Text(
-                              'Continue',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                fontSize: 15,
-                              ),
-                            ),
-                            splashColor: Color.fromARGB(255, 144, 28, 238),
-                            elevation: 10,
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .popAndPushNamed('/navigation');
-                            });
-                      } else {
-                        return Expanded(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
+        body: ListView(
+          children: [
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height * 0.1),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CircleAvatar(backgroundColor: Colors.black54,radius: 140,),
+                        Image.asset(
+                          'assets/images/LOGO2.png',
+                          height: 230,
+                          width: 230,
+                        ),
+                      ],
+                    ),
+                  ),
+                  FutureBuilder(
+                      future: localData.checkLoggedIn(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data == true) {
+                            return RaisedButton(
+                                color: Color.fromARGB(255, 90, 14, 151),
+                                padding: EdgeInsets.only(left: 120, right: 120),
+                                child: Text(
+                                  'Continue',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                splashColor: Color.fromARGB(255, 144, 28, 238),
+                                elevation: 10,
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .popAndPushNamed('/navigation');
+                                });
+                          } else {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
                             Padding(
                               padding: EdgeInsets.only(
                                 bottom: 50,
@@ -95,17 +102,19 @@ class _MainScreenState extends State<MainScreen> {
                                   Navigator.of(context)
                                       .pushNamed('/login_screen');
                                 }),
-                          ],
-                        ));
-                      }
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  }),
-            ],
-          ),
+                              ],
+                            );
+                          }
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }),
+                ],
+              ),
+            ),
+          ],
         ),
-        backgroundColor: Color.fromARGB(255, 144, 28, 238),
+        backgroundColor: Colors.deepPurple[300],
       ),
     );
   }

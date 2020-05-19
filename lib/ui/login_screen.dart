@@ -20,6 +20,8 @@ class _LoginState extends State<Login> {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
             content: Text(
               'Error Signing In',
               style: TextStyle(
