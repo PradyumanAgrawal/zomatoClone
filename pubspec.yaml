@@ -37,11 +37,8 @@ dependencies:
   location: ^3.0.2
   google_maps_flutter: ^0.5.27+3
   geocoder: ^0.2.1
-<<<<<<< HEAD
-=======
   provider: ^4.1.2
   # geoflutterfire: ^2.1.0
->>>>>>> 7c893bf7d7cbcdec18c337cffdd3211ecc5b4c92
 
 dev_dependencies:
   flutter_test:
