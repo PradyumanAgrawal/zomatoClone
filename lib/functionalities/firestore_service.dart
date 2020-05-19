@@ -15,25 +15,21 @@ class FirestoreService {
   Stream getStores() {
     return db.collection('shops').snapshots();
   }
-  Stream getCategories() {
-    return db.collection('categories').snapshots();
-  }
 
   Stream getProducts() {
     return db.collection('products').snapshots();
   }
 
+  Stream getCategories() {
+    return db.collection('categories').snapshots();
+  }
+  
   void changeFav(String docId, bool isFav) {
     db.collection('products').document(docId).updateData({'isFav': !isFav});
   }
 
-  Future<Stream> getUser() async{
-    String user;
-    await LocalData().getUid().then((Uid){
-      user = Uid.toString();
-    });
-    //return db.collection('user').where('uid' ,isEqualTo: user).snapshots();
-    return db.collection('user').snapshots();
+  Stream getUser(String userId){
+    return db.collection('users').document(userId).snapshots();
   }
 
   Future<bool> addToCart(String productId, int quantity, bool updating) async {

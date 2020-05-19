@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/ui/filter_location.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
 import 'package:my_flutter_app/ui/homescreen.dart';
@@ -36,6 +37,10 @@ class RouteGenerator {
       case '/homeScreen':
         return MaterialPageRoute(
           builder: (_) => HomeScreen(),
+        );
+      case '/filter_location':
+        return MaterialPageRoute(
+          builder: (_) => FilterLocation(add: args,),
         );
       case '/login_screen':
         return MaterialPageRoute(
