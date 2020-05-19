@@ -105,6 +105,7 @@ class _FireMapState extends State<FireMap> {
                   .getLatLng(ScreenCoordinate(x: centerx, y: centery))
                   .then((value) {
                 print(value);
+                //HomeScreenState().changeAddress();
                 /* LocalData().saveLocation(
                     latitude: value.latitude, longitude: value.longitude); */
               });
