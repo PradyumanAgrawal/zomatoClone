@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'catagories_products.dart';
 import 'discover.dart';
 
 
@@ -16,13 +17,13 @@ class _Discover1State extends State<Discover1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: 
-      AppBar(backgroundColor: Colors.deepPurple,
+      AppBar(backgroundColor: Colors.deepPurple[800],
       title: Text("Discovery"),
     ),
     body: DefaultTabController(length: 2, 
     child: Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.deepPurple[800],
         title: TabBar(
           tabs:[
           Tab(
@@ -49,12 +50,12 @@ class _Discover1State extends State<Discover1> {
                             children: <Widget>[
                               InkWell(
                                 onTap: () {
-                             // Navigator.push(
-                               //         context,
-                                 //    MaterialPageRoute(
-                                    //builder: (context) => CatagoriesProduct(),
-                                   //    ),
-      //  );
+                             Navigator.push(
+                                      context,
+                                    MaterialPageRoute(
+                                    builder: (context) => CatagoryProduct(products:type,doc:document.documentID),
+                                      ),
+        );
                           print(type);  
       },
                                 child: Container(
