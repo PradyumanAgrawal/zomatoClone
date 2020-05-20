@@ -5,6 +5,10 @@ import 'catagories_products.dart';
 import 'discover.dart';
 
 class Discover1 extends StatefulWidget {
+  BuildContext navContext;
+  Discover1({BuildContext navContext}) {
+    this.navContext = navContext;
+  }
   @override
   _Discover1State createState() => _Discover1State();
 }
@@ -38,19 +42,14 @@ class _Discover1State extends State<Discover1> {
                           snapshot.data.documents[index];
                       List type = document['products'];
 
+
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CatagoryProduct(
-                                      products: type, doc: document.documentID),
-                                ),
-                              );
-                              print(type);
+                              Navigator.of(widget.navContext)
+                                          .pushNamed('/catagories_products',arguments:document);
                             },
                             child: Container(
                               margin: EdgeInsets.all(0),
