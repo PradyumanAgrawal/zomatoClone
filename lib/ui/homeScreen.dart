@@ -4,6 +4,8 @@ import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'filter_location.dart';
+
 class HomeScreen extends StatefulWidget {
   BuildContext navContext;
   String add;
@@ -11,6 +13,11 @@ class HomeScreen extends StatefulWidget {
     this.add = add;
     this.navContext = navContext;
   } //: super(key: key);
+
+  void setAdd(String address) {
+    this.add = address;
+    HomeScreenState().rebuild();
+  }
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -25,6 +32,10 @@ class HomeScreenState extends State<HomeScreen> {
     'assets/iphone11.jpg',
     'assets/laptop.jpg'
   ];
+
+  void rebuild() {
+    setState(() {});
+  }
 
   void _showAlertDialog(context) {
     showDialog(
@@ -86,17 +97,26 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             actions: <Widget>[
               widget.add == ''
-                  ? Container()
-                  : ActionChip(
-                      backgroundColor: Colors.white,
-                      label: Text(
-                          widget.add.replaceAll(' ', '').substring(0, 15) +
-                              '...',
-                          style: TextStyle(color: Colors.deepPurple)),
+                  ? Icon(Icons.location_off)
+                  : IconButton(
+                      icon: Icon(
+                        Icons.location_on,
+                        color: Colors.white,
+                      ),
                       onPressed: () {
                         _showAlertDialog(context);
                       },
                     ),
+              // : ActionChip(
+              //     backgroundColor: Colors.white,
+              //     label: Text(
+              //         widget.add.replaceAll(' ', '').substring(0, 15) +
+              //             '...',
+              //         style: TextStyle(color: Colors.deepPurple)),
+              //     onPressed: () {
+              //       _showAlertDialog(context);
+              //     },
+              //   ),
               IconButton(
                 icon: Icon(
                   Icons.notifications,
@@ -153,7 +173,9 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     OutlineButton(
                       onPressed: () {
-                        Navigator.of(widget.navContext).pushNamed('/filter_location', arguments: widget.add);
+                        //Navigator.of(widget.navContext).pushNamed('/filter_location', arguments: widget.add);
+                        _awaitReturnValueFromFilter(
+                            widget.navContext, widget.add);
                       },
                       shape: StadiumBorder(),
                       splashColor: Colors.purple,
@@ -307,25 +329,25 @@ class HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              // Column(
-              //   children: List.generate(7, (index) {
-              //     return Padding(
-              //       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //         children: <Widget>[
-              //           _singleProd("Index $index", ''),
-              //           _singleProd("Index $index", ''),
-              //         ],
-              //       ),
-              //     );
-              //   }),
-              // ),
             ],
           )),
         ],
       ),
     );
+  }
+
+  void _awaitReturnValueFromFilter(BuildContext context, String add) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FilterLocation(
+          add: add,
+        ),
+      ),
+    );
+    setState(() {
+      widget.add = result;
+    });
   }
 
   _singleProd(name, DocumentSnapshot document, BuildContext navContext) {

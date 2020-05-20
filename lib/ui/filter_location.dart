@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
+import './homeScreen.dart';
+import 'package:my_flutter_app/functionalities/location_service.dart';
 
 
 class FilterLocation extends StatefulWidget {
@@ -105,6 +107,11 @@ class _FireMapState extends State<FireMap> {
                   .getLatLng(ScreenCoordinate(x: centerx, y: centery))
                   .then((value) {
                 print(value);
+                LocationService().getAddress(value).then((add){
+                  print(add);
+                  
+                  Navigator.pop(context,add);
+                });
                 //HomeScreenState().changeAddress();
                 /* LocalData().saveLocation(
                     latitude: value.latitude, longitude: value.longitude); */
