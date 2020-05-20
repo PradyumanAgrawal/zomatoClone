@@ -345,9 +345,10 @@ class HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-    setState(() {
-      widget.add = result;
-    });
+    if(result != null)
+      setState(() {
+        widget.add = result;
+      });
   }
 
   _singleProd(name, DocumentSnapshot document, BuildContext navContext) {

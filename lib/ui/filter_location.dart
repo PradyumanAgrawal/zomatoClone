@@ -18,21 +18,21 @@ class _FilterLocationState extends State<FilterLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: Text(
-          'Filter by location',
-          style: TextStyle(color: Colors.white),
-        ),
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            }),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.deepPurple,
+      //   title: Text(
+      //     'Filter by location',
+      //     style: TextStyle(color: Colors.white),
+      //   ),
+      //   leading: IconButton(
+      //       icon: Icon(
+      //         Icons.arrow_back,
+      //         color: Colors.white,
+      //       ),
+      //       onPressed: () {
+      //         Navigator.of(context).pop();
+      //       }),
+      // ),
       body: FutureBuilder(
         future: LocalData().getLocation(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -109,7 +109,6 @@ class _FireMapState extends State<FireMap> {
                 print(value);
                 LocationService().getAddress(value).then((add){
                   print(add);
-                  
                   Navigator.pop(context,add);
                 });
                 //HomeScreenState().changeAddress();
