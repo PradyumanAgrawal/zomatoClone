@@ -15,19 +15,20 @@ class FirestoreService {
   Stream getStores() {
     return db.collection('shops').snapshots();
   }
-  Stream getCategories() {
-    return db.collection('categories').snapshots();
-  }
 
   Stream getProducts() {
     return db.collection('products').snapshots();
   }
 
+  Stream getCategories() {
+    return db.collection('categories').snapshots();
+  }
+  
   void changeFav(String docId, bool isFav) {
     db.collection('products').document(docId).updateData({'isFav': !isFav});
   }
 
-  Stream getUser(String userId) {
+  Stream getUser(String userId){
     return db.collection('users').document(userId).snapshots();
   }
 

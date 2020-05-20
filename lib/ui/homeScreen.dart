@@ -6,13 +6,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   BuildContext navContext;
-  HomeScreen({Key key, BuildContext navContext}){this.navContext=navContext;} //: super(key: key);
+  String add;
+  HomeScreen({Key key, BuildContext navContext, String add}) {
+    this.add = add;
+    this.navContext = navContext;
+  } //: super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   List<String> photos = [
     'assets/airpods.jpg',
     'assets/dress.jpg',
@@ -21,6 +25,47 @@ class _HomeScreenState extends State<HomeScreen> {
     'assets/iphone11.jpg',
     'assets/laptop.jpg'
   ];
+
+  void _showAlertDialog(context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            backgroundColor: Colors.white,
+            titleTextStyle: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black),
+            content: Container(
+              alignment: Alignment.center,
+              child: Text(
+                widget.add,
+                style: TextStyle(
+                    color: Colors.blueGrey[900],
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    height: 1.4),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            actions: <Widget>[
+              Material(
+                child: IconButton(
+                    icon:
+                        Icon(Icons.close, color: Colors.deepPurple, size: 30.0),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +85,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold),
             ),
             actions: <Widget>[
+              widget.add == ''
+                  ? Container()
+                  : ActionChip(
+                      backgroundColor: Colors.white,
+                      label: Text(
+                          widget.add.replaceAll(' ', '').substring(0, 15) +
+                              '...',
+                          style: TextStyle(color: Colors.deepPurple)),
+                      onPressed: () {
+                        _showAlertDialog(context);
+                      },
+                    ),
               IconButton(
                 icon: Icon(
                   Icons.notifications,
@@ -95,7 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold, fontSize: 15.0),
                     ),
                     OutlineButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(widget.navContext).pushNamed('/filter_location', arguments: widget.add);
+                      },
                       shape: StadiumBorder(),
                       splashColor: Colors.purple,
                       child: Row(
@@ -235,13 +294,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (!snapshot.hasData) return const Text('Loading...');
                     return Center(
                       child: Wrap(
-                        runSpacing: 2,
-                        spacing:2,
-                        children : List.generate(snapshot.data.documents.length,(index){
-                          DocumentSnapshot document = snapshot.data.documents[index];
-                          return  _singleProd("Index $index", document, widget.navContext);
-                        })
-                      ),
+                          runSpacing: 2,
+                          spacing: 2,
+                          children: List.generate(
+                              snapshot.data.documents.length, (index) {
+                            DocumentSnapshot document =
+                                snapshot.data.documents[index];
+                            return _singleProd(
+                                "Index $index", document, widget.navContext);
+                          })),
                     );
                   },
                 ),
