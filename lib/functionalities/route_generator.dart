@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/ui/catagories_products.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
 import 'package:my_flutter_app/ui/homescreen.dart';
@@ -68,6 +69,10 @@ class RouteGenerator {
         case '/discover1':
         return MaterialPageRoute(
           builder: (_) => Discover1(),
+        );
+        case '/catagories_products':
+        return MaterialPageRoute(
+          builder: (_) => CatagoryProduct(),
         );
       default:
         return _errorRoute();

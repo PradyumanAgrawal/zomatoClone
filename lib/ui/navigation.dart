@@ -37,9 +37,8 @@ class NavigationState extends State<Navigation> {
   }
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     printLoc();
+    super.initState();
   }
 
   /* Future<bool> _onWillPop() async {
@@ -77,7 +76,7 @@ class NavigationState extends State<Navigation> {
                 navContext: context,
               ),
               Discover1(
-                //navContext: context,
+               // navContext: context,
               ),
               Cart(
                 navContext: context,
