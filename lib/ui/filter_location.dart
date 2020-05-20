@@ -5,7 +5,6 @@ import 'package:my_flutter_app/functionalities/local_data.dart';
 import './homeScreen.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
 
-
 class FilterLocation extends StatefulWidget {
   final add;
   FilterLocation({Key key, this.add}) : super(key: key);
@@ -66,7 +65,7 @@ class _FireMapState extends State<FireMap> {
   @override
   Widget build(BuildContext context) {
     print(widget.location);
-    var campos = CameraPosition(
+    CameraPosition campos = CameraPosition(
       target: widget.location,
       zoom: 15,
     );
@@ -76,6 +75,16 @@ class _FireMapState extends State<FireMap> {
         GoogleMap(
           rotateGesturesEnabled: true,
           initialCameraPosition: campos,
+          markers: Set.from(
+            [
+              Marker(
+                markerId: MarkerId('currentLocation'),
+                draggable: false,
+                position: widget.location,
+                //icon: BitmapDescriptor.fromAsset('assets/images/googlemapbluedot.jpg'),
+              )
+            ],
+          ),
           onMapCreated: (controller) {
             mapController = controller;
             mapController.getScreenCoordinate(widget.location).then((value) {
@@ -90,6 +99,33 @@ class _FireMapState extends State<FireMap> {
           Icons.location_on,
           color: Colors.deepPurple,
           size: 50,
+        ),
+        Positioned(
+          bottom: 40,
+          left: 10,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+            ),
+            child: IconButton(
+              icon: Icon(Icons.gps_fixed, color: Colors.blue),
+              onPressed: () {
+                mapController.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(target: widget.location, zoom: 15),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
         Positioned(
           bottom: 10,
@@ -107,9 +143,9 @@ class _FireMapState extends State<FireMap> {
                   .getLatLng(ScreenCoordinate(x: centerx, y: centery))
                   .then((value) {
                 print(value);
-                LocationService().getAddress(value).then((add){
+                LocationService().getAddress(value).then((add) {
                   print(add);
-                  Navigator.pop(context,add);
+                  Navigator.pop(context, add);
                 });
                 //HomeScreenState().changeAddress();
                 /* LocalData().saveLocation(
@@ -117,7 +153,49 @@ class _FireMapState extends State<FireMap> {
               });
             },
           ),
-        )
+        ),
+        Positioned(
+          top: 30,
+          left: 0,
+          child: Container(
+            width: MediaQuery.of(context).size.width / 5,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              ),
+            ),
+            child: FlatButton(
+              padding: EdgeInsets.all(0),
+              child: Icon(Icons.arrow_back, color: Colors.black),
+              color: Colors.black12,
+              shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.only(
+                  topRight: Radius.circular(50),
+                  bottomRight: Radius.circular(50),
+                ),
+              ),
+              splashColor: Colors.deepPurple,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ),
+        // Positioned(
+        //   top: 30,
+        //   left: 5,
+        //   child: Material(
+        //     color: Colors.black12,
+        //     type: MaterialType.circle,
+        //     child: IconButton(
+        //       icon: Icon(Icons.arrow_back, color: Colors.white,),
+        //       onPressed: () {
+        //         Navigator.of(context).pop();
+        //       },
+        //     ),
+        //   ),
+        // )
       ],
     );
   }
