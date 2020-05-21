@@ -4,6 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import './homeScreen.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
+import 'package:geolocator/geolocator.dart';
+
 
 class FilterLocation extends StatefulWidget {
   final add;
@@ -62,6 +64,8 @@ class FireMap extends StatefulWidget {
 class _FireMapState extends State<FireMap> {
   int centerx = 0, centery = 0;
   GoogleMapController mapController;
+  BitmapDescriptor markerIcon;
+  String searchAddress;
   @override
   Widget build(BuildContext context) {
     print(widget.location);
@@ -69,6 +73,13 @@ class _FireMapState extends State<FireMap> {
       target: widget.location,
       zoom: 15,
     );
+    BitmapDescriptor.fromAssetImage(
+            createLocalImageConfiguration(context), 'assets/images/current.png')
+        .then((d) {
+      setState(() {
+        markerIcon = d;
+      });
+    });
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -81,6 +92,7 @@ class _FireMapState extends State<FireMap> {
                 markerId: MarkerId('currentLocation'),
                 draggable: false,
                 position: widget.location,
+                icon: markerIcon,
                 //icon: BitmapDescriptor.fromAsset('assets/images/googlemapbluedot.jpg'),
               )
             ],
@@ -103,27 +115,38 @@ class _FireMapState extends State<FireMap> {
         Positioned(
           bottom: 40,
           left: 10,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
+          child: GestureDetector(
+            onTap: () {
+              mapController.animateCamera(CameraUpdate.newCameraPosition(
+                CameraPosition(target: widget.location, zoom: 15),
+              ));
+            },
+            child: Container(
+              //width: 50,
+              //height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                // image: DecorationImage(
+                //     image: AssetImage('assets/images/bluedot.jpg')),
+                boxShadow: [
                   BoxShadow(
                     color: Colors.grey,
                     offset: Offset(0.0, 1.0), //(x,y)
                     blurRadius: 6.0,
                   ),
                 ],
-            ),
-            child: IconButton(
-              icon: Icon(Icons.gps_fixed, color: Colors.blue),
-              onPressed: () {
-                mapController.animateCamera(
-                  CameraUpdate.newCameraPosition(
-                    CameraPosition(target: widget.location, zoom: 15),
-                  ),
-                );
-              },
+              ),
+              child: IconButton(
+                icon: Icon(Icons.gps_fixed, color: Colors.blue[600]),
+                onPressed: () {
+                  mapController.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(target: widget.location, zoom: 15),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -178,6 +201,66 @@ class _FireMapState extends State<FireMap> {
               splashColor: Colors.deepPurple,
               onPressed: () {
                 Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          top: 30,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 3 / 5,
+            decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50),
+                  bottomLeft: Radius.circular(50),
+                )),
+            child: TextField(
+              decoration: InputDecoration(
+                //contentPadding: EdgeInsets.only(left: 15),
+                hintText: 'Search address',
+                border: InputBorder.none,
+                prefixIcon: IconButton(
+                  icon: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    print(searchAddress);
+                    Geolocator().placemarkFromAddress(searchAddress).then((result){
+                      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+                        target: LatLng(result[0].position.latitude,result[0].position.longitude),
+                        zoom: 10,
+                      )));
+                    }).catchError((onError){
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Address not found!'),
+                          
+                        )
+                      );
+                    });
+                  },
+                ),
+              ),
+              onChanged: (val){
+                searchAddress = val;
+              },
+              onSubmitted: (val){
+                Geolocator().placemarkFromAddress(val).then((result){
+                      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+                        target: LatLng(result[0].position.latitude,result[0].position.longitude),
+                        zoom: 10,
+                      )));
+                    }).catchError((onError){
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Address not found!'),
+
+                        )
+                      );
+                    });
               },
             ),
           ),

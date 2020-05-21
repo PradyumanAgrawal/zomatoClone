@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/ui/discover.dart';
 
 class CatagoryProduct extends StatefulWidget {
   List products ; 
