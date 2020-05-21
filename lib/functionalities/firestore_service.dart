@@ -19,6 +19,9 @@ class FirestoreService {
   Stream getProducts() {
     return db.collection('products').snapshots();
   }
+  Stream getCollection() {
+    return db.collection('products').snapshots();
+  }
 
   Stream getCategories() {
     return db.collection('categories').snapshots();

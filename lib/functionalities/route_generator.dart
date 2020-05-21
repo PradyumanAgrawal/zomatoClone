@@ -71,9 +71,13 @@ class RouteGenerator {
           builder: (_) => Discover1(),
         );
         case '/catagories_products':
-        return MaterialPageRoute(
-          builder: (_) => CatagoryProduct(),
-        );
+        // Validation of correct data type
+          return MaterialPageRoute(
+            builder: (_) => CatagoryProduct(
+                  document: args,
+                ),
+          );
+        // If args is not of the correct type, return an error page.
       default:
         return _errorRoute();
     }

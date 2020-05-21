@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import './homeScreen.dart';
 import './discover1.dart';
+import './discover.dart';
 import './cart.dart';
 import './share.dart';
 import './description.dart';
@@ -76,7 +77,7 @@ class NavigationState extends State<Navigation> {
                 navContext: context,
               ),
               Discover1(
-               // navContext: context,
+                navContext: context,
               ),
               Cart(
                 navContext: context,
