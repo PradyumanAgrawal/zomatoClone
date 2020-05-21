@@ -32,7 +32,7 @@ class RouteGenerator {
         );
       case '/discover':
         return MaterialPageRoute(
-          builder: (_) => Discover(),
+          builder: (_) => Discover(catagory: args),
         );
       case '/homeScreen':
         return MaterialPageRoute(
@@ -60,7 +60,7 @@ class RouteGenerator {
         );
       case '/cart':
         return MaterialPageRoute(
-          builder: (_) => Cart(),
+          builder: (_) => Cart(navContext: args),
         );
         case '/share':
         return MaterialPageRoute(

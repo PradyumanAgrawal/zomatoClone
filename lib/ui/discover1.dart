@@ -24,8 +24,8 @@ class _Discover1State extends State<Discover1> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.deepPurple[800],
-            title: TabBar(tabs: [Tab(text: "Catagories"), Tab(text: "Shops")]),
+            //backgroundColor: Colors.white,
+            title: TabBar(tabs: [Tab(text: "Catagories", icon: Icon(Icons.list,)), Tab(text: "Shops" , icon: Icon(Icons.store))]),
           ),
           body: TabBarView(
             children: [
@@ -39,8 +39,7 @@ class _Discover1State extends State<Discover1> {
                     itemBuilder: (context, index) {
                       DocumentSnapshot document =
                           snapshot.data.documents[index];
-                      List type = document['products'];
-
+                      List productReferences = document['products'];
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -48,7 +47,7 @@ class _Discover1State extends State<Discover1> {
                           InkWell(
                             onTap: () {
                               Navigator.of(widget.navContext)
-                                          .pushNamed('/catagories_products',arguments:document);
+                                          .pushNamed('/discover',arguments:document.documentID);
                             },
                             child: Container(
                               margin: EdgeInsets.all(0),

@@ -17,7 +17,8 @@ class FirestoreService {
   }
 
   Stream getProducts() {
-    return db.collection('products').snapshots();
+    Stream<QuerySnapshot> prods=db.collection('products').snapshots();
+    return prods;
   }
   Stream getCollection() {
     return db.collection('products').snapshots();
@@ -29,6 +30,11 @@ class FirestoreService {
   
   void changeFav(String docId, bool isFav) {
     db.collection('products').document(docId).updateData({'isFav': !isFav});
+  }
+
+  Stream getProductsFromCategory(String category)
+  {
+    return db.collection('products').where('catagory', isEqualTo : category).snapshots();
   }
 
   Stream getUser(String userId){

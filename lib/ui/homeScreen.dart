@@ -107,16 +107,6 @@ class HomeScreenState extends State<HomeScreen> {
                         _showAlertDialog(context);
                       },
                     ),
-              // : ActionChip(
-              //     backgroundColor: Colors.white,
-              //     label: Text(
-              //         widget.add.replaceAll(' ', '').substring(0, 15) +
-              //             '...',
-              //         style: TextStyle(color: Colors.deepPurple)),
-              //     onPressed: () {
-              //       _showAlertDialog(context);
-              //     },
-              //   ),
               IconButton(
                 icon: Icon(
                   Icons.notifications,
@@ -133,6 +123,7 @@ class HomeScreenState extends State<HomeScreen> {
               child: Container(
                 padding: EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
+                  //color: Colors.deepPurple[800],
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)),

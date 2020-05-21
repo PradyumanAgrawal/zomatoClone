@@ -138,7 +138,7 @@ class _FireMapState extends State<FireMap> {
                 ],
               ),
               child: IconButton(
-                icon: Icon(Icons.gps_fixed, color: Colors.blue[600]),
+                icon: Icon(Icons.my_location, color: Colors.blue[600]),
                 onPressed: () {
                   mapController.animateCamera(
                     CameraUpdate.newCameraPosition(
@@ -237,7 +237,6 @@ class _FireMapState extends State<FireMap> {
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Address not found!'),
-                          
                         )
                       );
                     });
@@ -257,7 +256,6 @@ class _FireMapState extends State<FireMap> {
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Address not found!'),
-
                         )
                       );
                     });
