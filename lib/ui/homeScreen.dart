@@ -229,7 +229,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 30),
-                                    child: SpinKitCubeGrid(
+                                    child: SpinKitChasingDots(
                                         color: Colors.deepPurple)))
                           ]),
                         ) //

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
+
 
 class Discover extends StatefulWidget {
   //BuildContext navContext;
@@ -28,141 +30,18 @@ class _DiscoverState extends State<Discover>
           //overlayOpacity: 0.2,
           children: [
             SpeedDialChild(
-                child: Icon(Icons.sort),
+                child: Icon(LineAwesomeIcons.sort,),
                 label: "sort",
                 backgroundColor: Colors.purple[300],
                 onTap: () {}),
             SpeedDialChild(
-                child: Icon(Icons.filter_list),
+                child: Icon(LineAwesomeIcons.filter,),
                 label: "filter",
                 backgroundColor: Colors.purple[300],
                 onTap: () {})
           ]),
       body: CustomScrollView(
         slivers: <Widget>[
-          // SliverAppBar(
-          //   backgroundColor: Colors.white,
-          //   floating: false,
-          //   pinned: false,
-          //   bottom: PreferredSize(
-          //     child: Container(
-          //       padding: EdgeInsets.all(0.0),
-          //       decoration: BoxDecoration(
-          //         color: Colors.white,
-          //         borderRadius: BorderRadius.only(
-          //             bottomLeft: Radius.circular(20),
-          //             bottomRight: Radius.circular(20)),
-          //       ),
-          //       child: Column(
-          //         children: <Widget>[
-          //           Stack(
-          //             children: <Widget>[
-          //               Container(
-          //                 height: 150,
-          //                 width: double.infinity,
-          //                 color: Colors.deepPurple[800],
-          //               ),
-          //               Column(
-          //                 crossAxisAlignment: CrossAxisAlignment.end,
-          //                 children: <Widget>[
-          //                   SizedBox(
-          //                     height: 50,
-          //                   ),
-          //                   Row(
-          //                     mainAxisAlignment: MainAxisAlignment.end,
-          //                     children: <Widget>[
-          //                       Container(
-          //                         child: IconButton(
-          //                           onPressed: () {},
-          //                           icon: Icon(Icons.menu),
-          //                           color: Colors.white,
-          //                         ),
-          //                       ),
-          //                       SizedBox(
-          //                         width: 10,
-          //                       ),
-          //                     ],
-          //                   ),
-          //                   SizedBox(
-          //                     height: 25,
-          //                   ),
-          //                   Padding(
-          //                     padding: EdgeInsets.only(left: 15, right: 15),
-          //                     child: Material(
-          //                         elevation: 5.0,
-          //                         shadowColor: Colors.purple,
-          //                         borderRadius: BorderRadius.circular(5),
-          //                         child: TextFormField(
-          //                           decoration: InputDecoration(
-          //                               border: InputBorder.none,
-          //                               prefixIcon: Icon(
-          //                                 Icons.search,
-          //                                 color: Colors.purple,
-          //                                 size: 30,
-          //                               ),
-          //                               contentPadding:
-          //                                   EdgeInsets.only(left: 15, top: 15),
-          //                               hintText: 'Search',
-          //                               hintStyle: TextStyle(
-          //                                 color: Colors.grey,
-          //                               )),
-          //                         )),
-          //                   )
-          //                 ],
-          //               )
-          //             ],
-          //           ),
-          //           SizedBox(
-          //             height: 20,
-          //           ),
-          //           Stack(
-          //             children: <Widget>[
-          //               Material(
-          //                 elevation: 2,
-          //                 child: Container(
-          //                   height: 50,
-          //                   color: Colors.white70,
-          //                 ),
-          //               ),
-          //               Row(
-          //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //                 children: <Widget>[
-          //                   Expanded(
-          //                     child: Padding(
-          //                         padding: EdgeInsets.only(bottom: 10, top: 5),
-          //                         child: FlatButton(
-          //                           onPressed: () {},
-          //                           child: Text("Filter"),
-          //                           textColor: Colors.grey,
-          //                         )),
-          //                   ),
-          //                   VerticalDivider(
-          //                     color: Colors.grey,
-          //                     width: 1,
-          //                     thickness: 2,
-          //                   ),
-          //                   Expanded(
-          //                     child: Padding(
-          //                         padding: EdgeInsets.only(bottom: 10, top: 5),
-          //                         child: FlatButton(
-          //                           onPressed: () {
-          //                             Navigator.of(context)
-          //                                 .pushNamed('/description');
-          //                           },
-          //                           child: Text("Sort"),
-          //                           textColor: Colors.grey,
-          //                         )),
-          //                   ),
-          //                 ],
-          //               ),
-          //             ],
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //     preferredSize: Size(500, 228),
-          //   ),
-          // ),
           SliverAppBar(
             floating: true,
             pinned: false,
