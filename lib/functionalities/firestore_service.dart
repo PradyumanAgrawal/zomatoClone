@@ -24,6 +24,14 @@ class FirestoreService {
     return db.collection('products').snapshots();
   }
 
+  searchByName(String searchField) {
+    return db
+        .collection('products')
+        .where('searchIndex',
+            isEqualTo: searchField.substring(0,1).toUpperCase())
+        .getDocuments();
+  }
+
   Stream getCategories() {
     return db.collection('categories').snapshots();
   }

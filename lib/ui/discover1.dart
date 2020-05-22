@@ -135,8 +135,8 @@ class _Discover1State extends State<Discover1> {
                             color: Colors.deepPurpleAccent,
                             thickness: 0,
                             height: 0,
-                            indent: 10,
-                            endIndent: 10,
+                            indent: 20,
+                            endIndent: 20,
                           )
                         ],
                       );
