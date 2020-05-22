@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 
@@ -38,6 +39,24 @@ class FirestoreService {
   
   void changeFav(String docId, bool isFav) {
     db.collection('products').document(docId).updateData({'isFav': !isFav});
+  }
+
+  void addToWishlist(String productId)
+  {
+    String userId;
+    LocalData().getUserEmail().then((userEmail){
+      db.collection('users').where('email',isEqualTo: userEmail).getDocuments().then((QuerySnapshot userDoc){
+        if(userDoc.documents.isNotEmpty){
+          userId = userDoc.documents[0].documentID;
+          List wishlist = userDoc.documents[0]['wishlist'];
+          if(wishlist.contains(productId))
+            wishlist.remove(productId);
+          else
+            wishlist.add(productId);
+          db.collection('users').document(userId).updateData({'wishlist': wishlist});
+        }
+      });
+    });
   }
 
   Stream getProductsFromCategory(String category)

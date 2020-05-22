@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-
+import 'package:my_flutter_app/functionalities/local_data.dart';
 
 class Discover extends StatefulWidget {
   //BuildContext navContext;
@@ -30,12 +31,16 @@ class _DiscoverState extends State<Discover>
           //overlayOpacity: 0.2,
           children: [
             SpeedDialChild(
-                child: Icon(LineAwesomeIcons.sort,),
+                child: Icon(
+                  LineAwesomeIcons.sort,
+                ),
                 label: "sort",
                 backgroundColor: Colors.purple[300],
                 onTap: () {}),
             SpeedDialChild(
-                child: Icon(LineAwesomeIcons.filter,),
+                child: Icon(
+                  LineAwesomeIcons.filter,
+                ),
                 label: "filter",
                 backgroundColor: Colors.purple[300],
                 onTap: () {})
@@ -102,49 +107,56 @@ class _DiscoverState extends State<Discover>
             delegate: SliverChildListDelegate(
               <Widget>[
                 Container(
-                  child: StreamBuilder(
-                    stream: (widget.catagory != null)
-                        ? FirestoreService()
-                            .getProductsFromCategory(widget.catagory)
-                        : FirestoreService().getProducts(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return const Text('Loading...');
-                      return Column(
-                          children: List.generate(
-                              snapshot.data.documents.length, (index) {
-                        DocumentSnapshot document =
-                            snapshot.data.documents[index];
-                        return itemCard(
-                            document['name'],
-                            document['catalogue'][0],
-                            document['description'],
-                            document['isFav'],
-                            '\u{20B9}' + document['price'],
-                            document,
-                            context);
-                      }));
-                      //
-                      // this code has an issue with the listView, if it's allowed to be scrollable than once the listView
-                      // covers the screen you cannot scroll-out of it and if the listView is turned unscrollable than the wrapping
-                      // container's height turns out to be an issue with
-                      //
-                      // ListView.builder(
-                      //   scrollDirection: Axis.vertical,
-                      //   itemCount: snapshot.data.documents.length,
-                      //   physics: NeverScrollableScrollPhysics(),
-                      //   itemBuilder: (context, index) {
-                      //     DocumentSnapshot document =
-                      //         snapshot.data.documents[index];
-                      //     return itemCard(
-                      //         document['name'],
-                      //         document['catalogue'][0],
-                      //         document['description'],
-                      //         document['isFav'],
-                      //         '\u{20B9}' + document['price'],
-                      //         document,
-                      //         widget.navContext);
-                      //   },
-                      // );
+                  child: FutureBuilder(
+                    future: LocalData().getUid(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData)
+                        return Center(
+                            child:
+                                SpinKitChasingDots(color: Colors.deepPurple));
+                      String userId = snapshot.data;
+                      return StreamBuilder(
+                        stream: FirestoreService().getUser(userId),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData)
+                            return Center(
+                                child: SpinKitChasingDots(
+                              color: Colors.purple,
+                            ));
+                          DocumentSnapshot document = snapshot.data;
+                          List wishlist = document['wishlist'];
+                          return StreamBuilder(
+                            stream: (widget.catagory != null)
+                                ? FirestoreService()
+                                    .getProductsFromCategory(widget.catagory)
+                                : FirestoreService().getProducts(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Center(
+                                  child: SpinKitChasingDots(
+                                      color: Colors.deepPurple),
+                                );
+                              return Column(
+                                children: List.generate(
+                                  snapshot.data.documents.length,
+                                  (index) {
+                                    DocumentSnapshot document =
+                                        snapshot.data.documents[index];
+                                    return itemCard(
+                                        document['name'],
+                                        document['catalogue'][0],
+                                        document['description'],
+                                        wishlist.contains(document.documentID),
+                                        '\u{20B9}' + document['price'],
+                                        document,
+                                        context);
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
                     },
                   ),
                 ),
@@ -157,7 +169,7 @@ class _DiscoverState extends State<Discover>
   }
 }
 
-Widget itemCard(String name, String imgPath, String description, bool isFav,
+Widget itemCard(String name, String imgPath, String description, bool inWishlist,
     String price, DocumentSnapshot document, BuildContext context) {
   return Padding(
     padding: const EdgeInsets.only(top: 2, bottom: 2),
@@ -240,7 +252,7 @@ Widget itemCard(String name, String imgPath, String description, bool isFav,
                               flex: 2,
                               child: Container(
                                 child: Material(
-                                  elevation: isFav ? 2 : 0,
+                                  elevation: inWishlist ? 2 : 0,
                                   borderRadius: BorderRadius.circular(20),
                                   child: Container(
                                     height: MediaQuery.of(context).size.width *
@@ -254,13 +266,13 @@ Widget itemCard(String name, String imgPath, String description, bool isFav,
                                           MediaQuery.of(context).size.width *
                                               (1 / 3) *
                                               (1 / 8)),
-                                      color: isFav
+                                      color: inWishlist
                                           ? Colors.white
                                           : Colors.grey.withOpacity(0.2),
                                     ),
                                     child: Center(
                                       child: IconButton(
-                                        icon: isFav
+                                        icon: inWishlist
                                             ? Icon(
                                                 Icons.favorite,
                                                 color: Colors.red,
@@ -272,8 +284,11 @@ Widget itemCard(String name, String imgPath, String description, bool isFav,
                                                     (1 / 8) -
                                                 1,
                                         onPressed: () {
-                                          FirestoreService().changeFav(
-                                              document.documentID, isFav);
+                                          FirestoreService().addToWishlist(
+                                              document.documentID);
+
+                                          // FirestoreService().changeFav(
+                                          //     document.documentID, isFav);
                                         },
                                       ),
                                     ),

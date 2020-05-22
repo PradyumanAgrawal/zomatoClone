@@ -101,10 +101,6 @@ class _CartState extends State<Cart> {
                         userId = snapshot.data;
                         return StreamBuilder(
                             stream: FirestoreService().getUser(userId),
-                            // Firestore.instance
-                            //     .collection('users')
-                            //     .document('1')
-                            //     .snapshots(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData)
                                 return Center(

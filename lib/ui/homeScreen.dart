@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
 import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -134,6 +135,7 @@ class HomeScreenState extends State<HomeScreen> {
         });
   }
 
+  List wishlist;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,7 +252,8 @@ class HomeScreenState extends State<HomeScreen> {
                               tempSearchStore[index].data['name'],
                               tempSearchStore[index].data['catalogue'][0],
                               tempSearchStore[index].data['description'],
-                              tempSearchStore[index].data['isFav'],
+                              wishlist
+                                  .contains(tempSearchStore[index].documentID),
                               tempSearchStore[index].data['price'],
                               tempSearchStore[index],
                               widget.navContext);
@@ -260,192 +263,227 @@ class HomeScreenState extends State<HomeScreen> {
                     )
               : SliverList(
                   delegate: SliverChildListDelegate(
-                  <Widget>[
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Top Stores Nearby",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15.0),
-                          ),
-                          OutlineButton(
-                            onPressed: () {
-                              //Navigator.of(widget.navContext).pushNamed('/filter_location', arguments: widget.add);
-                              _awaitReturnValueFromFilter(
-                                  widget.add,context);
-                            },
-                            shape: StadiumBorder(),
-                            splashColor: Colors.purple,
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                  "Filter",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12.0),
-                                ),
-                                Icon(Icons.location_on),
-                              ],
+                    <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 5.0, horizontal: 10.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Top Stores Nearby",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15.0),
                             ),
-                          ),
-                        ],
+                            OutlineButton(
+                              onPressed: () {
+                                //Navigator.of(widget.navContext).pushNamed('/filter_location', arguments: widget.add);
+                                _awaitReturnValueFromFilter(
+                                    widget.add, context);
+                              },
+                              shape: StadiumBorder(),
+                              splashColor: Colors.purple,
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                    "Filter",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12.0),
+                                  ),
+                                  Icon(Icons.location_on),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.12,
-                      //decoration: BoxDecoration(color: Colors.red),
-                      child: StreamBuilder(
-                          stream: FirestoreService().getStores(),
-                          builder: (context, snapshot) {
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.12,
+                        //decoration: BoxDecoration(color: Colors.red),
+                        child: StreamBuilder(
+                            stream: FirestoreService().getStores(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Center(
+                                    child: SpinKitChasingDots(
+                                        color: Colors.deepPurple));
+                              return ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: snapshot.data.documents.length,
+                                itemBuilder: (context, index) {
+                                  DocumentSnapshot document =
+                                      snapshot.data.documents[index];
+                                  String type = document['type'];
+                                  return InkWell(
+                                    onTap: () {
+                                      print(index);
+                                    },
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.only(left: 4, right: 4),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.pink[200],
+                                            ),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                13,
+                                            padding: EdgeInsets.all(5.0),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Image.asset(
+                                                  'assets/typeIcons/$type.png'),
+                                            ),
+                                          ),
+                                          Text(document.documentID,
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Super Offers",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20.0),
+                            ),
+                            OutlineButton(
+                              onPressed: () {},
+                              child: Text(
+                                "View All",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12.0),
+                              ),
+                              shape: StadiumBorder(),
+                              splashColor: Colors.purple,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 200.0,
+                        child: Carousel(
+                          onImageTap: null,
+                          boxFit: BoxFit.cover,
+                          images: List.generate(photos.length, (index) {
+                            return Image.asset(photos[index]);
+                          }),
+                          autoplay: true,
+                          dotSize: 5.0,
+                          dotColor: Colors.black,
+                          dotIncreasedColor: Colors.purple,
+                          dotBgColor: Colors.transparent,
+                          indicatorBgPadding: 2.0,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Products",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20.0),
+                            ),
+                            OutlineButton(
+                              onPressed: () {},
+                              shape: StadiumBorder(),
+                              splashColor: Colors.purple,
+                              child: Text(
+                                "Explore",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12.0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      Container(
+                        child: FutureBuilder(
+                          future: LocalData().getUid(),
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData)
                               return Center(
                                   child: SpinKitChasingDots(
                                       color: Colors.deepPurple));
-                            return ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (context, index) {
-                                DocumentSnapshot document =
-                                    snapshot.data.documents[index];
-                                String type = document['type'];
-                                return InkWell(
-                                  onTap: () {
-                                    print(index);
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 4, right: 4),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.pink[200],
-                                          ),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              13,
-                                          padding: EdgeInsets.all(5.0),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Image.asset(
-                                                'assets/typeIcons/$type.png'),
-                                          ),
+                            String userId = snapshot.data;
+                            return StreamBuilder(
+                              stream: FirestoreService().getUser(userId),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData)
+                                  return Center(
+                                      child: SpinKitChasingDots(
+                                    color: Colors.purple,
+                                  ));
+                                DocumentSnapshot document = snapshot.data;
+                                wishlist = document['wishlist'];
+                                return StreamBuilder(
+                                  stream: FirestoreService().getProducts(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData)
+                                      return Center(
+                                        child: SpinKitChasingDots(
+                                          color: Colors.deepPurple,
                                         ),
-                                        Text(document.documentID,
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                            )),
-                                      ],
-                                    ),
-                                  ),
+                                      );
+                                    return Center(
+                                      child: Wrap(
+                                        runSpacing: 2,
+                                        spacing: 2,
+                                        children: List.generate(
+                                          snapshot.data.documents.length,
+                                          (index) {
+                                            DocumentSnapshot document =
+                                                snapshot.data.documents[index];
+                                            bool inWishlist = wishlist
+                                                .contains(document.documentID);
+                                            return _singleProd(
+                                                "Index $index",
+                                                document,
+                                                widget.navContext,
+                                                inWishlist);
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                             );
-                          }),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Super Offers",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20.0),
-                          ),
-                          OutlineButton(
-                            onPressed: () {},
-                            child: Text(
-                              "View All",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 12.0),
-                            ),
-                            shape: StadiumBorder(),
-                            splashColor: Colors.purple,
-                          ),
-                        ],
+                          },
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: 200.0,
-                      child: Carousel(
-                        onImageTap: null,
-                        boxFit: BoxFit.cover,
-                        images: List.generate(photos.length, (index) {
-                          return Image.asset(photos[index]);
-                        }),
-                        autoplay: true,
-                        dotSize: 5.0,
-                        dotColor: Colors.black,
-                        dotIncreasedColor: Colors.purple,
-                        dotBgColor: Colors.transparent,
-                        indicatorBgPadding: 2.0,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Products",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20.0),
-                          ),
-                          OutlineButton(
-                            onPressed: () {},
-                            shape: StadiumBorder(),
-                            splashColor: Colors.purple,
-                            child: Text(
-                              "Explore",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 12.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    Container(
-                      //height: MediaQuery.of(context).size.height * 10,
-                      child: StreamBuilder(
-                        stream: FirestoreService().getProducts(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData)
-                            return Center(
-                              child: SpinKitChasingDots(
-                                color: Colors.deepPurple,
-                              ),
-                            );
-                          return Center(
-                            child: Wrap(
-                                runSpacing: 2,
-                                spacing: 2,
-                                children: List.generate(
-                                    snapshot.data.documents.length, (index) {
-                                  DocumentSnapshot document =
-                                      snapshot.data.documents[index];
-                                  return _singleProd("Index $index", document,
-                                      widget.navContext);
-                                })),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                )),
+                    ],
+                  ),
+                ),
         ],
       ),
     );
@@ -469,8 +507,14 @@ class HomeScreenState extends State<HomeScreen> {
       });
   }
 
-  Widget itemCard(String name, String imgPath, String description, bool isFav,
-      String price,DocumentSnapshot document, BuildContext context) {
+  Widget itemCard(
+      String name,
+      String imgPath,
+      String description,
+      bool inWishlist,
+      String price,
+      DocumentSnapshot document,
+      BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 2),
       child: Material(
@@ -524,8 +568,9 @@ class HomeScreenState extends State<HomeScreen> {
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
-                                        '/description',
-                                        arguments: document);
+                                      '/description',
+                                      arguments: document,
+                                    );
                                   },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width *
@@ -552,7 +597,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 flex: 2,
                                 child: Container(
                                   child: Material(
-                                    elevation: isFav ? 2 : 0,
+                                    elevation: inWishlist ? 2 : 0,
                                     borderRadius: BorderRadius.circular(20),
                                     child: Container(
                                       height:
@@ -567,13 +612,13 @@ class HomeScreenState extends State<HomeScreen> {
                                             MediaQuery.of(context).size.width *
                                                 (1 / 3) *
                                                 (1 / 8)),
-                                        color: isFav
+                                        color: inWishlist
                                             ? Colors.white
                                             : Colors.grey.withOpacity(0.2),
                                       ),
                                       child: Center(
                                         child: IconButton(
-                                          icon: isFav
+                                          icon: inWishlist
                                               ? Icon(
                                                   Icons.favorite,
                                                   color: Colors.red,
@@ -586,8 +631,13 @@ class HomeScreenState extends State<HomeScreen> {
                                                   (1 / 8) -
                                               1,
                                           onPressed: () {
-                                            FirestoreService().changeFav(
-                                                document.documentID, isFav);
+                                            FirestoreService().addToWishlist(
+                                                document.documentID);
+                                            setState(() {
+                                              inWishlist = !inWishlist;
+                                            });
+                                            // FirestoreService().changeFav(
+                                            //     document.documentID, isFav);
                                           },
                                         ),
                                       ),
@@ -606,7 +656,6 @@ class HomeScreenState extends State<HomeScreen> {
                             width: MediaQuery.of(context).size.width * 2 / 3,
                             child: Text(
                               description,
-                              // 'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                               textAlign: TextAlign.left,
                               style:
                                   TextStyle(color: Colors.grey, fontSize: 12),
@@ -699,7 +748,8 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _singleProd(name, DocumentSnapshot document, BuildContext navContext) {
+  _singleProd(name, DocumentSnapshot document, BuildContext navContext,
+      bool inWishlist) {
     return InkWell(
       onTap: () {
         Navigator.of(navContext).pushNamed('/description', arguments: document);
@@ -741,7 +791,7 @@ class HomeScreenState extends State<HomeScreen> {
                     //     shape: RoundedRectangleBorder(
                     //         borderRadius: BorderRadius.circular(30.0))),
                     IconButton(
-                      icon: document['isFav']
+                      icon: inWishlist
                           ? Icon(
                               Icons.favorite,
                               color: Colors.red.withOpacity(0.7),
@@ -749,8 +799,9 @@ class HomeScreenState extends State<HomeScreen> {
                           : Icon(Icons.favorite_border,
                               color: Colors.grey[900].withOpacity(0.7)),
                       onPressed: () {
-                        FirestoreService()
-                            .changeFav(document.documentID, document['isFav']);
+                        FirestoreService().addToWishlist(document.documentID);
+                        // FirestoreService()
+                        //     .changeFav(document.documentID, document['isFav']);
                       },
                     ),
                   ],
