@@ -166,7 +166,7 @@ class HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         //Navigator.of(widget.navContext).pushNamed('/filter_location', arguments: widget.add);
                         _awaitReturnValueFromFilter(
-                            widget.navContext, widget.add);
+                            widget.add,context);
                       },
                       shape: StadiumBorder(),
                       splashColor: Colors.purple,
@@ -314,7 +314,7 @@ class HomeScreenState extends State<HomeScreen> {
                             DocumentSnapshot document =
                                 snapshot.data.documents[index];
                             return _singleProd(
-                                "Index $index", document, widget.navContext);
+                                "Index $index", document, widget.navContext,context);
                           })),
                     );
                   },
@@ -327,7 +327,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _awaitReturnValueFromFilter(BuildContext context, String add) async {
+  void _awaitReturnValueFromFilter(String add, BuildContext context) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -336,13 +336,16 @@ class HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-    if(result != null)
+    if (result != null)
       setState(() {
         widget.add = result;
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Location Updated!'),
+        ));
       });
   }
 
-  _singleProd(name, DocumentSnapshot document, BuildContext navContext) {
+  _singleProd(name, DocumentSnapshot document, BuildContext navContext, BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.of(navContext).pushNamed('/description', arguments: document);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'myApp.dart';
+import 'navigation.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -84,6 +85,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             decoration: BoxDecoration(
               color: Colors.deepPurple[100],
             ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Home'),
+            onTap: () {
+              // Navigator.of(context).pushAndRemoveUntil(
+              //           MaterialPageRoute(
+              //               builder: (context) => Navigation()),
+              //           (Route<dynamic> route) => false);
+            },
           ),
           ListTile(
             leading: Icon(Icons.history),
