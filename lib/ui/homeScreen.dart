@@ -69,8 +69,8 @@ class HomeScreenState extends State<HomeScreen> {
       FirestoreService().searchByName(value).then((QuerySnapshot docs) {
         for (int i = 0; i < docs.documents.length; ++i) {
           setState(() {
-            queryResultSet.add(docs.documents[i].data);
-            tempSearchStore.add(docs.documents[i].data);
+            queryResultSet.add(docs.documents[i]);
+            tempSearchStore.add(docs.documents[i]);
           });
         }
         setState(() {
@@ -81,7 +81,7 @@ class HomeScreenState extends State<HomeScreen> {
       setState(() {
         tempSearchStore = [];
         queryResultSet.forEach((element) {
-          if (element['name'].startsWith(capitalizedValue)) {
+          if (element.data['name'].startsWith(capitalizedValue)) {
             tempSearchStore.add(element);
           }
         });
@@ -245,14 +245,15 @@ class HomeScreenState extends State<HomeScreen> {
                   : SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
+                          print(tempSearchStore[index]);
                           return itemCard(
-                              tempSearchStore[index]['name'],
-                              tempSearchStore[index]['catalogue'][0],
-                              tempSearchStore[index]['description'],
-                              tempSearchStore[index]['isFav'],
-                              tempSearchStore[index]['price'],
+                              tempSearchStore[index].data['name'],
+                              tempSearchStore[index].data['catalogue'][0],
+                              tempSearchStore[index].data['description'],
+                              tempSearchStore[index].data['isFav'],
+                              tempSearchStore[index].data['price'],
                               tempSearchStore[index],
-                              context);
+                              widget.navContext);
                         },
                         childCount: tempSearchStore.length,
                       ),
@@ -466,7 +467,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget itemCard(String name, String imgPath, String description, bool isFav,
-      String price,document, BuildContext context) {
+      String price,DocumentSnapshot document, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 2),
       child: Material(
@@ -487,8 +488,8 @@ class HomeScreenState extends State<HomeScreen> {
                   flex: 12,
                   child: InkWell(
                     onTap: () {
-                      /* Navigator.of(context)
-                          .pushNamed('/description', arguments: document); */
+                      Navigator.of(context)
+                          .pushNamed('/description', arguments: document);
                     },
                     child: Container(
                       height: 150.0,
@@ -519,9 +520,9 @@ class HomeScreenState extends State<HomeScreen> {
                                 flex: 7,
                                 child: InkWell(
                                   onTap: () {
-                                    /* Navigator.of(context).pushNamed(
+                                    Navigator.of(context).pushNamed(
                                         '/description',
-                                        arguments: document); */
+                                        arguments: document);
                                   },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width *
@@ -582,8 +583,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                   (1 / 8) -
                                               1,
                                           onPressed: () {
-                                            /* FirestoreService().changeFav(
-                                                document.documentID, isFav); */
+                                            FirestoreService().changeFav(
+                                                document.documentID, isFav);
                                           },
                                         ),
                                       ),
@@ -666,8 +667,8 @@ class HomeScreenState extends State<HomeScreen> {
                                       child: Center(
                                         child: FlatButton(
                                           onPressed: () {
-                                            /* FirestoreService().addToCart(
-                                                document.documentID, 1, false); */
+                                            FirestoreService().addToCart(
+                                                document.documentID, 1, false);
                                           },
                                           child: Text(
                                             'Add To Cart',

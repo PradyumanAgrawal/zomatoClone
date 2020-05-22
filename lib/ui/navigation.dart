@@ -86,46 +86,42 @@ class NavigationState extends State<Navigation> {
               Share(),
             ],
           ),
-          bottomNavigationBar: Material(
+          bottomNavigationBar: BottomNavigationBar(
             elevation: 7.0,
-            color: Colors.white70,
-            child: Container(
-              child: BottomNavigationBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.home,
-                      color: Color(value),
-                    ),
-                    title: Text('Home'),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.favorite,
-                      color: Color(value),
-                    ),
-                    title: Text('Discover'),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.shopping_cart,
-                      color: Color(value),
-                    ),
-                    title: Text('Cart'),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.share,
-                      color: Color(value),
-                    ),
-                    title: Text('Share'),
-                  ),
-                ],
-                currentIndex: _selectedIndex,
-                selectedItemColor: Colors.black,
-                onTap: _onItemTapped,
+            backgroundColor: Colors.white70,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home,
+                  color: Color(value),
+                ),
+                title: Text('Home'),
               ),
-            ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.favorite,
+                  color: Color(value),
+                ),
+                title: Text('Discover'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Color(value),
+                ),
+                title: Text('Cart'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.share,
+                  color: Color(value),
+                ),
+                title: Text('Share'),
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.black,
+            onTap: _onItemTapped,
           ),
         ),
         debugShowCheckedModeBanner: false,

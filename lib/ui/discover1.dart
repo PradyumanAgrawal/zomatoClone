@@ -18,14 +18,46 @@ class _Discover1State extends State<Discover1> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple[800],
-        title: Text("Discovery"),
+        title: Text("Discover"),
       ),
       body: DefaultTabController(
         length: 2,
         child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
-            //backgroundColor: Colors.white,
-            title: TabBar(tabs: [Tab(text: "Catagories", icon: Icon(Icons.list,)), Tab(text: "Shops" , icon: Icon(Icons.store))]),
+            elevation: 0,
+            backgroundColor: Colors.white,
+            title: TabBar(
+                unselectedLabelColor: Colors.deepPurple[800],
+                indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(90),
+                    color: Colors.deepPurple[800]),
+                tabs: [
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.grid_on),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text("Categories")
+                      ],
+                    ),
+                  ),
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.store),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text("Shops")
+                      ],
+                    ),
+                  )
+                ]),
           ),
           body: TabBarView(
             children: [
@@ -33,7 +65,32 @@ class _Discover1State extends State<Discover1> {
                 stream: FirestoreService().getCategories(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const Text('Loading...');
-                  return ListView.builder(
+                  return GridView.builder(
+                    itemCount: snapshot.data.documents.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3),
+                    itemBuilder: (BuildContext context, int index) {
+                      DocumentSnapshot document =
+                          snapshot.data.documents[index];
+                      List productReferences = document['products'];
+                      return GestureDetector(
+                          onTap: () {
+                            Navigator.of(widget.navContext).pushNamed(
+                                '/discover',
+                                arguments: document.documentID);
+                          },
+                          child: Card(
+                            shadowColor: Colors.deepPurple,
+                            elevation: 5.0,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(document.documentID.substring(0,1).toUpperCase()+document.documentID.substring(1)),
+                            ),
+                          ));
+                    },
+                  );
+
+                  /* ListView.builder(
                     scrollDirection: Axis.vertical,
                     itemCount: snapshot.data.documents.length,
                     itemBuilder: (context, index) {
@@ -46,8 +103,9 @@ class _Discover1State extends State<Discover1> {
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              Navigator.of(widget.navContext)
-                                          .pushNamed('/discover',arguments:document.documentID);
+                              Navigator.of(widget.navContext).pushNamed(
+                                  '/discover',
+                                  arguments: document.documentID);
                             },
                             child: Container(
                               margin: EdgeInsets.all(0),
@@ -68,7 +126,7 @@ class _Discover1State extends State<Discover1> {
                         ],
                       );
                     },
-                  );
+                  ); */
                 },
               ),
               StreamBuilder(
