@@ -13,6 +13,7 @@ import 'package:my_flutter_app/ui/imageViewer.dart';
 import 'package:my_flutter_app/ui/cart.dart';
 import 'package:my_flutter_app/ui/share.dart';
 import 'package:my_flutter_app/ui/discover1.dart';
+import 'package:my_flutter_app/ui/wishlist.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -69,6 +70,10 @@ class RouteGenerator {
         case '/discover1':
         return MaterialPageRoute(
           builder: (_) => Discover1(),
+        );
+        case '/wishlist':
+        return MaterialPageRoute(
+          builder: (_) => Wishlist(),
         );
         case '/catagories_products':
         // Validation of correct data type

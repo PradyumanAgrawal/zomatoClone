@@ -5,6 +5,8 @@ import 'myApp.dart';
 import 'navigation.dart';
 
 class DrawerWidget extends StatefulWidget {
+  BuildContext navContext;
+  DrawerWidget({this.navContext});
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();
 }
@@ -94,6 +96,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               //           MaterialPageRoute(
               //               builder: (context) => Navigation()),
               //           (Route<dynamic> route) => false);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text('Wishlist'),
+            onTap: () {
+              Navigator.of(widget.navContext).pushNamed('/wishlist');
             },
           ),
           ListTile(

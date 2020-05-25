@@ -22,7 +22,7 @@ class _CartState extends State<Cart> {
     int totalPrice = 0;
     return Scaffold(
       //backgroundColor: Colors.deepPurple[100],
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(navContext: widget.navContext,),
       bottomSheet: Material(
         elevation: 7.0,
         color: Colors.white70,
@@ -142,12 +142,12 @@ class _CartState extends State<Cart> {
                                 child: StreamBuilder(
                                   stream: FirestoreService().getProducts(),
                                   builder: (context, snapshot) {
-                                    if (!snapshot.hasData)
-                                      return Center(
-                                        child: SpinKitChasingDots(
-                                          color: Colors.purple,
-                                        ),
-                                      );
+                                      if (!snapshot.hasData)
+                                        return Center(
+                                          child: SpinKitChasingDots(
+                                            color: Colors.purple,
+                                          ),
+                                        );
                                     var productList =
                                         document['cart'].keys.toList();
                                     var quantityList =

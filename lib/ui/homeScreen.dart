@@ -140,7 +140,7 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(navContext: widget.navContext,),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(

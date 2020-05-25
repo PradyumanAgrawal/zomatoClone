@@ -64,6 +64,11 @@ class FirestoreService {
     return db.collection('products').where('catagory', isEqualTo : category).snapshots();
   }
 
+  Stream getWishlistProducts(List wishlist)
+  {
+    return db.collection('products').where('productId', whereIn: wishlist).snapshots();
+  }
+
   Stream getUser(String userId){
     return db.collection('users').document(userId).snapshots();
   }

@@ -31,7 +31,7 @@ class _Discover1State extends State<Discover1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(navContext: widget.navContext),
       body: DefaultTabController(
         length: 2,
         child: NestedScrollView(
