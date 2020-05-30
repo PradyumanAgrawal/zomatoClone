@@ -61,7 +61,7 @@ class FirestoreService {
 
   Stream getProductsFromCategory(String category)
   {
-    return db.collection('products').where('catagory', isEqualTo : category).snapshots();
+    return db.collection('products').where('category', isEqualTo : category).snapshots();
   }
 
   Stream getWishlistProducts(List wishlist)

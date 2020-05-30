@@ -10,8 +10,8 @@ import 'package:my_flutter_app/functionalities/local_data.dart';
 class Discover extends StatefulWidget {
   //BuildContext navContext;
   //List productReferences;
-  final String catagory;
-  Discover({BuildContext navContext, this.catagory});
+  final String category;
+  Discover({BuildContext navContext, this.category});
   @override
   _DiscoverState createState() => _DiscoverState();
 }
@@ -126,9 +126,9 @@ class _DiscoverState extends State<Discover>
                           DocumentSnapshot document = snapshot.data;
                           List wishlist = document['wishlist'];
                           return StreamBuilder(
-                            stream: (widget.catagory != null)
+                            stream: (widget.category != null)
                                 ? FirestoreService()
-                                    .getProductsFromCategory(widget.catagory)
+                                    .getProductsFromCategory(widget.category)
                                 : FirestoreService().getProducts(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData)

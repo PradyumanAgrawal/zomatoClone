@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import './homeScreen.dart';
 import './discover1.dart';
-import './discover.dart';
 import './cart.dart';
 import './share.dart';
-import './description.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
 
 class Navigation extends StatefulWidget {

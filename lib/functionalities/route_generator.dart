@@ -33,7 +33,7 @@ class RouteGenerator {
         );
       case '/discover':
         return MaterialPageRoute(
-          builder: (_) => Discover(catagory: args),
+          builder: (_) => Discover(category: args),
         );
       case '/homeScreen':
         return MaterialPageRoute(
