@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
 
 class Description extends StatefulWidget {
   DocumentSnapshot document;
@@ -21,7 +22,6 @@ class _DescriptionState extends State<Description> {
   DocumentSnapshot document;
   int photoIndex = 0;
   List<String> photos = [];
-  bool isFav;
   _DescriptionState(DocumentSnapshot document) {
     this.document = document;
     //this.photos.addAll(document['catalogue']);
@@ -29,19 +29,6 @@ class _DescriptionState extends State<Description> {
       String img = document['catalogue'][i];
       photos.add(img);
     }
-    this.isFav = document['isFav'];
-  }
-
-  void _previousImage() {
-    setState(() {
-      photoIndex = photoIndex > 0 ? photoIndex - 1 : 0;
-    });
-  }
-
-  void _nextImage() {
-    setState(() {
-      photoIndex = photoIndex < photos.length - 1 ? photoIndex + 1 : photoIndex;
-    });
   }
 
   int index = 0;
@@ -79,11 +66,9 @@ class _DescriptionState extends State<Description> {
                                     SpinKitChasingDots(
                                   color: Colors.purple,
                                 ),
-                                //CircularProgressIndicator(),
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.error),
                               );
-                              //Image.network(photos[index]);
                             }),
                             autoplay: false,
                             dotSize: 5.0,
@@ -109,35 +94,59 @@ class _DescriptionState extends State<Description> {
                               Navigator.pop(context);
                             },
                           ),
-                          Material(
-                            elevation: isFav ? 2 : 0,
-                            borderRadius: BorderRadius.circular(20.0),
-                            child: Container(
-                              height: 40.0,
-                              width: 40.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20.0),
-                                color: isFav
-                                    ? Colors.white
-                                    : Colors.grey.withOpacity(0.2),
-                              ),
-                              child: IconButton(
-                                icon: isFav
-                                    ? Icon(
-                                        Icons.favorite,
-                                        color: Colors.red,
-                                      )
-                                    : Icon(Icons.favorite_border),
-                                onPressed: () {
-                                  FirestoreService()
-                                      .changeFav(document.documentID, isFav);
-                                  setState(
-                                    () {
-                                      isFav = !isFav;
-                                    },
-                                  );
-                                },
-                              ),
+                          Container(
+                            height: 40.0,
+                            width: 40.0,
+                            child: FutureBuilder(
+                              future: LocalData().getUid(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData)
+                                  return Center(
+                                      child: SpinKitChasingDots(
+                                    color: Colors.purple,
+                                  ));
+                                String userId = snapshot.data;
+                                return StreamBuilder(
+                                  stream: FirestoreService().getUser(userId),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData)
+                                      return Center(
+                                          child: SpinKitChasingDots(
+                                        color: Colors.purple,
+                                      ));
+                                    DocumentSnapshot userDoc = snapshot.data;
+                                    bool inWishlist = userDoc['wishlist']
+                                        .contains(document.documentID);
+                                    return Material(
+                                      elevation: inWishlist ? 2 : 0,
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      child: Container(
+                                        height: 40.0,
+                                        width: 40.0,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          color: inWishlist
+                                              ? Colors.white
+                                              : Colors.grey.withOpacity(0.2),
+                                        ),
+                                        child: IconButton(
+                                          icon: inWishlist
+                                              ? Icon(
+                                                  Icons.favorite,
+                                                  color: Colors.red,
+                                                )
+                                              : Icon(Icons.favorite_border),
+                                          onPressed: () {
+                                            FirestoreService().addToWishlist(
+                                                document.documentID);
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -448,9 +457,10 @@ class _DescriptionState extends State<Description> {
                   child: FlatButton(
                     onPressed: () {
                       print('pressed');
-                      FirestoreService().addToCart(document.documentID, 1,false).then((onValue){
-                        if(onValue == 2)
-                        {
+                      FirestoreService()
+                          .addToCart(document.documentID, 1, false)
+                          .then((onValue) {
+                        if (onValue == 2) {
                           // Fluttertoast.showToast(
                           // msg: "Product added to the cart",
                           // toastLength: Toast.LENGTH_SHORT,
@@ -458,18 +468,16 @@ class _DescriptionState extends State<Description> {
                           // timeInSecForIosWeb: 1,
                           // backgroundColor: Colors.grey,
                           // textColor: Colors.white,
-                          //);  
-                        }
-                        else if(onValue == 1)
-                        {
+                          //);
+                        } else if (onValue == 1) {
                           Fluttertoast.showToast(
-                          msg: "Product is already in the cart",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.grey,
-                          textColor: Colors.white,
-                          );  
+                            msg: "Product is already in the cart",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.grey,
+                            textColor: Colors.white,
+                          );
                         }
                       });
                     },

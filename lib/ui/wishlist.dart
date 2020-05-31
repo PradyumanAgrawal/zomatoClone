@@ -206,9 +206,6 @@ Widget itemCard(String name, String imgPath, String description, bool inWishlist
                                         onPressed: () {
                                           FirestoreService().addToWishlist(
                                               document.documentID);
-
-                                          // FirestoreService().changeFav(
-                                          //     document.documentID, isFav);
                                         },
                                       ),
                                     ),

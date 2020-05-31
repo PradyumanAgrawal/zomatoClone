@@ -75,13 +75,6 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Wishlist(),
         );
-        case '/catagories_products':
-        // Validation of correct data type
-          return MaterialPageRoute(
-            builder: (_) => CatagoryProduct(
-                  document: args,
-                ),
-          );
         // If args is not of the correct type, return an error page.
       default:
         return _errorRoute();

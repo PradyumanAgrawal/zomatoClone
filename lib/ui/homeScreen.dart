@@ -636,8 +636,6 @@ class HomeScreenState extends State<HomeScreen> {
                                             setState(() {
                                               inWishlist = !inWishlist;
                                             });
-                                            // FirestoreService().changeFav(
-                                            //     document.documentID, isFav);
                                           },
                                         ),
                                       ),
@@ -800,8 +798,6 @@ class HomeScreenState extends State<HomeScreen> {
                               color: Colors.grey[900].withOpacity(0.7)),
                       onPressed: () {
                         FirestoreService().addToWishlist(document.documentID);
-                        // FirestoreService()
-                        //     .changeFav(document.documentID, document['isFav']);
                       },
                     ),
                   ],

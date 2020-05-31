@@ -36,9 +36,14 @@ class FirestoreService {
   Stream getCategories() {
     return db.collection('categories').snapshots();
   }
-  
-  void changeFav(String docId, bool isFav) {
-    db.collection('products').document(docId).updateData({'isFav': !isFav});
+
+  Future<bool> inWishlist(String productId)
+  {
+    LocalData().getUid().then((uId){
+      db.collection('users').document(uId).get().then((DocumentSnapshot userDoc){
+        
+      });
+    });
   }
 
   void addToWishlist(String productId)
