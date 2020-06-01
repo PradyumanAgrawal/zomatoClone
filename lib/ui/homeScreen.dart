@@ -173,7 +173,16 @@ class HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                 ),
                 onPressed: () {},
-              )
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(widget.navContext).pushNamed('/cart', arguments: widget.navContext);
+                },
+              ),
             ],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(

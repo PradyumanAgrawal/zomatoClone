@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
-import 'package:my_flutter_app/ui/drawerWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 
@@ -21,9 +20,6 @@ class _CartState extends State<Cart> {
     int totalPrice = 0;
     return Scaffold(
       //backgroundColor: Colors.deepPurple[100],
-      drawer: DrawerWidget(
-        navContext: widget.navContext,
-      ),
       bottomSheet: Visibility(
         visible: true, // for now, still have to figure out this part
         child: Material(
@@ -41,7 +37,7 @@ class _CartState extends State<Cart> {
                     flex: 40,
                     child: Center(
                       child: Text(
-                        'Rs ' + '\u{20B9}' + totalPrice.toString(),
+                        '\u{20B9} ' + totalPrice.toString(),
                         style: TextStyle(
                           color: Colors.deepPurple,
                           fontWeight: FontWeight.bold,
@@ -59,8 +55,12 @@ class _CartState extends State<Cart> {
                               bottomLeft: Radius.circular(10))),
                       child: Center(
                         child: FlatButton(
-                          onPressed: () {
-
+                          onPressed: () async {
+                            Navigator.of(widget.navContext)
+                                .pushNamed('/loading');
+                            await FirestoreService().placeOrder();
+                            Navigator.of(widget.navContext).pop();
+                            Navigator.of(context).pop();
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -85,15 +85,24 @@ class _CartState extends State<Cart> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             floating: true,
             pinned: false,
             snap: true,
-            backgroundColor: Colors.deepPurple[700],
+            backgroundColor: Colors.deepPurple[800],
             title: Text(
               "My Cart",
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 25.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.normal),
             ),
           ),
@@ -115,8 +124,7 @@ class _CartState extends State<Cart> {
                                   color: Colors.purple,
                                 ));
                               DocumentSnapshot document = snapshot.data;
-                              if (document['cart'].isEmpty)
-                              {
+                              if (document['cart'].isEmpty) {
                                 // setState(() {
                                 //   buttonVisible = false;
                                 // });
@@ -180,12 +188,21 @@ class _CartState extends State<Cart> {
                                                 productList[index];
                                             int quantity = quantityList[index];
 
-                                            for (int i = 0;i <snapshot.data.documents.length;i++) {
-                                              if (snapshot.data.documents[i].documentID == productId) {
+                                            for (int i = 0;
+                                                i <
+                                                    snapshot
+                                                        .data.documents.length;
+                                                i++) {
+                                              if (snapshot.data.documents[i]
+                                                      .documentID ==
+                                                  productId) {
                                                 setState() {
                                                   // totalPrice += int.parse(snapshot.data.documents[i]['price']) *quantity;
                                                 }
-                                                totalPrice += int.parse(snapshot.data.documents[i]['price']) *quantity;
+                                                totalPrice += int.parse(snapshot
+                                                            .data.documents[i]
+                                                        ['price']) *
+                                                    quantity;
                                                 return product(
                                                     widget.navContext,
                                                     index,

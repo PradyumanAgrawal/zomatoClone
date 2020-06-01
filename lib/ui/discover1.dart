@@ -14,18 +14,17 @@ class Discover1 extends StatefulWidget {
 }
 
 class _Discover1State extends State<Discover1> {
-
   Map iconMap = {
     'tshirts': LineAwesomeIcons.tshirt,
     'shirt': LineAwesomeIcons.user_tie,
-    'caps' : LineAwesomeIcons.hat_cowboy,
+    'caps': LineAwesomeIcons.hat_cowboy,
     'pant': LineAwesomeIcons.shirtsinbulk,
-    'shoes' : LineAwesomeIcons.shoe_prints,
-    'utilities' : LineAwesomeIcons.toilet_paper,
-    'fitness' : LineAwesomeIcons.dumbbell,
-    'books' : LineAwesomeIcons.book_open,
-    'household' : LineAwesomeIcons.home,
-    'beauty,health' : LineAwesomeIcons.heart,
+    'shoes': LineAwesomeIcons.shoe_prints,
+    'utilities': LineAwesomeIcons.toilet_paper,
+    'fitness': LineAwesomeIcons.dumbbell,
+    'books': LineAwesomeIcons.book_open,
+    'household': LineAwesomeIcons.home,
+    'beauty,health': LineAwesomeIcons.heart,
   };
 
   @override
@@ -44,7 +43,7 @@ class _Discover1State extends State<Discover1> {
                 backgroundColor: Colors.deepPurple[800],
                 title: Text(
                   "Discover",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 actions: <Widget>[
                   IconButton(
@@ -53,7 +52,17 @@ class _Discover1State extends State<Discover1> {
                       color: Colors.white,
                     ),
                     onPressed: () {},
-                  )
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.shopping_cart,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.of(widget.navContext)
+                          .pushNamed('/cart', arguments: widget.navContext);
+                    },
+                  ),
                 ],
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -62,7 +71,7 @@ class _Discover1State extends State<Discover1> {
                 bottom: PreferredSize(
                   child: Container(
                     padding:
-                        EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10),
+                        EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                     decoration: BoxDecoration(
                       //color: Colors.deepPurple[800],
                       borderRadius: BorderRadius.only(
@@ -70,14 +79,33 @@ class _Discover1State extends State<Discover1> {
                           bottomRight: Radius.circular(20)),
                     ),
                     child: TabBar(
+                      labelColor: Colors.deepPurple[900],
+                      unselectedLabelColor: Colors.white,
+                      indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                      ),
                       tabs: [
                         Tab(
-                          text: "Catagories",
-                          icon: Icon(Icons.list),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Icon(Icons.format_list_bulleted),
+                                  Text("Catagories")
+                                ]),
+                          ),
                         ),
                         Tab(
-                          text: "Shops",
-                          icon: Icon(Icons.store),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [Icon(Icons.store), Text("Shops")]),
+                          ),
                         )
                       ],
                     ),
@@ -120,7 +148,7 @@ class _Discover1State extends State<Discover1> {
                                     //size: 60.0,
                                     color: Colors.grey,
                                   ),
-                                  SizedBox(width:30),
+                                  SizedBox(width: 30),
                                   Text(
                                     document.documentID,
                                     style: TextStyle(
@@ -166,7 +194,7 @@ class _Discover1State extends State<Discover1> {
                               margin: EdgeInsets.all(0),
                               padding: EdgeInsets.all(15),
                               child: Text(
-                                document.documentID,
+                                document['name'],
                                 style: TextStyle(
                                   fontSize: 20,
                                 ),

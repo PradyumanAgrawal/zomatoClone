@@ -78,6 +78,31 @@ class FirestoreService {
     return db.collection('users').document(userId).snapshots();
   }
 
+  Future<void> placeOrder() async {
+    var uid = await LocalData().getUid();
+    db.collection('users').document(uid).get().then((DocumentSnapshot doc) {
+      doc['cart'].forEach((k,v){
+        db.collection('products').document(k).get().then((value){
+          db.collection('orders').add({
+            'userId':uid,
+            'prodId':k,
+            'prodName':value['name'],
+            'shop':value['shop'],
+            'quantity':v,
+            'amount':int.parse(value['price'])*v,
+            'status': "pending",
+          });
+        });
+      });
+    }).then((value) {
+      db.collection('users').document(uid).updateData({'cart':{}});
+    });
+  }
+
+  Stream getOrders(String uid){
+    return db.collection('orders').where('userId',isEqualTo:uid).snapshots();
+  }
+
   Future<int> addToCart(String productId, int quantity, bool updating) async {
     Future<String> email = LocalData().getUserEmail().then((userEmail) {
       db.collection('users').where('email', isEqualTo: userEmail).getDocuments().then((QuerySnapshot document) {

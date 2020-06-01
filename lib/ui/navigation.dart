@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import './homeScreen.dart';
 import './discover1.dart';
-import './cart.dart';
 import './share.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
+import 'orders.dart';
 
 class Navigation extends StatefulWidget {
   Navigation({
@@ -77,7 +77,7 @@ class NavigationState extends State<Navigation> {
               Discover1(
                 navContext: context,
               ),
-              Cart(
+              Orders(
                 navContext: context,
               ),
               //Description(navContext: context,),
@@ -104,10 +104,10 @@ class NavigationState extends State<Navigation> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.shopping_cart,
+                  Icons.shopping_basket,
                   color: Color(value),
                 ),
-                title: Text('Cart'),
+                title: Text('Orders'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(
