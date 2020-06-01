@@ -40,6 +40,7 @@ dependencies:
   provider: ^4.1.2
   geolocator: ^5.3.1
   flutter_speed_dial: ^1.2.5
+  url_launcher: ^5.4.10
   line_awesome_icons: 
     git:
       url: git://github.com/mateotomasgomez/line_awesome_icons_flutter.git

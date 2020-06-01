@@ -112,4 +112,11 @@ class FirestoreService {
       });
     });
   }
+
+  Future<DocumentSnapshot> getShop(DocumentReference shopRef) async {
+    // shopRef.get().then((documentSnapshot){
+    //   return documentSnapshot;
+    // });
+    return await shopRef.get();
+  }
 }

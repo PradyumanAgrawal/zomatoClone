@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Description extends StatefulWidget {
   DocumentSnapshot document;
@@ -30,7 +31,7 @@ class _DescriptionState extends State<Description> {
       photos.add(img);
     }
   }
-
+  String shopContact;
   int index = 0;
   @override
   Widget build(BuildContext context) {
@@ -159,7 +160,7 @@ class _DescriptionState extends State<Description> {
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
-                  'Product id: XXXX',
+                  'Product id: ' + document['productId'],
                   style: TextStyle(fontSize: 15.0, color: Colors.grey),
                 ),
               ),
@@ -289,88 +290,104 @@ class _DescriptionState extends State<Description> {
                 ),
               ),
               SizedBox(height: 20.0),
-              Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              FutureBuilder(
+                  future: FirestoreService().getShop(document['shop']),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Center(
+                          child: SpinKitChasingDots(color: Colors.deepPurple));
+                    DocumentSnapshot shopDoc = snapshot.data;
+                    shopContact = shopDoc['contact'];
+                    return Padding(
+                      padding: EdgeInsets.only(left: 15.0),
+                      child: Column(
                         children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width * 1 / 3,
-                            child: Text(
-                              'Shop Name :',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              child: Text(
-                                'shop name enterprice',
-                                style: TextStyle(
-                                  color: Colors.grey,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                width:
+                                    MediaQuery.of(context).size.width * 1 / 3,
+                                child: Text(
+                                  'Shop Name :',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width * 1 / 3,
-                            child: Text(
-                              'Address :',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              child: Text(
-                                'shop address xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                                style: TextStyle(
-                                  color: Colors.grey,
+                              Expanded(
+                                child: Container(
+                                  child: Text(
+                                    shopDoc['name'],
+                                    //'shop name enterprice',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width * 1 / 3,
-                            child: Text(
-                              'Contact info :',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              width: 200,
-                              child: Text(
-                                'contact details',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
+                              )
+                            ],
                           ),
                           SizedBox(
                             height: 20,
                           ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                width:
+                                    MediaQuery.of(context).size.width * 1 / 3,
+                                child: Text(
+                                  'Address :',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: Text(
+                                    shopDoc['address'],
+                                    //'shop address xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                width:
+                                    MediaQuery.of(context).size.width * 1 / 3,
+                                child: Text(
+                                  'Contact info :',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  width: 200,
+                                  child: Text(
+                                    shopDoc['contact'],
+                                    //'contact details',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  )),
+                    );
+                  }),
               Divider(
                 color: Colors.purple.withOpacity(0.5),
                 height: 30,
@@ -431,7 +448,16 @@ class _DescriptionState extends State<Description> {
             Flexible(
               flex: 20,
               child: InkWell(
-                onTap: () {},
+                onTap: () async {
+                  if (shopContact != null) {
+                    String url = 'tel:$shopContact';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  }
+                },
                 child: Center(
                   child: Container(
                     height: 40.0,

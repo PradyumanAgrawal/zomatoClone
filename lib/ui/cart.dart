@@ -5,7 +5,6 @@ import 'package:my_flutter_app/ui/drawerWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 
-
 class Cart extends StatefulWidget {
   BuildContext navContext;
   Cart({Key key, this.navContext}) : super(key: key);
@@ -16,63 +15,71 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   String userId;
-
+  bool buttonVisible = false;
   @override
   Widget build(BuildContext context) {
     int totalPrice = 0;
     return Scaffold(
       //backgroundColor: Colors.deepPurple[100],
-      drawer: DrawerWidget(navContext: widget.navContext,),
-      bottomSheet: Material(
-        elevation: 7.0,
-        color: Colors.white70,
-        child: Container(
-          height: 40.0,
-          width: MediaQuery.of(context).size.width,
-          color: Colors.white,
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            //SizedBox(width: 10.0),
-            Flexible(
-              flex: 40,
-              child: Center(
-                child: Text(
-                  'Rs ' + '\u{20B9}' + totalPrice.toString(),
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            Flexible(
-              flex: 60,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.deepPurple,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10))),
-                child: Center(
-                  child: FlatButton(
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Place Order',
-                          style: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+      drawer: DrawerWidget(
+        navContext: widget.navContext,
+      ),
+      bottomSheet: Visibility(
+        visible: true, // for now, still have to figure out this part
+        child: Material(
+          elevation: 7.0,
+          color: Colors.white70,
+          child: Container(
+            height: 40.0,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.white,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //SizedBox(width: 10.0),
+                  Flexible(
+                    flex: 40,
+                    child: Center(
+                      child: Text(
+                        'Rs ' + '\u{20B9}' + totalPrice.toString(),
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          ]),
+                  Flexible(
+                    flex: 60,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.deepPurple,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              bottomLeft: Radius.circular(10))),
+                      child: Center(
+                        child: FlatButton(
+                          onPressed: () {
+
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Place Order',
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+          ),
         ),
       ),
       body: CustomScrollView(
@@ -109,6 +116,11 @@ class _CartState extends State<Cart> {
                                 ));
                               DocumentSnapshot document = snapshot.data;
                               if (document['cart'].isEmpty)
+                              {
+                                // setState(() {
+                                //   buttonVisible = false;
+                                // });
+                                buttonVisible = false;
                                 return Center(
                                     child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -138,16 +150,21 @@ class _CartState extends State<Cart> {
                                     ),
                                   ],
                                 ));
+                              }
+                              // setState(() {
+                              //     buttonVisible = true;
+                              //   });
+                              buttonVisible = true;
                               return Container(
                                 child: StreamBuilder(
                                   stream: FirestoreService().getProducts(),
                                   builder: (context, snapshot) {
-                                      if (!snapshot.hasData)
-                                        return Center(
-                                          child: SpinKitChasingDots(
-                                            color: Colors.purple,
-                                          ),
-                                        );
+                                    if (!snapshot.hasData)
+                                      return Center(
+                                        child: SpinKitChasingDots(
+                                          color: Colors.purple,
+                                        ),
+                                      );
                                     var productList =
                                         document['cart'].keys.toList();
                                     var quantityList =
@@ -159,26 +176,16 @@ class _CartState extends State<Cart> {
                                           document['cart'].length,
                                           (index) {
                                             //TODO find a better way to handle
-                                            String productId = productList[index];
+                                            String productId =
+                                                productList[index];
                                             int quantity = quantityList[index];
-                                            
-                                            for (int i = 0;
-                                                i <
-                                                    snapshot
-                                                        .data.documents.length;
-                                                i++) {
-                                              if (snapshot.data.documents[i]
-                                                      .documentID ==
-                                                  productId) {
-                                                //print(productId + " " + '$quantity');
-                                                setState() {
-                                                  totalPrice += int.parse(
-                                                          snapshot.data
-                                                                  .documents[i]
-                                                              ['price']) *
-                                                      quantity;
-                                                }
 
+                                            for (int i = 0;i <snapshot.data.documents.length;i++) {
+                                              if (snapshot.data.documents[i].documentID == productId) {
+                                                setState() {
+                                                  // totalPrice += int.parse(snapshot.data.documents[i]['price']) *quantity;
+                                                }
+                                                totalPrice += int.parse(snapshot.data.documents[i]['price']) *quantity;
                                                 return product(
                                                     widget.navContext,
                                                     index,

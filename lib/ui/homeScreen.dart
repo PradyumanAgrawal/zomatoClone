@@ -167,16 +167,6 @@ class HomeScreenState extends State<HomeScreen> {
                         _showAlertDialog(context);
                       },
                     ),
-              // : ActionChip(
-              //     backgroundColor: Colors.white,
-              //     label: Text(
-              //         widget.add.replaceAll(' ', '').substring(0, 15) +
-              //             '...',
-              //         style: TextStyle(color: Colors.deepPurple)),
-              //     onPressed: () {
-              //       _showAlertDialog(context);
-              //     },
-              //   ),
               IconButton(
                 icon: Icon(
                   Icons.notifications,
@@ -346,7 +336,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                   'assets/typeIcons/$type.png'),
                                             ),
                                           ),
-                                          Text(document.documentID,
+                                          Text(document['name'],
                                               style: TextStyle(
                                                 fontSize: 10,
                                               )),
