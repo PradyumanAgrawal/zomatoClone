@@ -82,8 +82,8 @@ class FirestoreService {
     var uid = await LocalData().getUid();
     db.collection('users').document(uid).get().then((DocumentSnapshot doc) {
       doc['cart'].forEach((k,v){
-        db.collection('products').document(k).get().then((value){
-          db.collection('orders').add({
+        db.collection('products').document(k).get().then((value)async {
+          DocumentReference docRef = await db.collection('orders').add({
             'userId':uid,
             'prodId':k,
             'prodName':value['name'],
@@ -92,6 +92,9 @@ class FirestoreService {
             'amount':int.parse(value['price'])*v,
             'status': "pending",
           });
+          List orders = doc['orderHistory'];
+          orders.add(docRef.documentID);
+          doc.reference.updateData({'orderHistory': orders});
         });
       });
     }).then((value) {

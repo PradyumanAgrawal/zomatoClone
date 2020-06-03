@@ -6,6 +6,7 @@ import 'package:my_flutter_app/ui/homescreen.dart';
 import 'package:my_flutter_app/ui/description.dart';
 import 'package:my_flutter_app/ui/navigation.dart';
 import 'package:my_flutter_app/ui/login_email.dart';
+import 'package:my_flutter_app/ui/profile.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
 import 'package:my_flutter_app/ui/login_screen.dart';
 import 'package:my_flutter_app/ui/discover.dart';
@@ -74,6 +75,10 @@ class RouteGenerator {
         case '/wishlist':
         return MaterialPageRoute(
           builder: (_) => Wishlist(),
+        );
+        case '/profile':
+        return MaterialPageRoute(
+          builder: (_) => Profile(),
         );
         // If args is not of the correct type, return an error page.
       default:
