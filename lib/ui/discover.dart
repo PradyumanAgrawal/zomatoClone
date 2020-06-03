@@ -71,9 +71,11 @@ class _DiscoverState extends State<Discover>
               )
             ],
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30))),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
+              ),
+            ),
             bottom: PreferredSize(
               child: Container(
                 padding: EdgeInsets.all(15.0),
@@ -169,8 +171,14 @@ class _DiscoverState extends State<Discover>
   }
 }
 
-Widget itemCard(String name, String imgPath, String description, bool inWishlist,
-    String price, DocumentSnapshot document, BuildContext context) {
+Widget itemCard(
+    String name,
+    String imgPath,
+    String description,
+    bool inWishlist,
+    String price,
+    DocumentSnapshot document,
+    BuildContext context) {
   return Padding(
     padding: const EdgeInsets.only(top: 2, bottom: 2),
     child: Material(

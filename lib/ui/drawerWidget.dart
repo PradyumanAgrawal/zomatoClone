@@ -45,16 +45,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     Navigator.of(context).pop();
                     auth.logout();
                     Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => MyApp()),
+                        MaterialPageRoute(builder: (context) => MyApp()),
                         (Route<dynamic> route) => false);
                   },
-                  child: Text('Yes',
-                  style: TextStyle(fontSize: 18.0))),
+                  child: Text('Yes', style: TextStyle(fontSize: 18.0))),
               FlatButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('No',
-                  style: TextStyle(fontSize: 18.0)))
+                  child: Text('No', style: TextStyle(fontSize: 18.0)))
             ],
           );
         });
@@ -68,21 +65,26 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.deepPurple[300],
-                    child: Icon(Icons.person, color: Colors.black),
+            child: InkWell(
+              onTap: (){
+                Navigator.of(widget.navContext).pushNamed('/profile');
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.deepPurple[300],
+                      child: Icon(Icons.person, color: Colors.black),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(userEmail==null?'':userEmail),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(userEmail == null ? '' : userEmail),
+                  ),
+                ],
+              ),
             ),
             decoration: BoxDecoration(
               color: Colors.deepPurple[100],

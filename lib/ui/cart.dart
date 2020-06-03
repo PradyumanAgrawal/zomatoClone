@@ -56,11 +56,22 @@ class _CartState extends State<Cart> {
                       child: Center(
                         child: FlatButton(
                           onPressed: () async {
-                            Navigator.of(widget.navContext)
-                                .pushNamed('/loading');
-                            await FirestoreService().placeOrder();
-                            Navigator.of(widget.navContext).pop();
-                            Navigator.of(context).pop();
+                            if(userId!= null)
+                            {
+                              bool status = await FirestoreService().isProfileComplete(userId);
+                              if(status)
+                              {
+                                await FirestoreService().placeOrder();
+                                Navigator.of(context).pop();
+                              }
+                              else
+                                Navigator.of(context).pushNamed('/profile');
+                            }
+                            // Navigator.of(widget.navContext)
+                            //     .pushNamed('/loading');
+                            // await FirestoreService().placeOrder();
+                            // Navigator.of(widget.navContext).pop();
+                            // Navigator.of(context).pop();
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
