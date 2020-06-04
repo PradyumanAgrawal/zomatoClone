@@ -48,6 +48,11 @@ class HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+  void rebuild(){
+    setState(() {
+      
+    });
+  }
 
   var queryResultSet = [];
   var tempSearchStore = [];
@@ -89,10 +94,6 @@ class HomeScreenState extends State<HomeScreen> {
         isSearching = false;
       });
     }
-  }
-
-  void rebuild() {
-    setState(() {});
   }
 
   void _showAlertDialog(context) {

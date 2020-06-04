@@ -399,14 +399,15 @@ class _ProfileState extends State<Profile> {
                                         style: TextStyle(color: Colors.grey),
                                       ),
                                       SizedBox(height: 5),
-                                      Text('50%',
+                                      userDoc['isProfileComplete']?Icon(Icons.done, color: Colors.green,):Icon(Icons.cancel, color: Colors.red,),
+                                      /* Text('50%',
                                           style: TextStyle(
                                             color: userDoc['isProfileComplete']
                                                 ? Colors.green
                                                 : Colors.red,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20,
-                                          ))
+                                          )) */
                                     ],
                                   ),
                                 ),

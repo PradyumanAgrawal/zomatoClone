@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -21,6 +20,17 @@ class _OrdersState extends State<Orders> {
     return Scaffold(
       drawer: DrawerWidget(navContext: widget.navContext),
       appBar: AppBar(
+        actions: [
+          IconButton(
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(widget.navContext).pushNamed('/cart', arguments: widget.navContext);
+                },
+              ),
+        ],
           backgroundColor: Colors.deepPurple[800], title: Text('Orders')),
       body: FutureBuilder(
         future: LocalData().getUid(),
@@ -32,7 +42,7 @@ class _OrdersState extends State<Orders> {
               builder: (BuildContext context, AsyncSnapshot snapshot){
                 if(snapshot.hasData){
                   var orderList = snapshot.data.documents.toList();
-                  return ListView.builder(itemCount:orderList.length,
+                  return orderList.length==0?Center(child: Text('No Orders!', style:TextStyle(fontSize:20)),):ListView.builder(itemCount:orderList.length,
                   itemBuilder: (context, index) {
                     return Card(child: Column(
                       children: [
@@ -41,7 +51,11 @@ class _OrdersState extends State<Orders> {
                           child: Row(
                             mainAxisAlignment:MainAxisAlignment.spaceBetween,
                             children:[
-                              Text(orderList[index]['prodName']),
+                              Column(
+                                children: [
+                                  Container(width: MediaQuery.of(context).size.width*0.5,child: Text(orderList[index]['prodName'])),
+                                ],
+                              ),
                               Text('Quantity: '+ orderList[index]['quantity'].toString()),
                             ]
                           )/* Center(child:Text(orderList[index]['prodId']+ ' \u{20B9} ' + orderList[index]['amount'].toString())), */
