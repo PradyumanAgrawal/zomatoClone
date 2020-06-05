@@ -13,27 +13,28 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+  int price=0;
   String userId;
-  bool buttonVisible = false;
+  bool buttonVisible = true;
+
   @override
   Widget build(BuildContext context) {
-    int totalPrice = 0;
     return Scaffold(
       //backgroundColor: Colors.deepPurple[100],
       bottomSheet: Visibility(
-        visible: true, // for now, still have to figure out this part
+        visible: buttonVisible, // for now, still have to figure out this part
         child: Material(
           elevation: 7.0,
           color: Colors.white70,
           child: Container(
-            height: 40.0,
+            height: 50.0,
             width: MediaQuery.of(context).size.width,
             color: Colors.white,
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   //SizedBox(width: 10.0),
-                  Flexible(
+                  /* Flexible(
                     flex: 40,
                     child: Center(
                       child: Text(
@@ -44,28 +45,27 @@ class _CartState extends State<Cart> {
                         ),
                       ),
                     ),
-                  ),
+                  ), */
                   Flexible(
                     flex: 60,
                     child: Container(
                       decoration: BoxDecoration(
-                          color: Colors.deepPurple,
-                          borderRadius: BorderRadius.only(
+                          color: Colors.deepPurple[800],
+                          /* borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10),
-                              bottomLeft: Radius.circular(10))),
+                              bottomLeft: Radius.circular(10)) */),
                       child: Center(
                         child: FlatButton(
                           onPressed: () async {
-                            if(userId!= null)
-                            {
-                              bool status = await FirestoreService().isProfileComplete(userId);
-                              if(status)
-                              {
+                            if (userId != null) {
+                              Navigator.of(context).pushNamed('/review_order', arguments: widget.navContext);
+                              /* bool status = await FirestoreService()
+                                  .isProfileComplete(userId);
+                              if (status) {
                                 await FirestoreService().placeOrder();
                                 Navigator.of(context).pop();
-                              }
-                              else
-                                Navigator.of(context).pushNamed('/profile');
+                              } else
+                                Navigator.of(context).pushNamed('/profile'); */
                             }
                             // Navigator.of(widget.navContext)
                             //     .pushNamed('/loading');
@@ -79,7 +79,7 @@ class _CartState extends State<Cart> {
                               Text(
                                 'Place Order',
                                 style: TextStyle(
-                                    fontSize: 15.0,
+                                    fontSize: 18.0,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -97,14 +97,14 @@ class _CartState extends State<Cart> {
         slivers: <Widget>[
           SliverAppBar(
             leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
               ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
             floating: true,
             pinned: false,
             snap: true,
@@ -173,10 +173,14 @@ class _CartState extends State<Cart> {
                               // setState(() {
                               //     buttonVisible = true;
                               //   });
-                              buttonVisible = true;
+                              var productList = document['cart'].keys.toList();
+                              var quantityList =
+                                  document['cart'].values.toList();
+                              
                               return Container(
                                 child: StreamBuilder(
-                                  stream: FirestoreService().getProducts(),
+                                  stream: FirestoreService()
+                                      .getCartProducts(productList),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData)
                                       return Center(
@@ -184,43 +188,19 @@ class _CartState extends State<Cart> {
                                           color: Colors.purple,
                                         ),
                                       );
-                                    var productList =
-                                        document['cart'].keys.toList();
-                                    var quantityList =
-                                        document['cart'].values.toList();
                                     return Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
                                         children: List.generate(
-                                          document['cart'].length,
+                                          snapshot.data.documents
+                                              .toList()
+                                              .length,
                                           (index) {
-                                            //TODO find a better way to handle
-                                            String productId =
-                                                productList[index];
-                                            int quantity = quantityList[index];
-
-                                            for (int i = 0;
-                                                i <
-                                                    snapshot
-                                                        .data.documents.length;
-                                                i++) {
-                                              if (snapshot.data.documents[i]
-                                                      .documentID ==
-                                                  productId) {
-                                                setState() {
-                                                  // totalPrice += int.parse(snapshot.data.documents[i]['price']) *quantity;
-                                                }
-                                                totalPrice += int.parse(snapshot
-                                                            .data.documents[i]
-                                                        ['price']) *
-                                                    quantity;
-                                                return product(
-                                                    widget.navContext,
-                                                    index,
-                                                    snapshot.data.documents[i],
-                                                    quantity);
-                                              }
-                                            }
+                                            return product(
+                                                widget.navContext,
+                                                index,
+                                                snapshot.data.documents[index],
+                                                quantityList[index]);
                                           },
                                         ),
                                       ),

@@ -1,8 +1,11 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+
 
 class FirestoreService {
   static final FirestoreService _firestoreService =
@@ -19,8 +22,23 @@ class FirestoreService {
     return db.collection('shops').snapshots();
   }
 
+  Stream<List<DocumentSnapshot>> getNearbyStores(LatLng location)
+  {
+    Geoflutterfire geo = Geoflutterfire(); 
+    GeoFirePoint center = geo.point(latitude: location.latitude, longitude: location.longitude);
+    var collectionRef = db.collection('shops');
+    var geoRef = geo.collection(collectionRef: collectionRef).within(center: center, radius: 25, field: 'location',strictMode: false);
+    return geoRef;
+  }
+
   Stream getProducts() {
     Stream<QuerySnapshot> prods = db.collection('products').snapshots();
+    return prods;
+  }
+
+  Stream getCartProducts(dynamic cart) {
+    Stream<QuerySnapshot> prods =
+        db.collection('products').where('productId', whereIn: cart).snapshots();
     return prods;
   }
 
@@ -81,6 +99,10 @@ class FirestoreService {
         .snapshots();
   }
 
+  Stream getProductsFromShop(pId){
+    return db.collection('products').where('productId',whereIn: pId).snapshots();
+  }
+
   Stream getWishlistProducts(List wishlist) {
     return db
         .collection('products')
@@ -92,12 +114,14 @@ class FirestoreService {
     return db.collection('users').document(userId).snapshots();
   }
 
-  Future<void> placeOrder() async {
+  Future<void> placeOrder(String address, String mobileNo) async {
     var uid = await LocalData().getUid();
     db.collection('users').document(uid).get().then((DocumentSnapshot doc) {
       doc['cart'].forEach((k, v) {
         db.collection('products').document(k).get().then((value) async {
           DocumentReference docRef = await db.collection('orders').add({
+            'deliveryAddress':address,
+            'customerMobileNo':mobileNo,
             'userId': uid,
             'prodId': k,
             'prodName': value['name'],
@@ -202,6 +226,36 @@ class FirestoreService {
     return status;
   }
 
+  Future<dynamic> reviewCart() async {
+    int total = 0;
+    int quant = 0;
+    String uid = await LocalData().getUid();
+    var u = await db.collection('users').document(uid).get();
+    var cart = u.data['cart'].keys.toList();
+    print(cart);
+    if (cart.length == 0) {
+      return 'empty';
+    }
+    var quantity = u.data['cart'].values.toList();
+    print(quantity[0]);
+    var q = await db
+        .collection('products')
+        .where('productId', whereIn: cart)
+        .getDocuments();
+    var prodList = q.documents.toList();
+    for (int i = 0; i < cart.length; i++) {
+      total += int.parse(prodList[i].data['price'])*quantity[i];
+      quant += quantity[i];
+    }
+    var a = {
+      'total': total,
+      'itemCount': quant,
+      'mobileNo': u.data['mobileNo'],
+      'address':u.data['address']
+    };
+    return a;
+  }
+
   Future<bool> removeAddress(int index, DocumentSnapshot userDoc) {
     List address = userDoc['address'];
     address.removeAt(index);
@@ -212,5 +266,18 @@ class FirestoreService {
     List address = userDoc['address'];
     address.add(newAddress);
     userDoc.reference.updateData({'address': address});
+  }
+
+  Future<void> addMobile(String newNumber)async{
+    var uid = await LocalData().getUid();
+    await db.collection('users').document(uid).updateData({'mobileNo':newNumber});
+  }
+  
+  Future<void> addAddress(String newAdd)async{
+    var uid = await LocalData().getUid();
+    var userDoc = await db.collection('users').document(uid).get();
+    List<dynamic> address = userDoc['address'];
+    address.add(newAdd);
+    await db.collection('users').document(uid).updateData({'address':address});
   }
 }

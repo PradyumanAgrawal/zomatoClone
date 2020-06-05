@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:my_flutter_app/functionalities/location_service.dart';
 import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,9 +12,11 @@ import 'filter_location.dart';
 class HomeScreen extends StatefulWidget {
   BuildContext navContext;
   String add;
-  HomeScreen({Key key, BuildContext navContext, String add}) {
+  LatLng location;
+  HomeScreen({Key key, BuildContext navContext, String add, LatLng location}) {
     this.add = add;
     this.navContext = navContext;
+    this.location = location;
   } //: super(key: key);
 
   void setAdd(String address) {
@@ -25,6 +29,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  List wishlist;
   bool isTyping = false;
   bool isSearching = false;
   List<String> photos = [
@@ -47,6 +52,11 @@ class HomeScreenState extends State<HomeScreen> {
         isTyping = false;
       });
     }
+  }
+  void rebuild(){
+    setState(() {
+      
+    });
   }
 
   var queryResultSet = [];
@@ -91,10 +101,6 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void rebuild() {
-    setState(() {});
-  }
-
   void _showAlertDialog(context) {
     showDialog(
         context: context,
@@ -109,6 +115,7 @@ class HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.bold,
                 color: Colors.black),
             content: Container(
+              height: 200,
               alignment: Alignment.center,
               child: Text(
                 widget.add,
@@ -135,12 +142,18 @@ class HomeScreenState extends State<HomeScreen> {
         });
   }
 
-  List wishlist;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: DrawerWidget(navContext: widget.navContext,),
+      drawer: DrawerWidget(
+        navContext: widget.navContext,
+      ),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -180,7 +193,8 @@ class HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  Navigator.of(widget.navContext).pushNamed('/cart', arguments: widget.navContext);
+                  Navigator.of(widget.navContext)
+                      .pushNamed('/cart', arguments: widget.navContext);
                 },
               ),
             ],
@@ -233,7 +247,7 @@ class HomeScreenState extends State<HomeScreen> {
                                     child: SpinKitChasingDots(
                                         color: Colors.deepPurple)))
                           ]),
-                        ) //
+                        )
                       : SliverList(
                           delegate: SliverChildListDelegate(<Widget>[
                             Center(
@@ -276,10 +290,27 @@ class HomeScreenState extends State<HomeScreen> {
                                   fontWeight: FontWeight.bold, fontSize: 15.0),
                             ),
                             OutlineButton(
-                              onPressed: () {
-                                //Navigator.of(widget.navContext).pushNamed('/filter_location', arguments: widget.add);
-                                _awaitReturnValueFromFilter(
-                                    widget.add, context);
+                              onPressed: () async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FilterLocation(),
+                                  ),
+                                );
+                                if (result != null) {
+                                  LocationService()
+                                      .getAddress(result)
+                                      .then((value) {
+                                    setState(() {
+                                      widget.add = value;
+                                      Scaffold.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text('Location Updated!'),
+                                      ));
+                                    });
+                                  });
+                                  widget.location = result;
+                                }
                               },
                               shape: StadiumBorder(),
                               splashColor: Colors.purple,
@@ -300,62 +331,67 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.12,
-                        //decoration: BoxDecoration(color: Colors.red),
-                        child: StreamBuilder(
-                            stream: FirestoreService().getStores(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData)
-                                return Center(
-                                    child: SpinKitChasingDots(
-                                        color: Colors.deepPurple));
-                              return ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: snapshot.data.documents.length,
-                                itemBuilder: (context, index) {
-                                  DocumentSnapshot document =
-                                      snapshot.data.documents[index];
-                                  String type = document['type'];
-                                  return InkWell(
-                                    onTap: () {
-                                      print(index);
-                                    },
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.only(left: 4, right: 4),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.pink[200],
-                                            ),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                13,
-                                            padding: EdgeInsets.all(5.0),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: Image.asset(
-                                                  'assets/typeIcons/$type.png'),
-                                            ),
+                        child: (widget.location == null)
+                            ? Center(
+                                child: SpinKitChasingDots(
+                                    color: Colors.deepPurple))
+                            : StreamBuilder(
+                                stream: //FirestoreService().getStores():
+                                    FirestoreService()
+                                        .getNearbyStores(widget.location),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData)
+                                    return Center(
+                                        child: SpinKitChasingDots(
+                                            color: Colors.deepPurple));
+                                  return ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (context, index) {
+                                      DocumentSnapshot document =
+                                          snapshot.data[index];
+                                      String type = document['type'];
+                                      return InkWell(
+                                        onTap: () {
+                                          print(index);
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(
+                                              left: 4, right: 4),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.pink[200],
+                                                ),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    13,
+                                                padding: EdgeInsets.all(5.0),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Image.asset(
+                                                      'assets/typeIcons/$type.png'),
+                                                ),
+                                              ),
+                                              Text(document['name'],
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  )),
+                                            ],
                                           ),
-                                          Text(document['name'],
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                              )),
-                                        ],
-                                      ),
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   );
-                                },
-                              );
-                            }),
+                                }),
                       ),
                       Padding(
                         padding: EdgeInsets.all(10.0),
@@ -488,23 +524,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _awaitReturnValueFromFilter(String add, BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FilterLocation(
-          add: add,
-        ),
-      ),
-    );
-    if (result != null)
-      setState(() {
-        widget.add = result;
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Location Updated!'),
-        ));
-      });
-  }
+  void _awaitReturnValueFromFilter(String add, BuildContext context) async {}
 
   Widget itemCard(
       String name,

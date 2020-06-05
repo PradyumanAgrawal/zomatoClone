@@ -1,15 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:my_flutter_app/functionalities/local_data.dart';
-import './homeScreen.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'dart:async';
+import 'package:rxdart/rxdart.dart';
 
 class FilterLocation extends StatefulWidget {
-  final add;
-  FilterLocation({Key key, this.add}) : super(key: key);
+  FilterLocation({
+    Key key,
+  }) : super(key: key);
 
   @override
   _FilterLocationState createState() => _FilterLocationState();
@@ -19,26 +21,11 @@ class _FilterLocationState extends State<FilterLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.deepPurple,
-      //   title: Text(
-      //     'Filter by location',
-      //     style: TextStyle(color: Colors.white),
-      //   ),
-      //   leading: IconButton(
-      //       icon: Icon(
-      //         Icons.arrow_back,
-      //         color: Colors.white,
-      //       ),
-      //       onPressed: () {
-      //         Navigator.of(context).pop();
-      //       }),
-      // ),
       body: FutureBuilder(
-        future: LocalData().getLocation(),
+        future: LocationService().getLocation(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            return FireMap(location: snapshot.data, add: widget.add);
+            return FireMap(location: snapshot.data);
           } else {
             return Center(
               child: SpinKitChasingDots(
@@ -54,8 +41,7 @@ class _FilterLocationState extends State<FilterLocation> {
 
 class FireMap extends StatefulWidget {
   final LatLng location;
-  final add;
-  FireMap({Key key, this.location, this.add}) : super(key: key);
+  FireMap({Key key, this.location}) : super(key: key);
 
   @override
   _FireMapState createState() => _FireMapState();
@@ -64,53 +50,108 @@ class FireMap extends StatefulWidget {
 class _FireMapState extends State<FireMap> {
   int centerx = 0, centery = 0;
   GoogleMapController mapController;
-  BitmapDescriptor markerIcon;
   String searchAddress;
+  Set<Marker> markers;
+  LatLng markerPosition;
+  BitmapDescriptor shopMarker;
+  StreamSubscription subscription;
+  BehaviorSubject<LatLng> center = BehaviorSubject();
+
+  void createMarker(context) {
+    if (shopMarker == null) {
+      ImageConfiguration configuration = createLocalImageConfiguration(context);
+      BitmapDescriptor.fromAssetImage(configuration, 'assets/images/p5.png')
+          .then((icon) {
+        setState(() {
+          shopMarker = icon;
+        });
+      });
+    }
+  }
+
+  void _updateMarkers(List<DocumentSnapshot> documentList) {
+    documentList.forEach((DocumentSnapshot document) {
+      GeoPoint pos = document.data['location']['geopoint'];
+      Marker tempMarker = Marker(
+        markerId: MarkerId(document.documentID),
+        icon: shopMarker,
+        draggable: false,
+        position: LatLng(pos.latitude, pos.longitude),
+        infoWindow: InfoWindow(title: document['name'],snippet: document['address']),
+      );
+      setState(() {
+        markers.add(tempMarker);
+      });
+    });
+  }
+
+  _startQuery() {
+    subscription = center.switchMap((value) {
+      return FirestoreService().getNearbyStores(value);
+    }).listen(_updateMarkers);
+  }
+
+  @override
+  void initState() {
+    center.add(widget.location);
+    markers = Set.from([]);
+    Marker m = Marker(
+      markerId: MarkerId('marked location'),
+      icon: BitmapDescriptor.defaultMarker,
+      draggable: true,
+      position: widget.location,
+    );
+    setState(() {
+      markers.add(m);
+    });
+    markerPosition = widget.location;
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    createMarker(context);
     print(widget.location);
     CameraPosition campos = CameraPosition(
       target: widget.location,
       zoom: 15,
     );
-    BitmapDescriptor.fromAssetImage(
-            createLocalImageConfiguration(context), 'assets/images/current.png')
-        .then((d) {
-      setState(() {
-        markerIcon = d;
-      });
-    });
     return Stack(
       alignment: Alignment.center,
       children: [
         GoogleMap(
           rotateGesturesEnabled: true,
           initialCameraPosition: campos,
-          markers: Set.from(
-            [
-              Marker(
-                markerId: MarkerId('currentLocation'),
-                draggable: false,
-                position: widget.location,
-                icon: markerIcon,
-                //icon: BitmapDescriptor.fromAsset('assets/images/googlemapbluedot.jpg'),
-              )
-            ],
-          ),
-          onMapCreated: (controller) {
-            mapController = controller;
-            mapController.getScreenCoordinate(widget.location).then((value) {
-              setState(() {
-                centerx = value.x;
-                centery = value.y;
-              });
+          myLocationEnabled: true,
+          myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
+          markers: markers,
+          onCameraMove: (pos) {
+            setState(() {
+              center.add(pos.target);
             });
           },
-        ),
-        Icon(
-          Icons.location_on,
-          color: Colors.deepPurple,
-          size: 50,
+          onTap: (pos) {
+            Marker m = Marker(
+                markerId: MarkerId('marked location'),
+                icon: BitmapDescriptor.defaultMarker,
+                draggable: true,
+                position: pos);
+            setState(() {
+              markers.add(m);
+              markerPosition = pos;
+            });
+          },
+          onMapCreated: (controller) {
+            _startQuery();
+            mapController = controller;
+          },
         ),
         Positioned(
           bottom: 40,
@@ -122,13 +163,9 @@ class _FireMapState extends State<FireMap> {
               ));
             },
             child: Container(
-              //width: 50,
-              //height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
-                // image: DecorationImage(
-                //     image: AssetImage('assets/images/bluedot.jpg')),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey,
@@ -162,18 +199,7 @@ class _FireMapState extends State<FireMap> {
               ),
             ),
             onPressed: () {
-              mapController
-                  .getLatLng(ScreenCoordinate(x: centerx, y: centery))
-                  .then((value) {
-                print(value);
-                LocationService().getAddress(value).then((add) {
-                  print(add);
-                  Navigator.pop(context, add);
-                });
-                //HomeScreenState().changeAddress();
-                /* LocalData().saveLocation(
-                    latitude: value.latitude, longitude: value.longitude); */
-              });
+              Navigator.pop(context, markerPosition);
             },
           ),
         ),
@@ -228,37 +254,41 @@ class _FireMapState extends State<FireMap> {
                   ),
                   onPressed: () {
                     print(searchAddress);
-                    Geolocator().placemarkFromAddress(searchAddress).then((result){
-                      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-                        target: LatLng(result[0].position.latitude,result[0].position.longitude),
+                    Geolocator()
+                        .placemarkFromAddress(searchAddress)
+                        .then((result) {
+                      mapController.animateCamera(
+                          CameraUpdate.newCameraPosition(CameraPosition(
+                        target: LatLng(result[0].position.latitude,
+                            result[0].position.longitude),
                         zoom: 10,
                       )));
-                    }).catchError((onError){
-                      Scaffold.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Address not found!'),
-                        )
-                      );
+                    }).catchError((onError) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('Address not found!'),
+                      ));
                     });
                   },
                 ),
               ),
-              onChanged: (val){
+              onChanged: (val) {
                 searchAddress = val;
               },
-              onSubmitted: (val){
-                Geolocator().placemarkFromAddress(val).then((result){
-                      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-                        target: LatLng(result[0].position.latitude,result[0].position.longitude),
-                        zoom: 10,
-                      )));
-                    }).catchError((onError){
-                      Scaffold.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Address not found!'),
-                        )
-                      );
-                    });
+              onSubmitted: (val) {
+                if (val != null) {
+                  Geolocator().placemarkFromAddress(val).then((result) {
+                    mapController.animateCamera(
+                        CameraUpdate.newCameraPosition(CameraPosition(
+                      target: LatLng(result[0].position.latitude,
+                          result[0].position.longitude),
+                      zoom: 10,
+                    )));
+                  }).catchError((onError) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Address not found!'),
+                    ));
+                  });
+                }
               },
             ),
           ),

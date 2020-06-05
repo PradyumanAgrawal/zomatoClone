@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './homeScreen.dart';
 import './discover1.dart';
 import './share.dart';
@@ -17,6 +18,7 @@ class Navigation extends StatefulWidget {
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
   String address = '';
+  LatLng location;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -24,10 +26,11 @@ class NavigationState extends State<Navigation> {
     });
   }
   Future<void> printLoc() async{
-    var loc = await LocationService().getLocation();
+    LatLng loc = await LocationService().getLocation();
     String add = await LocationService().getAddress(loc);
     setState(() {
       address = add;
+      location = loc;
     });
     print('------------------');
     print(loc.latitude);
@@ -72,6 +75,7 @@ class NavigationState extends State<Navigation> {
             children: <Widget>[
               HomeScreen(
                 add: address,
+                location: location,
                 navContext: context,
               ),
               Discover1(
