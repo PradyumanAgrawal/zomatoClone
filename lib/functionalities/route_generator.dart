@@ -7,6 +7,7 @@ import 'package:my_flutter_app/ui/description.dart';
 import 'package:my_flutter_app/ui/navigation.dart';
 import 'package:my_flutter_app/ui/login_email.dart';
 import 'package:my_flutter_app/ui/profile.dart';
+import 'package:my_flutter_app/ui/review_cart.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
 import 'package:my_flutter_app/ui/login_screen.dart';
 import 'package:my_flutter_app/ui/discover.dart';
@@ -79,6 +80,10 @@ class RouteGenerator {
         case '/profile':
         return MaterialPageRoute(
           builder: (_) => Profile(),
+        );
+        case '/review_order':
+        return MaterialPageRoute(
+          builder: (_) => ReviewCart(navContext: args,),
         );
         // If args is not of the correct type, return an error page.
       default:

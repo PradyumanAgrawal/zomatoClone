@@ -14,7 +14,7 @@ class Share extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*.1),
-              child: Text('Comming Soon!', style: TextStyle(fontSize:30),),
+              child: Text('Coming Soon!', style: TextStyle(fontSize:30),),
             ),
 
             Image.asset('assets/a.jpg'),
