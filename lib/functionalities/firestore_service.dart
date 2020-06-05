@@ -1,8 +1,11 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+
 
 class FirestoreService {
   static final FirestoreService _firestoreService =
@@ -17,6 +20,15 @@ class FirestoreService {
 
   Stream getStores() {
     return db.collection('shops').snapshots();
+  }
+
+  Stream<List<DocumentSnapshot>> getNearbyStores(LatLng location)
+  {
+    Geoflutterfire geo = Geoflutterfire(); 
+    GeoFirePoint center = geo.point(latitude: location.latitude, longitude: location.longitude);
+    var collectionRef = db.collection('shops');
+    var geoRef = geo.collection(collectionRef: collectionRef).within(center: center, radius: 25, field: 'location',strictMode: false);
+    return geoRef;
   }
 
   Stream getProducts() {

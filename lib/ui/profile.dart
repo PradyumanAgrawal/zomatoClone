@@ -261,12 +261,12 @@ class _ProfileState extends State<Profile> {
                         return Column(
                           children: <Widget>[
                             Stack(
-                              overflow: Overflow.visible,
+                              overflow: Overflow.clip,
                               alignment: Alignment.bottomCenter,
                               children: <Widget>[
                                 Container(
                                   height:
-                                      MediaQuery.of(context).size.height / 3,
+                                      MediaQuery.of(context).size.height*0.35,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image:
@@ -280,7 +280,7 @@ class _ProfileState extends State<Profile> {
                                       child: Container(
                                         decoration: new BoxDecoration(
                                             color: Colors.deepPurple
-                                                .withOpacity(0.2)),
+                                                .withOpacity(0.0)),
                                       )),
                                 ),
                                 Positioned(
