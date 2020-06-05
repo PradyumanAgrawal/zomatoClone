@@ -262,7 +262,7 @@ class FirestoreService {
     userDoc.reference.updateData({'address': address});
   }
 
-  void newAddress(String newAddress, DocumentSnapshot userDoc) {
+  void newAddress(Map newAddress, DocumentSnapshot userDoc) {
     List address = userDoc['address'];
     address.add(newAddress);
     userDoc.reference.updateData({'address': address});

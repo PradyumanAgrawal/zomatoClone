@@ -20,6 +20,11 @@ class _ProfileState extends State<Profile> {
   File profilePic = null;
   final picker = ImagePicker();
 
+  newAddress()
+  {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,7 +147,7 @@ class _ProfileState extends State<Profile> {
                               fillColor: Colors.grey,
                               focusColor: Colors.grey,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(15.0),
                                 borderSide:
                                     BorderSide(color: Colors.transparent),
                               ),
@@ -163,7 +168,7 @@ class _ProfileState extends State<Profile> {
                               fillColor: Colors.grey,
                               focusColor: Colors.grey,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(15.0),
                                 borderSide:
                                     BorderSide(color: Colors.transparent),
                               ),
@@ -184,7 +189,7 @@ class _ProfileState extends State<Profile> {
                               fillColor: Colors.grey,
                               focusColor: Colors.grey,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(15.0),
                                 borderSide:
                                     BorderSide(color: Colors.transparent),
                               ),
@@ -227,10 +232,6 @@ class _ProfileState extends State<Profile> {
               )
             ],
             shape: RoundedRectangleBorder(
-                // borderRadius: BorderRadius.only(
-                //   bottomLeft: Radius.circular(10),
-                //   bottomRight: Radius.circular(10),
-                // ),
                 ),
           ),
           SliverList(
@@ -266,7 +267,7 @@ class _ProfileState extends State<Profile> {
                               children: <Widget>[
                                 Container(
                                   height:
-                                      MediaQuery.of(context).size.height*0.35,
+                                      MediaQuery.of(context).size.height * 0.35,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image:
@@ -308,7 +309,6 @@ class _ProfileState extends State<Profile> {
                                         top:
                                             -MediaQuery.of(context).size.width /
                                                 6,
-                                        //right: MediaQuery.of(context).size.width/2 + MediaQuery.of(context).size.width/6,
                                         child: Container(
                                           width: MediaQuery.of(context)
                                                   .size
@@ -513,7 +513,7 @@ class _ProfileState extends State<Profile> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 SizedBox(
-                                  height: 150.0,
+                                  height: 170.0,
                                   child: ListView.builder(
                                     physics: ClampingScrollPhysics(),
                                     shrinkWrap: true,
@@ -536,8 +536,8 @@ class _ProfileState extends State<Profile> {
                                             onTap: () {
                                               showDialog(
                                                 context: context,
-                                                builder: (dContext) {
-                                                  String newAdd = '';
+                                                builder: (context) {
+                                                  Map newAdd = new Map();
                                                   return AlertDialog(
                                                     shape:
                                                         RoundedRectangleBorder(
@@ -554,46 +554,214 @@ class _ProfileState extends State<Profile> {
                                                           child: Text('Cancel'),
                                                           onPressed: () {
                                                             Navigator.of(
-                                                                    dContext)
+                                                                    context)
                                                                 .pop();
                                                           }),
                                                       FlatButton(
                                                           child: Text('Save'),
                                                           onPressed: () async {
-                                                            if (newAdd != '')
+                                                            if (newAdd != [{}])
                                                               FirestoreService()
                                                                   .newAddress(
                                                                       newAdd,
                                                                       userDoc);
 
                                                             Navigator.of(
-                                                                    dContext)
+                                                                    context)
                                                                 .pop();
                                                           }),
                                                     ],
-                                                    content: TextFormField(
-                                                      minLines: null,
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText: "New Address",
-                                                        labelText:
-                                                            "New Address",
-                                                        fillColor: Colors.grey,
-                                                        focusColor: Colors.grey,
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      5.0),
-                                                          borderSide: BorderSide(
-                                                              color: Colors
-                                                                  .transparent),
+                                                    content: ListView(
+                                                      shrinkWrap: true,
+                                                      addAutomaticKeepAlives: true,
+                                                      children: <Widget>[
+                                                        TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText: "Name",
+                                                            labelText: "Name",
+                                                            fillColor:
+                                                                Colors.grey,
+                                                            focusColor:
+                                                                Colors.grey,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15.0),
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                      .transparent),
+                                                            ),
+                                                          ),
+                                                          onChanged: (value) {
+                                                            newAdd['name'] = value;
+                                                          },
                                                         ),
-                                                      ),
-                                                      onChanged: (value) {
-                                                        newAdd = value;
-                                                      },
+                                                        SizedBox(height: 20),
+                                                        TextFormField(
+                                                          minLines: null,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                "Flat, House no., Building, Company, Apartment",
+                                                            labelText:
+                                                                "Address Line 1",
+                                                            fillColor:
+                                                                Colors.grey,
+                                                            focusColor:
+                                                                Colors.grey,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15.0),
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                      .transparent),
+                                                            ),
+                                                          ),
+                                                          onChanged: (value) {
+                                                            newAdd['line1'] = value;
+                                                          },
+                                                        ),
+                                                        SizedBox(height: 20),
+                                                        TextFormField(
+                                                          minLines: null,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                "Area, Colony, Street, Sector, Village",
+                                                            labelText:
+                                                                "Address Line 2",
+                                                            fillColor:
+                                                                Colors.grey,
+                                                            focusColor:
+                                                                Colors.grey,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15.0),
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                      .transparent),
+                                                            ),
+                                                          ),
+                                                          onChanged: (value) {
+                                                            newAdd['line2'] = value;
+                                                          },
+                                                        ),
+                                                        SizedBox(height: 20),
+                                                        TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                "Town/City",
+                                                            labelText: "city",
+                                                            fillColor:
+                                                                Colors.grey,
+                                                            focusColor:
+                                                                Colors.grey,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15.0),
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                      .transparent),
+                                                            ),
+                                                          ),
+                                                          onChanged: (value) {
+                                                            newAdd['city'] = value;
+                                                          },
+                                                        ),
+                                                         SizedBox(height: 20),
+                                                        TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                "State / Province / Region",
+                                                            labelText: "State",
+                                                            fillColor:
+                                                                Colors.grey,
+                                                            focusColor:
+                                                                Colors.grey,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15.0),
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                      .transparent),
+                                                            ),
+                                                          ),
+                                                          onChanged: (value) {
+                                                            newAdd['state'] = value;
+                                                          },
+                                                        ),
+                                                        SizedBox(height: 20),
+                                                        TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                "6 digits [0-9] PIN code",
+                                                            labelText:
+                                                                "PIN code",
+                                                            fillColor:
+                                                                Colors.grey,
+                                                            focusColor:
+                                                                Colors.grey,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15.0),
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                      .transparent),
+                                                            ),
+                                                          ),
+                                                          onChanged: (value) {
+                                                            newAdd['pincode'] = value;
+                                                          },
+                                                        ),
+                                                        SizedBox(height: 20),
+                                                        TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                "10-digit number without any prefixes",
+                                                            labelText:
+                                                                "Mobile Number",
+                                                            fillColor:
+                                                                Colors.grey,
+                                                            focusColor:
+                                                                Colors.grey,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15.0),
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                      .transparent),
+                                                            ),
+                                                          ),
+                                                          onChanged: (value) {
+                                                            newAdd['phone'] = value;
+                                                          },
+                                                        ),
+                                                      ],
                                                     ),
                                                   );
                                                 },
@@ -615,7 +783,7 @@ class _ProfileState extends State<Profile> {
                                             onTap: () {
                                               showDialog(
                                                 context: context,
-                                                builder: (dContext) {
+                                                builder: (context) {
                                                   return AlertDialog(
                                                     shape:
                                                         RoundedRectangleBorder(
@@ -639,17 +807,102 @@ class _ProfileState extends State<Profile> {
                                                     BorderRadius.circular(15.0),
                                               ),
                                               child: Container(
-                                                width: 100,
+                                                width: 150,
                                                 padding:
                                                     const EdgeInsets.all(10.0),
+                                                // child: Center(
+                                                //   child: Text(
+                                                //     userDoc['address']
+                                                //         [index - 1],
+                                                //     style: TextStyle(
+                                                //       fontSize: 10,
+                                                //       color: Colors.black87,
+                                                //     ),
+                                                //   ),
+                                                // ),
                                                 child: Center(
-                                                  child: Text(
-                                                    userDoc['address']
-                                                        [index - 1],
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      color: Colors.black87,
-                                                    ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        userDoc['address']
+                                                            [index - 1]['name'],
+                                                        // 'Name',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Text(
+                                                        userDoc['address']
+                                                                [index - 1]
+                                                            ['line1'],
+                                                        //'Address Line xxxxxxxx 1',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 3),
+                                                      Text(
+                                                        userDoc['address']
+                                                                [index - 1]
+                                                            ['line2'],
+                                                        //'AddressLine2',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 4),
+                                                      Text(
+                                                        userDoc['address']
+                                                            [index - 1]['city'],
+                                                        //'City',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 3),
+                                                      Text(
+                                                        userDoc['address']
+                                                                [index - 1]
+                                                            ['state'],
+                                                        //'State',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 3),
+                                                      Text(
+                                                        userDoc['address']
+                                                                [index - 1]
+                                                            ['pincode'],
+                                                        //'Pincode',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 4),
+                                                      Row(
+                                                        children: <Widget>[
+                                                          Icon(Icons.call,
+                                                              size: 10),
+                                                          SizedBox(width: 10),
+                                                          Text(
+                                                            userDoc['address']
+                                                                    [index - 1]
+                                                                ['phone'],
+                                                            //'xxxxxxxxxx',
+                                                            style: TextStyle(
+                                                              fontSize: 10,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
