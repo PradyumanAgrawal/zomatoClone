@@ -110,6 +110,7 @@ class HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.bold,
                 color: Colors.black),
             content: Container(
+              height: 200,
               alignment: Alignment.center,
               child: Text(
                 widget.add,

@@ -41,6 +41,10 @@ class _OrdersState extends State<Orders> {
               stream: FirestoreService().getOrders(uid) ,
               builder: (BuildContext context, AsyncSnapshot snapshot){
                 if(snapshot.hasData){
+                  if(snapshot.data=={}){
+                    return Center(child:Text('No Orders'));
+                  }
+                  else{
                   var orderList = snapshot.data.documents.toList();
                   return orderList.length==0?Center(child: Text('No Orders!', style:TextStyle(fontSize:20)),):ListView.builder(itemCount:orderList.length,
                   itemBuilder: (context, index) {
@@ -83,7 +87,7 @@ class _OrdersState extends State<Orders> {
                       ],
                     ));
                   },);
-                }
+                }}
               },
             );
           }

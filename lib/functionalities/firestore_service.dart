@@ -87,6 +87,10 @@ class FirestoreService {
         .snapshots();
   }
 
+  Stream getProductsFromShop(pId){
+    return db.collection('products').where('productId',whereIn: pId).snapshots();
+  }
+
   Stream getWishlistProducts(List wishlist) {
     return db
         .collection('products')
