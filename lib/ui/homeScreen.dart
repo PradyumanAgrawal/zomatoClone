@@ -53,6 +53,11 @@ class HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+  void rebuild(){
+    setState(() {
+      
+    });
+  }
 
   var queryResultSet = [];
   var tempSearchStore = [];
@@ -96,10 +101,6 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void rebuild() {
-    setState(() {});
-  }
-
   void _showAlertDialog(context) {
     showDialog(
         context: context,
@@ -114,6 +115,7 @@ class HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.bold,
                 color: Colors.black),
             content: Container(
+              height: 200,
               alignment: Alignment.center,
               child: Text(
                 widget.add,
