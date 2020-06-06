@@ -53,10 +53,9 @@ class HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-  void rebuild(){
-    setState(() {
-      
-    });
+
+  void rebuild() {
+    setState(() {});
   }
 
   var queryResultSet = [];
@@ -117,15 +116,20 @@ class HomeScreenState extends State<HomeScreen> {
             content: Container(
               height: 200,
               alignment: Alignment.center,
-              child: Text(
-                widget.add,
-                style: TextStyle(
-                    color: Colors.blueGrey[900],
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 15,
-                    height: 1.4),
-                textAlign: TextAlign.center,
+              child: Column(
+                children: [
+                  Text(
+                    widget.add,
+                    style: TextStyle(
+                        color: Colors.blueGrey[900],
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                        height: 1.4),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(widget.location.toString()),
+                ],
               ),
             ),
             actions: <Widget>[
@@ -140,11 +144,6 @@ class HomeScreenState extends State<HomeScreen> {
             ],
           );
         });
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -302,6 +301,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       .getAddress(result)
                                       .then((value) {
                                     setState(() {
+                                      widget.location = result;
                                       widget.add = value;
                                       Scaffold.of(context)
                                           .showSnackBar(SnackBar(
@@ -309,7 +309,6 @@ class HomeScreenState extends State<HomeScreen> {
                                       ));
                                     });
                                   });
-                                  widget.location = result;
                                 }
                               },
                               shape: StadiumBorder(),
@@ -329,70 +328,7 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.12,
-                        child: (widget.location == null)
-                            ? Center(
-                                child: SpinKitChasingDots(
-                                    color: Colors.deepPurple))
-                            : StreamBuilder(
-                                stream: //FirestoreService().getStores():
-                                    FirestoreService()
-                                        .getNearbyStores(widget.location),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData)
-                                    return Center(
-                                        child: SpinKitChasingDots(
-                                            color: Colors.deepPurple));
-                                  return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data.length,
-                                    itemBuilder: (context, index) {
-                                      DocumentSnapshot document =
-                                          snapshot.data[index];
-                                      String type = document['type'];
-                                      return InkWell(
-                                        onTap: () {
-                                          print(index);
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.only(
-                                              left: 4, right: 4),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.pink[200],
-                                                ),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    13,
-                                                padding: EdgeInsets.all(5.0),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Image.asset(
-                                                      'assets/typeIcons/$type.png'),
-                                                ),
-                                              ),
-                                              Text(document['name'],
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }),
-                      ),
+                      Store(),
                       Padding(
                         padding: EdgeInsets.all(10.0),
                         child: Row(
@@ -826,6 +762,90 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class Store extends StatefulWidget {
+  @override
+  _StoreState createState() => _StoreState();
+}
+
+class _StoreState extends State<Store> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: LocalData().getLocation(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.12,
+            child: (snapshot.data == null)
+                ? Center(child: Text('Location not Found'))
+                : StreamBuilder(
+                    stream: //FirestoreService().getStores():
+                        FirestoreService().getNearbyStores(snapshot.data),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return Center(
+                            child:
+                                SpinKitChasingDots(color: Colors.deepPurple));
+                      return snapshot.data.length == 0
+                          ? Center(
+                              child: Text('No Stores Nearby'),
+                            )
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot document =
+                                    snapshot.data[index];
+                                String type = document['type'];
+                                return InkWell(
+                                  onTap: () {
+                                    print(index);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 4, right: 4),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.pink[200],
+                                          ),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              13,
+                                          padding: EdgeInsets.all(5.0),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Image.asset(
+                                                'assets/typeIcons/$type.png'),
+                                          ),
+                                        ),
+                                        Text(document['name'],
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                    }),
+          );
+        }
+        else{
+          return SpinKitChasingDots(color: Colors.deepPurple,);
+        }
+      },
     );
   }
 }

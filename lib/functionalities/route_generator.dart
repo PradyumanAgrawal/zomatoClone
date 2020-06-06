@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/ui/catagories_products.dart';
 import 'package:my_flutter_app/ui/discover_shop.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
@@ -17,6 +16,7 @@ import 'package:my_flutter_app/ui/cart.dart';
 import 'package:my_flutter_app/ui/share.dart';
 import 'package:my_flutter_app/ui/discover1.dart';
 import 'package:my_flutter_app/ui/wishlist.dart';
+import 'package:my_flutter_app/ui/feedback.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -85,6 +85,10 @@ class RouteGenerator {
         case '/profile':
         return MaterialPageRoute(
           builder: (_) => Profile(),
+        );
+        case '/feedback':
+        return MaterialPageRoute(
+          builder: (_) => FeedbackPage(),
         );
         case '/review_order':
         return MaterialPageRoute(
