@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Discover extends StatefulWidget {
   //BuildContext navContext;
@@ -374,9 +375,24 @@ Widget itemCard(
                                         (2.7 / 3),
                                     child: Center(
                                       child: FlatButton(
-                                        onPressed: () {
-                                          FirestoreService().addToCart(
-                                              document.documentID, 1, false);
+                                        onPressed: () async {
+                                          int status = await FirestoreService()
+                                              .addToCart(document.documentID, 1,
+                                                  false);
+                                          if (status == 2) {
+                                            Fluttertoast.showToast(
+                                              msg: "Product added to the cart!",
+                                            );
+                                          } else if (status == 1) {
+                                            Fluttertoast.showToast(
+                                              msg:
+                                                  "This product is already in the cart",
+                                            );
+                                          } else if (status == 0) {
+                                            Fluttertoast.showToast(
+                                              msg: "Something went wrong!!!",
+                                            );
+                                          }
                                         },
                                         child: Text(
                                           'Add To Cart',

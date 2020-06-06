@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
@@ -53,10 +54,9 @@ class HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-  void rebuild(){
-    setState(() {
-      
-    });
+
+  void rebuild() {
+    setState(() {});
   }
 
   var queryResultSet = [];
@@ -329,69 +329,72 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.12,
-                        child: (widget.location == null)
-                            ? Center(
-                                child: SpinKitChasingDots(
-                                    color: Colors.deepPurple))
-                            : StreamBuilder(
-                                stream: //FirestoreService().getStores():
-                                    FirestoreService()
-                                        .getNearbyStores(widget.location),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData)
-                                    return Center(
-                                        child: SpinKitChasingDots(
-                                            color: Colors.deepPurple));
-                                  return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data.length,
-                                    itemBuilder: (context, index) {
-                                      DocumentSnapshot document =
-                                          snapshot.data[index];
-                                      String type = document['type'];
-                                      return InkWell(
-                                        onTap: () {
-                                          print(index);
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.only(
-                                              left: 4, right: 4),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.pink[200],
+                      AutomaticKeepAlive(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.12,
+                          child: (widget.location == null)
+                              ? Center(
+                                  child: SpinKitChasingDots(
+                                      color: Colors.deepPurple))
+                              : StreamBuilder(
+                                  stream: //FirestoreService().getStores():
+                                      FirestoreService()
+                                          .getNearbyStores(widget.location),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData)
+                                      return Center(
+                                          child: SpinKitChasingDots(
+                                              color: Colors.deepPurple));
+                                    return ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: snapshot.data.length,
+                                      itemBuilder: (context, index) {
+                                        DocumentSnapshot document =
+                                            snapshot.data[index];
+                                        String type = document['type'];
+                                        return InkWell(
+                                          onTap: () {
+                                            print(index);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                                left: 4, right: 4),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: <Widget>[
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.pink[200],
+                                                  ),
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      13,
+                                                  padding: EdgeInsets.all(5.0),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            4.0),
+                                                    child: Image.asset(
+                                                        'assets/typeIcons/$type.png'),
+                                                  ),
                                                 ),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    13,
-                                                padding: EdgeInsets.all(5.0),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Image.asset(
-                                                      'assets/typeIcons/$type.png'),
-                                                ),
-                                              ),
-                                              Text(document['name'],
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  )),
-                                            ],
+                                                Text(document['name'],
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    )),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }),
+                                        );
+                                      },
+                                    );
+                                  }),
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(10.0),
@@ -735,9 +738,24 @@ class HomeScreenState extends State<HomeScreen> {
                                           (2.7 / 3),
                                       child: Center(
                                         child: FlatButton(
-                                          onPressed: () {
-                                            FirestoreService().addToCart(
-                                                document.documentID, 1, false);
+                                          onPressed: () async {
+                                              int status = await FirestoreService()
+                                              .addToCart(document.documentID, 1,
+                                                  false);
+                                          if (status == 2) {
+                                            Fluttertoast.showToast(
+                                              msg: "Product added to the cart!",
+                                            );
+                                          } else if (status == 1) {
+                                            Fluttertoast.showToast(
+                                              msg:
+                                                  "This product is already in the cart",
+                                            );
+                                          } else if (status == 0) {
+                                            Fluttertoast.showToast(
+                                              msg: "Something went wrong!!!",
+                                            );
+                                          }
                                           },
                                           child: Text(
                                             'Add To Cart',
