@@ -5,15 +5,12 @@ import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Description extends StatefulWidget {
-  DocumentSnapshot document;
-  Description({DocumentSnapshot document}) {
-    this.document = document;
-  }
+  final DocumentSnapshot document;
+  Description({this.document});
 
   @override
   _DescriptionState createState() => _DescriptionState(document);
@@ -23,6 +20,7 @@ class _DescriptionState extends State<Description> {
   DocumentSnapshot document;
   int photoIndex = 0;
   List<String> photos = [];
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   _DescriptionState(DocumentSnapshot document) {
     this.document = document;
     //this.photos.addAll(document['catalogue']);
@@ -36,6 +34,7 @@ class _DescriptionState extends State<Description> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: ListView(
         shrinkWrap: true,
         children: <Widget>[
@@ -481,31 +480,21 @@ class _DescriptionState extends State<Description> {
                         bottomLeft: Radius.circular(10))),
                 child: Center(
                   child: FlatButton(
-                    onPressed: () {
+                    onPressed: () async {
                       print('pressed');
-                      FirestoreService()
-                          .addToCart(document.documentID, 1, false)
-                          .then((onValue) {
-                        if (onValue == 2) {
-                          // Fluttertoast.showToast(
-                          // msg: "Product added to the cart",
-                          // toastLength: Toast.LENGTH_SHORT,
-                          // gravity: ToastGravity.BOTTOM,
-                          // timeInSecForIosWeb: 1,
-                          // backgroundColor: Colors.grey,
-                          // textColor: Colors.white,
-                          //);
-                        } else if (onValue == 1) {
-                          Fluttertoast.showToast(
-                            msg: "Product is already in the cart",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.grey,
-                            textColor: Colors.white,
-                          );
-                        }
-                      });
+                      int status = await FirestoreService()
+                          .addToCart(document.documentID, 1, false);
+
+                      if (status == 2) {
+                        final snackbar = SnackBar(content: Text('Product added to the cart!'));
+                        _scaffoldKey.currentState.showSnackBar(snackbar);
+                      } else if (status == 1) {
+                        final snackbar = SnackBar(content: Text('This product is already in the cart'));
+                        _scaffoldKey.currentState.showSnackBar(snackbar);
+                      } else if (status == 0) {
+                        final snackbar = SnackBar(content: Text('Something went wrong!!!'));
+                        _scaffoldKey.currentState.showSnackBar(snackbar);
+                      }
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -534,62 +523,5 @@ class _DescriptionState extends State<Description> {
         ),
       ),
     );
-  }
-}
-
-class SelectedPhoto extends StatelessWidget {
-  final int numberOfDots;
-  final int photoIndex;
-
-  SelectedPhoto({this.numberOfDots, this.photoIndex});
-
-  Widget _inactivePhoto() {
-    return new Container(
-      child: Padding(
-        padding: EdgeInsets.only(left: 3.0, right: 3.0),
-        child: Container(
-            width: 8.0,
-            height: 8.0,
-            decoration: BoxDecoration(
-                color: Colors.grey, borderRadius: BorderRadius.circular(4.0))),
-      ),
-    );
-  }
-
-  Widget _activePhoto() {
-    return new Container(
-      child: Padding(
-        padding: EdgeInsets.only(left: 3.0, right: 3.0),
-        child: Container(
-            width: 10.0,
-            height: 10.0,
-            decoration: BoxDecoration(
-                color: Colors.purple,
-                borderRadius: BorderRadius.circular(5.0),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey, spreadRadius: 0.0, blurRadius: 2.0)
-                ])),
-      ),
-    );
-  }
-
-  List<Widget> _buildDots() {
-    List<Widget> dots = [];
-
-    for (int i = 0; i < numberOfDots; ++i) {
-      dots.add(i == photoIndex ? _activePhoto() : _inactivePhoto());
-    }
-
-    return dots;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: _buildDots(),
-    ));
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
@@ -671,9 +672,24 @@ class HomeScreenState extends State<HomeScreen> {
                                           (2.7 / 3),
                                       child: Center(
                                         child: FlatButton(
-                                          onPressed: () {
-                                            FirestoreService().addToCart(
-                                                document.documentID, 1, false);
+                                          onPressed: () async {
+                                              int status = await FirestoreService()
+                                              .addToCart(document.documentID, 1,
+                                                  false);
+                                          if (status == 2) {
+                                            Fluttertoast.showToast(
+                                              msg: "Product added to the cart!",
+                                            );
+                                          } else if (status == 1) {
+                                            Fluttertoast.showToast(
+                                              msg:
+                                                  "This product is already in the cart",
+                                            );
+                                          } else if (status == 0) {
+                                            Fluttertoast.showToast(
+                                              msg: "Something went wrong!!!",
+                                            );
+                                          }
                                           },
                                           child: Text(
                                             'Add To Cart',
