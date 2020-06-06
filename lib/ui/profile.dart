@@ -19,6 +19,8 @@ class _ProfileState extends State<Profile> {
   String phone;
   File profilePic = null;
   final picker = ImagePicker();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  newAddress() {}
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class _ProfileState extends State<Profile> {
           showDialog(
             context: context,
             builder: (context) {
+              bool editVisible = true;
               return StatefulBuilder(builder: (context, setState) {
                 return AlertDialog(
                   shape: RoundedRectangleBorder(
@@ -57,13 +60,11 @@ class _ProfileState extends State<Profile> {
                     FlatButton(
                       child: Text('Save'),
                       onPressed: () async {
-                        bool condition = name != null &&
-                            email != null &&
-                            phone != null &&
-                            name != '' &&
-                            email != '' &&
-                            phone != '';
-                        if (condition) {
+                        if (_formKey.currentState.validate()) {
+                          setState(() {
+                            editVisible = false;
+                          });
+
                           bool status = await FirestoreService().editProfile(
                               name, email, phone, userDoc, profilePic);
                           if (status) {
@@ -77,124 +78,149 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                   contentPadding: EdgeInsets.all(0),
-                  content: Container(
-                    child: ListView(
-                      children: <Widget>[
-                        SizedBox(height: 30),
-                        Center(
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                height: 100,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    image: (profilePic != null)
-                                        ? FileImage(profilePic)
-                                        : NetworkImage(
-                                            userDoc['displayPic'],
-                                          ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black,
-                                      offset: Offset(0.0, 1.0), //(x,y)
-                                      blurRadius: 6.0,
+                  content: Visibility(
+                    visible: editVisible,
+                    replacement: Center(
+                      child: SpinKitChasingDots(
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Container(
+                        child: ListView(
+                          children: <Widget>[
+                            SizedBox(height: 30),
+                            Center(
+                              child: Stack(
+                                children: <Widget>[
+                                  Container(
+                                    height: 100,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        image: (profilePic != null)
+                                            ? FileImage(profilePic)
+                                            : NetworkImage(
+                                                userDoc['displayPic'],
+                                              ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black,
+                                          offset: Offset(0.0, 1.0), //(x,y)
+                                          blurRadius: 6.0,
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  height: 30,
-                                  width: 30,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
                                   ),
-                                  child: IconButton(
-                                    color: Colors.deepPurple[900],
-                                    icon: Icon(Icons.edit, size: 15),
-                                    onPressed: () async {
-                                      final tempImage = await picker.getImage(
-                                          source: ImageSource.gallery);
-                                      setState(() {
-                                        profilePic = File(tempImage.path);
-                                      });
-                                    },
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      height: 30,
+                                      width: 30,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white,
+                                      ),
+                                      child: IconButton(
+                                        color: Colors.deepPurple[900],
+                                        icon: Icon(Icons.edit, size: 15),
+                                        onPressed: () async {
+                                          final tempImage =
+                                              await picker.getImage(
+                                                  source: ImageSource.gallery);
+                                          setState(() {
+                                            profilePic = File(tempImage.path);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 30),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please Enter Name';
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Name",
+                                  labelText: "Name",
+                                  fillColor: Colors.grey,
+                                  focusColor: Colors.grey,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: "Name",
-                              labelText: "Name",
-                              fillColor: Colors.grey,
-                              focusColor: Colors.grey,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
+                                onChanged: (value) {
+                                  name = value;
+                                },
                               ),
                             ),
-                            onChanged: (value) {
-                              name = value;
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            initialValue: email,
-                            decoration: InputDecoration(
-                              hintText: "Email",
-                              labelText: "Email",
-                              fillColor: Colors.grey,
-                              focusColor: Colors.grey,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
+                            /* SizedBox(height: 15),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextFormField(
+                                initialValue: email,
+                                decoration: InputDecoration(
+                                  hintText: "Email",
+                                  labelText: "Email",
+                                  fillColor: Colors.grey,
+                                  focusColor: Colors.grey,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  email = value;
+                                },
+                              ),
+                            ), */
+                            SizedBox(height: 15),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty || value.length != 10) {
+                                    return 'Please Enter 10-digit Mobile No.';
+                                  }
+                                },
+                                keyboardType: TextInputType.number,
+                                initialValue: phone,
+                                decoration: InputDecoration(
+                                  hintText: "Contact",
+                                  labelText: "Contact",
+                                  fillColor: Colors.grey,
+                                  focusColor: Colors.grey,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  phone = value;
+                                },
                               ),
                             ),
-                            onChanged: (value) {
-                              email = value;
-                            },
-                          ),
+                          ],
                         ),
-                        SizedBox(height: 15),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            initialValue: phone,
-                            decoration: InputDecoration(
-                              hintText: "Contact",
-                              labelText: "Contact",
-                              fillColor: Colors.grey,
-                              focusColor: Colors.grey,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                              ),
-                            ),
-                            onChanged: (value) {
-                              phone = value;
-                            },
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 );
@@ -226,12 +252,7 @@ class _ProfileState extends State<Profile> {
                 onPressed: () {},
               )
             ],
-            shape: RoundedRectangleBorder(
-                // borderRadius: BorderRadius.only(
-                //   bottomLeft: Radius.circular(10),
-                //   bottomRight: Radius.circular(10),
-                // ),
-                ),
+            shape: RoundedRectangleBorder(),
           ),
           SliverList(
             delegate: SliverChildListDelegate(
@@ -266,7 +287,7 @@ class _ProfileState extends State<Profile> {
                               children: <Widget>[
                                 Container(
                                   height:
-                                      MediaQuery.of(context).size.height*0.35,
+                                      MediaQuery.of(context).size.height * 0.35,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image:
@@ -308,7 +329,6 @@ class _ProfileState extends State<Profile> {
                                         top:
                                             -MediaQuery.of(context).size.width /
                                                 6,
-                                        //right: MediaQuery.of(context).size.width/2 + MediaQuery.of(context).size.width/6,
                                         child: Container(
                                           width: MediaQuery.of(context)
                                                   .size
@@ -423,7 +443,7 @@ class _ProfileState extends State<Profile> {
                               ],
                             ),
                             Divider(),
-                            Padding(
+                            /* Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),
                               child: Row(
@@ -444,7 +464,7 @@ class _ProfileState extends State<Profile> {
                                 ],
                               ),
                             ),
-                            Divider(),
+                            Divider(), */
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),
@@ -513,7 +533,7 @@ class _ProfileState extends State<Profile> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 SizedBox(
-                                  height: 150.0,
+                                  height: 170.0,
                                   child: ListView.builder(
                                     physics: ClampingScrollPhysics(),
                                     shrinkWrap: true,
@@ -534,70 +554,20 @@ class _ProfileState extends State<Profile> {
                                           ),
                                           child: InkWell(
                                             onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (dContext) {
-                                                  String newAdd = '';
-                                                  return AlertDialog(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    title: Center(
-                                                      child:
-                                                          Text('New Address'),
-                                                    ),
-                                                    actions: <Widget>[
-                                                      FlatButton(
-                                                          child: Text('Cancel'),
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    dContext)
-                                                                .pop();
-                                                          }),
-                                                      FlatButton(
-                                                          child: Text('Save'),
-                                                          onPressed: () async {
-                                                            if (newAdd != '')
-                                                              FirestoreService()
-                                                                  .newAddress(
-                                                                      newAdd,
-                                                                      userDoc);
-
-                                                            Navigator.of(
-                                                                    dContext)
-                                                                .pop();
-                                                          }),
-                                                    ],
-                                                    content: TextFormField(
-                                                      minLines: null,
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText: "New Address",
-                                                        labelText:
-                                                            "New Address",
-                                                        fillColor: Colors.grey,
-                                                        focusColor: Colors.grey,
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      5.0),
-                                                          borderSide: BorderSide(
-                                                              color: Colors
-                                                                  .transparent),
-                                                        ),
-                                                      ),
-                                                      onChanged: (value) {
-                                                        newAdd = value;
-                                                      },
-                                                    ),
-                                                  );
-                                                },
-                                              );
+                                              var sheetController =
+                                                  showBottomSheet(
+                                                      elevation: 10,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15)),
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          AddSheet(
+                                                            userDoc: userDoc,
+                                                          ));
                                             },
                                             child: Container(
                                               width: 100,
@@ -613,9 +583,10 @@ class _ProfileState extends State<Profile> {
                                         children: <Widget>[
                                           InkWell(
                                             onTap: () {
+                                              /* 
                                               showDialog(
                                                 context: context,
-                                                builder: (dContext) {
+                                                builder: (context) {
                                                   return AlertDialog(
                                                     shape:
                                                         RoundedRectangleBorder(
@@ -631,7 +602,7 @@ class _ProfileState extends State<Profile> {
                                                     ),
                                                   );
                                                 },
-                                              );
+                                              ); */
                                             },
                                             child: Card(
                                               shape: RoundedRectangleBorder(
@@ -639,17 +610,102 @@ class _ProfileState extends State<Profile> {
                                                     BorderRadius.circular(15.0),
                                               ),
                                               child: Container(
-                                                width: 100,
+                                                width: 150,
                                                 padding:
                                                     const EdgeInsets.all(10.0),
+                                                // child: Center(
+                                                //   child: Text(
+                                                //     userDoc['address']
+                                                //         [index - 1],
+                                                //     style: TextStyle(
+                                                //       fontSize: 10,
+                                                //       color: Colors.black87,
+                                                //     ),
+                                                //   ),
+                                                // ),
                                                 child: Center(
-                                                  child: Text(
-                                                    userDoc['address']
-                                                        [index - 1],
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      color: Colors.black87,
-                                                    ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        userDoc['address']
+                                                            [index - 1]['name'],
+                                                        // 'Name',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Text(
+                                                        userDoc['address']
+                                                                [index - 1]
+                                                            ['line1'],
+                                                        //'Address Line xxxxxxxx 1',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 3),
+                                                      Text(
+                                                        userDoc['address']
+                                                                [index - 1]
+                                                            ['line2'],
+                                                        //'AddressLine2',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 4),
+                                                      Text(
+                                                        userDoc['address']
+                                                            [index - 1]['city'],
+                                                        //'City',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 3),
+                                                      Text(
+                                                        userDoc['address']
+                                                                [index - 1]
+                                                            ['state'],
+                                                        //'State',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 3),
+                                                      Text(
+                                                        userDoc['address']
+                                                                [index - 1]
+                                                            ['pincode'],
+                                                        //'Pincode',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 4),
+                                                      Row(
+                                                        children: <Widget>[
+                                                          Icon(Icons.call,
+                                                              size: 10),
+                                                          SizedBox(width: 10),
+                                                          Text(
+                                                            userDoc['address']
+                                                                    [index - 1]
+                                                                ['phone'],
+                                                            //'xxxxxxxxxx',
+                                                            style: TextStyle(
+                                                              fontSize: 10,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
@@ -701,6 +757,226 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AddSheet extends StatefulWidget {
+  var userDoc;
+  AddSheet({this.userDoc});
+  @override
+  _AddSheetState createState() => _AddSheetState();
+}
+
+class _AddSheetState extends State<AddSheet> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    Map newAdd = new Map();
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 40),
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            shrinkWrap: true,
+            addAutomaticKeepAlives: true,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Name';
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Name",
+                    labelText: "Name",
+                    fillColor: Colors.grey,
+                    focusColor: Colors.grey,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    newAdd['name'] = value;
+                  },
+                ),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter Address Line 1';
+                  }
+                },
+                minLines: null,
+                decoration: InputDecoration(
+                  hintText: "Flat, House no., Building, Company, Apartment",
+                  labelText: "Address Line 1",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['line1'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter Address Line 2';
+                  }
+                },
+                minLines: null,
+                decoration: InputDecoration(
+                  hintText: "Area, Colony, Street, Sector, Village",
+                  labelText: "Address Line 2",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['line2'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter City';
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: "Town/City",
+                  labelText: "city",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['city'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter State';
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: "State / Province / Region",
+                  labelText: "State",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['state'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty || value.length != 6) {
+                    return 'Please Enter valid Pincode';
+                  }
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: "6 digits [0-9] PIN code",
+                  labelText: "PIN code",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['pincode'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty || value.length != 10) {
+                    return 'Please Enter 10-digit Number';
+                  }
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: "10-digit number without any prefixes",
+                  labelText: "Mobile Number",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['phone'] = value;
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ActionChip(
+                          backgroundColor: Colors.deepPurple,
+                          label: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Cancel',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white)),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                      ActionChip(
+                          backgroundColor: Colors.deepPurple,
+                          label: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Save',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              FirestoreService()
+                                  .newAddress(newAdd, widget.userDoc);
+                              Navigator.of(context).pop();
+                            }
+                          }),
+                    ]),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

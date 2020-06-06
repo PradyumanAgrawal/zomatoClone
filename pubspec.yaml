@@ -48,7 +48,6 @@ dependencies:
     git:
       url: git://github.com/mateotomasgomez/line_awesome_icons_flutter.git
       ref: master
-  # geoflutterfire: ^2.1.0
 
 dev_dependencies:
   flutter_test:

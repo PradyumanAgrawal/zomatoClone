@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/ui/catagories_products.dart';
 import 'package:my_flutter_app/ui/discover_shop.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
@@ -86,6 +85,10 @@ class RouteGenerator {
         case '/profile':
         return MaterialPageRoute(
           builder: (_) => Profile(),
+        );
+        case '/feedback':
+        return MaterialPageRoute(
+          builder: (_) => FeedbackPage(),
         );
         case '/review_order':
         return MaterialPageRoute(

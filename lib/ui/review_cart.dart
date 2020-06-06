@@ -34,26 +34,35 @@ class _ReviewCartState extends State<ReviewCart> {
   }
 
   Future<void> newMobileNo(context) {
+    final GlobalKey<FormState> _fKey = GlobalKey<FormState>();
     return showDialog(
         context: context,
         builder: (dContext) {
           String newAdd = '';
           return AlertDialog(
-              content: TextFormField(
-                keyboardType: TextInputType.number,
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintText: "New Mobile Number",
-                  fillColor: Colors.grey,
-                  focusColor: Colors.grey,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    borderSide: BorderSide(color: Colors.transparent),
+              content: Form(
+                key: _fKey,
+                child: TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty || value.length != 10) {
+                      return 'Please Enter 10-digit Number';
+                    }
+                  },
+                  keyboardType: TextInputType.number,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    hintText: "New Mobile Number",
+                    fillColor: Colors.grey,
+                    focusColor: Colors.grey,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
                   ),
+                  onChanged: (value) {
+                    newAdd = value;
+                  },
                 ),
-                onChanged: (value) {
-                  newAdd = value;
-                },
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -70,56 +79,12 @@ class _ReviewCartState extends State<ReviewCart> {
                 FlatButton(
                     child: Text('Save'),
                     onPressed: () async {
-                      print(newAdd);
-                      if (newAdd != '') {
-                        await FirestoreService().addMobile(newAdd);
-                        Navigator.of(dContext).pop();
-                      }
-                    }),
-              ]);
-        });
-  }
-
-  Future<void> newAddress(context) {
-    return showDialog(
-        context: context,
-        builder: (dContext) {
-          String newAdd = '';
-          return AlertDialog(
-              content: TextFormField(
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintText: "New Address",
-                  fillColor: Colors.grey,
-                  focusColor: Colors.grey,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    borderSide: BorderSide(color: Colors.transparent),
-                  ),
-                ),
-                onChanged: (value) {
-                  newAdd = value;
-                },
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              title: Center(
-                child: Text('New Address'),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                    child: Text('Cancel'),
-                    onPressed: () {
-                      Navigator.of(dContext).pop();
-                    }),
-                FlatButton(
-                    child: Text('Save'),
-                    onPressed: () async {
-                      print(newAdd);
-                      if (newAdd != '') {
-                        await FirestoreService().addAddress(newAdd);
-                        Navigator.of(dContext).pop();
+                      if (_fKey.currentState.validate()) {
+                        print(newAdd);
+                        if (newAdd != '') {
+                          await FirestoreService().addMobile(newAdd);
+                          Navigator.of(dContext).pop();
+                        }
                       }
                     }),
               ]);
@@ -236,51 +201,118 @@ class _ReviewCartState extends State<ReviewCart> {
                     ),
                     snapshot.data['address'].length == 0
                         ? Container()
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                        : Wrap(
                             children: List<Widget>.generate(
                                 snapshot.data['address'].length, (index) {
-                              return InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedAdd = index;
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                            return InkWell(
+                              onTap: () {
+                                setState(() {
+                                  selectedAdd = index;
+                                });
+                              },
+                              child: Card(
+                                clipBehavior: Clip.hardEdge,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: Container(
+                                  color: index == selectedAdd
+                                      ? Colors.deepPurple[100]
+                                      : Colors.white,
+                                  width: 150,
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Center(
                                     child: Column(
-                                      children: [
-                                        Container(
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                              color: index == selectedAdd
-                                                  ? Colors.deepPurple[100]
-                                                  : Colors.white,
-                                            ),
-                                            alignment: Alignment.centerLeft,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.7,
-                                            child: Text(
-                                              snapshot.data['address'][index],
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          snapshot.data['address'][index]
+                                              ['name'],
+                                          // 'Name',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          snapshot.data['address'][index]
+                                              ['line1'],
+                                          //'Address Line xxxxxxxx 1',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        SizedBox(height: 3),
+                                        Text(
+                                          snapshot.data['address'][index]
+                                              ['line2'],
+                                          //'AddressLine2',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          snapshot.data['address'][index]
+                                              ['city'],
+                                          //'City',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        SizedBox(height: 3),
+                                        Text(
+                                          snapshot.data['address'][index]
+                                              ['state'],
+                                          //'State',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        SizedBox(height: 3),
+                                        Text(
+                                          snapshot.data['address'][index]
+                                              ['pincode'],
+                                          //'Pincode',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Row(
+                                          children: <Widget>[
+                                            Icon(Icons.call, size: 10),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              snapshot.data['address'][index]
+                                                  ['phone'],
+                                              //'xxxxxxxxxx',
                                               style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Colors.black),
-                                            )),
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  ));
-                            })),
+                                  ),
+                                ),
+                              ),
+                            );
+                          })),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: OutlineButton(
                           onPressed: () {
-                            newAddress(context);
+                            /* newAddress(context); */
+                            var sheetController = showBottomSheet(
+                                elevation: 15,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                context: context,
+                                builder: (context) => AddSheet());
                           },
                           child: Row(
                             children: [Icon(Icons.add), Text('New Address')],
@@ -352,6 +384,223 @@ class _ReviewCartState extends State<ReviewCart> {
             ));
           }
         },
+      ),
+    );
+  }
+}
+
+class AddSheet extends StatefulWidget {
+  @override
+  _AddSheetState createState() => _AddSheetState();
+}
+
+class _AddSheetState extends State<AddSheet> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    Map newAdd = new Map();
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 40),
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            shrinkWrap: true,
+            addAutomaticKeepAlives: true,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Name';
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Name",
+                    labelText: "Name",
+                    fillColor: Colors.grey,
+                    focusColor: Colors.grey,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    newAdd['name'] = value;
+                  },
+                ),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter Address Line 1';
+                  }
+                },
+                minLines: null,
+                decoration: InputDecoration(
+                  hintText: "Flat, House no., Building, Company, Apartment",
+                  labelText: "Address Line 1",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['line1'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter Address Line 2';
+                  }
+                },
+                minLines: null,
+                decoration: InputDecoration(
+                  hintText: "Area, Colony, Street, Sector, Village",
+                  labelText: "Address Line 2",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['line2'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter City';
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: "Town/City",
+                  labelText: "city",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['city'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter State';
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: "State / Province / Region",
+                  labelText: "State",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['state'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty || value.length != 6) {
+                    return 'Please Enter valid Pincode';
+                  }
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: "6 digits [0-9] PIN code",
+                  labelText: "PIN code",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['pincode'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty || value.length != 10) {
+                    return 'Please Enter 10-digit Number';
+                  }
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: "10-digit number without any prefixes",
+                  labelText: "Mobile Number",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['phone'] = value;
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ActionChip(
+                          backgroundColor: Colors.deepPurple,
+                          label: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Cancel',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white)),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                      ActionChip(
+                          backgroundColor: Colors.deepPurple,
+                          label: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Save',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              FirestoreService().addAddress(newAdd);
+                              Navigator.of(context).pop();
+                            }
+                          }),
+                    ]),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

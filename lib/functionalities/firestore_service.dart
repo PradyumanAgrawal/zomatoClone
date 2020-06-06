@@ -145,8 +145,9 @@ class FirestoreService {
   }
 
   Future<int> addToCart(String productId, int quantity, bool updating) async {
-    Future<String> email = LocalData().getUserEmail().then((userEmail) {
-      db
+    int status;
+    await LocalData().getUserEmail().then((userEmail) async {
+      await db
           .collection('users')
           .where('email', isEqualTo: userEmail)
           .getDocuments()
@@ -158,29 +159,29 @@ class FirestoreService {
             if (quantity == 0)
               cart.remove(productId);
             else
-              cart['$productId'] =
-                  quantity; // updating the quantity of the product in the cart
-            //cart.addEntries({'$productId' : quantity})
+              cart['$productId'] = quantity; // updating the quantity of the product in the cart
             db.collection('users').document(userId).updateData({'cart': cart});
-            return 3; // cart updated
+            status = 3; // cart updated
           } else {
             if (cart.containsKey(productId))
-              return 1; //product is already in the cart
+              status =  1; //product is already in the cart
             else {
               cart['$productId'] = quantity; // adding a new entry in the map
               db
                   .collection('users')
                   .document(userId)
                   .updateData({'cart': cart});
-              return 2; //added a new product in the cart
+              status =  2; //added a new product in the cart
             }
           }
         }
       }).catchError((error) {
         print('error: ' + error);
-        return false;
+        status = 0;
       });
     });
+
+    return status;
   }
 
   Future<DocumentSnapshot> getShop(DocumentReference shopRef) async {
@@ -262,7 +263,7 @@ class FirestoreService {
     userDoc.reference.updateData({'address': address});
   }
 
-  void newAddress(String newAddress, DocumentSnapshot userDoc) {
+  void newAddress(Map newAddress, DocumentSnapshot userDoc) {
     List address = userDoc['address'];
     address.add(newAddress);
     userDoc.reference.updateData({'address': address});
@@ -273,7 +274,7 @@ class FirestoreService {
     await db.collection('users').document(uid).updateData({'mobileNo':newNumber});
   }
   
-  Future<void> addAddress(String newAdd)async{
+  Future<void> addAddress(Map newAdd)async{
     var uid = await LocalData().getUid();
     var userDoc = await db.collection('users').document(uid).get();
     List<dynamic> address = userDoc['address'];

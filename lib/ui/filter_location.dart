@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
@@ -198,7 +199,8 @@ class _FireMapState extends State<FireMap> {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
-            onPressed: () {
+            onPressed: () async{
+              await LocalData().saveLocation(latitude:markerPosition.latitude, longitude: markerPosition.longitude);
               Navigator.pop(context, markerPosition);
             },
           ),
