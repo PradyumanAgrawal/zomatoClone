@@ -60,21 +60,20 @@ class _ProfileState extends State<Profile> {
                     FlatButton(
                       child: Text('Save'),
                       onPressed: () async {
-                        if(_formKey.currentState.validate()){
+                        if (_formKey.currentState.validate()) {
                           setState(() {
-                          editVisible = false;
-                        });
+                            editVisible = false;
+                          });
 
-                        bool status = await FirestoreService().editProfile(
-                            name, email, phone, userDoc, profilePic);
-                        if (status) {
-                          // Scaffold.of(context).showSnackBar(SnackBar(
-                          //   content: Text('Updated!!'),
-                          // ));
-                          Navigator.of(context).pop();
+                          bool status = await FirestoreService().editProfile(
+                              name, email, phone, userDoc, profilePic);
+                          if (status) {
+                            // Scaffold.of(context).showSnackBar(SnackBar(
+                            //   content: Text('Updated!!'),
+                            // ));
+                            Navigator.of(context).pop();
+                          }
                         }
-                        }
-                        
                       },
                     ),
                   ],
@@ -569,249 +568,6 @@ class _ProfileState extends State<Profile> {
                                                           AddSheet(
                                                             userDoc: userDoc,
                                                           ));
-
-                                              /* 
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  Map newAdd = new Map();
-                                                  return AlertDialog(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    title: Center(
-                                                      child:
-                                                          Text('New Address'),
-                                                    ),
-                                                    actions: <Widget>[
-                                                      FlatButton(
-                                                          child: Text('Cancel'),
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          }),
-                                                      FlatButton(
-                                                          child: Text('Save'),
-                                                          onPressed: () async {
-                                                            if (newAdd != [{}])
-                                                              FirestoreService()
-                                                                  .newAddress(
-                                                                      newAdd,
-                                                                      userDoc);
-
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          }),
-                                                    ],
-                                                    content: ListView(
-                                                      shrinkWrap: true,
-                                                      addAutomaticKeepAlives:
-                                                          true,
-                                                      children: <Widget>[
-                                                        TextFormField(
-                                                          decoration:
-                                                              InputDecoration(
-                                                            hintText: "Name",
-                                                            labelText: "Name",
-                                                            fillColor:
-                                                                Colors.grey,
-                                                            focusColor:
-                                                                Colors.grey,
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          15.0),
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .transparent),
-                                                            ),
-                                                          ),
-                                                          onChanged: (value) {
-                                                            newAdd['name'] =
-                                                                value;
-                                                          },
-                                                        ),
-                                                        SizedBox(height: 20),
-                                                        TextFormField(
-                                                          minLines: null,
-                                                          decoration:
-                                                              InputDecoration(
-                                                            hintText:
-                                                                "Flat, House no., Building, Company, Apartment",
-                                                            labelText:
-                                                                "Address Line 1",
-                                                            fillColor:
-                                                                Colors.grey,
-                                                            focusColor:
-                                                                Colors.grey,
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          15.0),
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .transparent),
-                                                            ),
-                                                          ),
-                                                          onChanged: (value) {
-                                                            newAdd['line1'] =
-                                                                value;
-                                                          },
-                                                        ),
-                                                        SizedBox(height: 20),
-                                                        TextFormField(
-                                                          minLines: null,
-                                                          decoration:
-                                                              InputDecoration(
-                                                            hintText:
-                                                                "Area, Colony, Street, Sector, Village",
-                                                            labelText:
-                                                                "Address Line 2",
-                                                            fillColor:
-                                                                Colors.grey,
-                                                            focusColor:
-                                                                Colors.grey,
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          15.0),
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .transparent),
-                                                            ),
-                                                          ),
-                                                          onChanged: (value) {
-                                                            newAdd['line2'] =
-                                                                value;
-                                                          },
-                                                        ),
-                                                        SizedBox(height: 20),
-                                                        TextFormField(
-                                                          decoration:
-                                                              InputDecoration(
-                                                            hintText:
-                                                                "Town/City",
-                                                            labelText: "city",
-                                                            fillColor:
-                                                                Colors.grey,
-                                                            focusColor:
-                                                                Colors.grey,
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          15.0),
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .transparent),
-                                                            ),
-                                                          ),
-                                                          onChanged: (value) {
-                                                            newAdd['city'] =
-                                                                value;
-                                                          },
-                                                        ),
-                                                        SizedBox(height: 20),
-                                                        TextFormField(
-                                                          decoration:
-                                                              InputDecoration(
-                                                            hintText:
-                                                                "State / Province / Region",
-                                                            labelText: "State",
-                                                            fillColor:
-                                                                Colors.grey,
-                                                            focusColor:
-                                                                Colors.grey,
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          15.0),
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .transparent),
-                                                            ),
-                                                          ),
-                                                          onChanged: (value) {
-                                                            newAdd['state'] =
-                                                                value;
-                                                          },
-                                                        ),
-                                                        SizedBox(height: 20),
-                                                        TextFormField(
-                                                          decoration:
-                                                              InputDecoration(
-                                                            hintText:
-                                                                "6 digits [0-9] PIN code",
-                                                            labelText:
-                                                                "PIN code",
-                                                            fillColor:
-                                                                Colors.grey,
-                                                            focusColor:
-                                                                Colors.grey,
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          15.0),
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .transparent),
-                                                            ),
-                                                          ),
-                                                          onChanged: (value) {
-                                                            newAdd['pincode'] =
-                                                                value;
-                                                          },
-                                                        ),
-                                                        SizedBox(height: 20),
-                                                        TextFormField(
-                                                          decoration:
-                                                              InputDecoration(
-                                                            hintText:
-                                                                "10-digit number without any prefixes",
-                                                            labelText:
-                                                                "Mobile Number",
-                                                            fillColor:
-                                                                Colors.grey,
-                                                            focusColor:
-                                                                Colors.grey,
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          15.0),
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .transparent),
-                                                            ),
-                                                          ),
-                                                          onChanged: (value) {
-                                                            newAdd['phone'] =
-                                                                value;
-                                                          },
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            */
                                             },
                                             child: Container(
                                               width: 100,
@@ -827,6 +583,7 @@ class _ProfileState extends State<Profile> {
                                         children: <Widget>[
                                           InkWell(
                                             onTap: () {
+                                              /* 
                                               showDialog(
                                                 context: context,
                                                 builder: (context) {
@@ -845,7 +602,7 @@ class _ProfileState extends State<Profile> {
                                                     ),
                                                   );
                                                 },
-                                              );
+                                              ); */
                                             },
                                             child: Card(
                                               shape: RoundedRectangleBorder(
@@ -1005,46 +762,6 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-/* class AddButton extends StatefulWidget {
-  AddButton({Key key}) : super(key: key);
-
-  @override
-  _AddButtonState createState() => _AddButtonState();
-}
-
-class _AddButtonState extends State<AddButton> {
-  bool _show = true;
-  @override
-  Widget build(BuildContext context) {
-    return _show
-        ? FloatingActionButton(
-            backgroundColor: Colors.indigo[900],
-            child: Icon(Icons.add),
-            onPressed: () {
-              var sheetController = showBottomSheet(
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  context: context,
-                  builder: (context) => AddSheet());
-
-              _showButton(false);
-
-              sheetController.closed.then((value) {
-                _showButton(true);
-              });
-            },
-          )
-        : Container();
-  }
-
-  void _showButton(bool value) {
-    setState(() {
-      _show = value;
-    });
-  }
-}
- */
 class AddSheet extends StatefulWidget {
   var userDoc;
   AddSheet({this.userDoc});
