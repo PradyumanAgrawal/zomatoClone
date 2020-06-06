@@ -17,6 +17,7 @@ import 'package:my_flutter_app/ui/cart.dart';
 import 'package:my_flutter_app/ui/share.dart';
 import 'package:my_flutter_app/ui/discover1.dart';
 import 'package:my_flutter_app/ui/wishlist.dart';
+import 'package:my_flutter_app/ui/feedback.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -90,6 +91,10 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => ReviewCart(navContext: args,),
         );
+       // case '/feedback':
+      //  return MaterialPageRoute(
+      //    builder: (_) => Feedback(),
+      //  );
         // If args is not of the correct type, return an error page.
       default:
         return _errorRoute();
