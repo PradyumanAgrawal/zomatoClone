@@ -20,10 +20,7 @@ class _ProfileState extends State<Profile> {
   File profilePic = null;
   final picker = ImagePicker();
 
-  newAddress()
-  {
-
-  }
+  newAddress() {}
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +40,7 @@ class _ProfileState extends State<Profile> {
           showDialog(
             context: context,
             builder: (context) {
+              bool editVisible = true;
               return StatefulBuilder(builder: (context, setState) {
                 return AlertDialog(
                   shape: RoundedRectangleBorder(
@@ -62,6 +60,9 @@ class _ProfileState extends State<Profile> {
                     FlatButton(
                       child: Text('Save'),
                       onPressed: () async {
+                        setState(() {
+                          editVisible = false;
+                        });
                         bool condition = name != null &&
                             email != null &&
                             phone != null &&
@@ -82,124 +83,132 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                   contentPadding: EdgeInsets.all(0),
-                  content: Container(
-                    child: ListView(
-                      children: <Widget>[
-                        SizedBox(height: 30),
-                        Center(
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                height: 100,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    image: (profilePic != null)
-                                        ? FileImage(profilePic)
-                                        : NetworkImage(
-                                            userDoc['displayPic'],
-                                          ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black,
-                                      offset: Offset(0.0, 1.0), //(x,y)
-                                      blurRadius: 6.0,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  height: 30,
-                                  width: 30,
+                  content: Visibility(
+                    visible: editVisible,
+                    replacement: Center(
+                      child: SpinKitChasingDots(
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    child: Container(
+                      child: ListView(
+                        children: <Widget>[
+                          SizedBox(height: 30),
+                          Center(
+                            child: Stack(
+                              children: <Widget>[
+                                Container(
+                                  height: 100,
+                                  width: 100,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Colors.white,
-                                  ),
-                                  child: IconButton(
-                                    color: Colors.deepPurple[900],
-                                    icon: Icon(Icons.edit, size: 15),
-                                    onPressed: () async {
-                                      final tempImage = await picker.getImage(
-                                          source: ImageSource.gallery);
-                                      setState(() {
-                                        profilePic = File(tempImage.path);
-                                      });
-                                    },
+                                    image: DecorationImage(
+                                      image: (profilePic != null)
+                                          ? FileImage(profilePic)
+                                          : NetworkImage(
+                                              userDoc['displayPic'],
+                                            ),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        offset: Offset(0.0, 1.0), //(x,y)
+                                        blurRadius: 6.0,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: "Name",
-                              labelText: "Name",
-                              fillColor: Colors.grey,
-                              focusColor: Colors.grey,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                              ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                    ),
+                                    child: IconButton(
+                                      color: Colors.deepPurple[900],
+                                      icon: Icon(Icons.edit, size: 15),
+                                      onPressed: () async {
+                                        final tempImage = await picker.getImage(
+                                            source: ImageSource.gallery);
+                                        setState(() {
+                                          profilePic = File(tempImage.path);
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            onChanged: (value) {
-                              name = value;
-                            },
                           ),
-                        ),
-                        SizedBox(height: 15),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            initialValue: email,
-                            decoration: InputDecoration(
-                              hintText: "Email",
-                              labelText: "Email",
-                              fillColor: Colors.grey,
-                              focusColor: Colors.grey,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
+                          SizedBox(height: 30),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: "Name",
+                                labelText: "Name",
+                                fillColor: Colors.grey,
+                                focusColor: Colors.grey,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
                               ),
+                              onChanged: (value) {
+                                name = value;
+                              },
                             ),
-                            onChanged: (value) {
-                              email = value;
-                            },
                           ),
-                        ),
-                        SizedBox(height: 15),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            initialValue: phone,
-                            decoration: InputDecoration(
-                              hintText: "Contact",
-                              labelText: "Contact",
-                              fillColor: Colors.grey,
-                              focusColor: Colors.grey,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
+                          SizedBox(height: 15),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextFormField(
+                              initialValue: email,
+                              decoration: InputDecoration(
+                                hintText: "Email",
+                                labelText: "Email",
+                                fillColor: Colors.grey,
+                                focusColor: Colors.grey,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
                               ),
+                              onChanged: (value) {
+                                email = value;
+                              },
                             ),
-                            onChanged: (value) {
-                              phone = value;
-                            },
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 15),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextFormField(
+                              initialValue: phone,
+                              decoration: InputDecoration(
+                                hintText: "Contact",
+                                labelText: "Contact",
+                                fillColor: Colors.grey,
+                                focusColor: Colors.grey,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                phone = value;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -231,8 +240,7 @@ class _ProfileState extends State<Profile> {
                 onPressed: () {},
               )
             ],
-            shape: RoundedRectangleBorder(
-                ),
+            shape: RoundedRectangleBorder(),
           ),
           SliverList(
             delegate: SliverChildListDelegate(
@@ -573,7 +581,8 @@ class _ProfileState extends State<Profile> {
                                                     ],
                                                     content: ListView(
                                                       shrinkWrap: true,
-                                                      addAutomaticKeepAlives: true,
+                                                      addAutomaticKeepAlives:
+                                                          true,
                                                       children: <Widget>[
                                                         TextFormField(
                                                           decoration:
@@ -596,7 +605,8 @@ class _ProfileState extends State<Profile> {
                                                             ),
                                                           ),
                                                           onChanged: (value) {
-                                                            newAdd['name'] = value;
+                                                            newAdd['name'] =
+                                                                value;
                                                           },
                                                         ),
                                                         SizedBox(height: 20),
@@ -624,7 +634,8 @@ class _ProfileState extends State<Profile> {
                                                             ),
                                                           ),
                                                           onChanged: (value) {
-                                                            newAdd['line1'] = value;
+                                                            newAdd['line1'] =
+                                                                value;
                                                           },
                                                         ),
                                                         SizedBox(height: 20),
@@ -652,7 +663,8 @@ class _ProfileState extends State<Profile> {
                                                             ),
                                                           ),
                                                           onChanged: (value) {
-                                                            newAdd['line2'] = value;
+                                                            newAdd['line2'] =
+                                                                value;
                                                           },
                                                         ),
                                                         SizedBox(height: 20),
@@ -678,10 +690,11 @@ class _ProfileState extends State<Profile> {
                                                             ),
                                                           ),
                                                           onChanged: (value) {
-                                                            newAdd['city'] = value;
+                                                            newAdd['city'] =
+                                                                value;
                                                           },
                                                         ),
-                                                         SizedBox(height: 20),
+                                                        SizedBox(height: 20),
                                                         TextFormField(
                                                           decoration:
                                                               InputDecoration(
@@ -704,7 +717,8 @@ class _ProfileState extends State<Profile> {
                                                             ),
                                                           ),
                                                           onChanged: (value) {
-                                                            newAdd['state'] = value;
+                                                            newAdd['state'] =
+                                                                value;
                                                           },
                                                         ),
                                                         SizedBox(height: 20),
@@ -731,7 +745,8 @@ class _ProfileState extends State<Profile> {
                                                             ),
                                                           ),
                                                           onChanged: (value) {
-                                                            newAdd['pincode'] = value;
+                                                            newAdd['pincode'] =
+                                                                value;
                                                           },
                                                         ),
                                                         SizedBox(height: 20),
@@ -758,7 +773,8 @@ class _ProfileState extends State<Profile> {
                                                             ),
                                                           ),
                                                           onChanged: (value) {
-                                                            newAdd['phone'] = value;
+                                                            newAdd['phone'] =
+                                                                value;
                                                           },
                                                         ),
                                                       ],
