@@ -19,7 +19,7 @@ class _ProfileState extends State<Profile> {
   String phone;
   File profilePic = null;
   final picker = ImagePicker();
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   newAddress() {}
 
   @override
@@ -60,25 +60,21 @@ class _ProfileState extends State<Profile> {
                     FlatButton(
                       child: Text('Save'),
                       onPressed: () async {
-                        setState(() {
+                        if(_formKey.currentState.validate()){
+                          setState(() {
                           editVisible = false;
                         });
-                        bool condition = name != null &&
-                            email != null &&
-                            phone != null &&
-                            name != '' &&
-                            email != '' &&
-                            phone != '';
-                        if (condition) {
-                          bool status = await FirestoreService().editProfile(
-                              name, email, phone, userDoc, profilePic);
-                          if (status) {
-                            // Scaffold.of(context).showSnackBar(SnackBar(
-                            //   content: Text('Updated!!'),
-                            // ));
-                            Navigator.of(context).pop();
-                          }
+
+                        bool status = await FirestoreService().editProfile(
+                            name, email, phone, userDoc, profilePic);
+                        if (status) {
+                          // Scaffold.of(context).showSnackBar(SnackBar(
+                          //   content: Text('Updated!!'),
+                          // ));
+                          Navigator.of(context).pop();
                         }
+                        }
+                        
                       },
                     ),
                   ],
@@ -90,124 +86,141 @@ class _ProfileState extends State<Profile> {
                         color: Colors.deepPurple,
                       ),
                     ),
-                    child: Container(
-                      child: ListView(
-                        children: <Widget>[
-                          SizedBox(height: 30),
-                          Center(
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  height: 100,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                      image: (profilePic != null)
-                                          ? FileImage(profilePic)
-                                          : NetworkImage(
-                                              userDoc['displayPic'],
-                                            ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black,
-                                        offset: Offset(0.0, 1.0), //(x,y)
-                                        blurRadius: 6.0,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                    height: 30,
-                                    width: 30,
+                    child: Form(
+                      key: _formKey,
+                      child: Container(
+                        child: ListView(
+                          children: <Widget>[
+                            SizedBox(height: 30),
+                            Center(
+                              child: Stack(
+                                children: <Widget>[
+                                  Container(
+                                    height: 100,
+                                    width: 100,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.white,
-                                    ),
-                                    child: IconButton(
-                                      color: Colors.deepPurple[900],
-                                      icon: Icon(Icons.edit, size: 15),
-                                      onPressed: () async {
-                                        final tempImage = await picker.getImage(
-                                            source: ImageSource.gallery);
-                                        setState(() {
-                                          profilePic = File(tempImage.path);
-                                        });
-                                      },
+                                      image: DecorationImage(
+                                        image: (profilePic != null)
+                                            ? FileImage(profilePic)
+                                            : NetworkImage(
+                                                userDoc['displayPic'],
+                                              ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black,
+                                          offset: Offset(0.0, 1.0), //(x,y)
+                                          blurRadius: 6.0,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 30),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                hintText: "Name",
-                                labelText: "Name",
-                                fillColor: Colors.grey,
-                                focusColor: Colors.grey,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                ),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      height: 30,
+                                      width: 30,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white,
+                                      ),
+                                      child: IconButton(
+                                        color: Colors.deepPurple[900],
+                                        icon: Icon(Icons.edit, size: 15),
+                                        onPressed: () async {
+                                          final tempImage =
+                                              await picker.getImage(
+                                                  source: ImageSource.gallery);
+                                          setState(() {
+                                            profilePic = File(tempImage.path);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              onChanged: (value) {
-                                name = value;
-                              },
                             ),
-                          ),
-                          SizedBox(height: 15),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: TextFormField(
-                              initialValue: email,
-                              decoration: InputDecoration(
-                                hintText: "Email",
-                                labelText: "Email",
-                                fillColor: Colors.grey,
-                                focusColor: Colors.grey,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
+                            SizedBox(height: 30),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please Enter Name';
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Name",
+                                  labelText: "Name",
+                                  fillColor: Colors.grey,
+                                  focusColor: Colors.grey,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                  ),
                                 ),
+                                onChanged: (value) {
+                                  name = value;
+                                },
                               ),
-                              onChanged: (value) {
-                                email = value;
-                              },
                             ),
-                          ),
-                          SizedBox(height: 15),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: TextFormField(
-                              initialValue: phone,
-                              decoration: InputDecoration(
-                                hintText: "Contact",
-                                labelText: "Contact",
-                                fillColor: Colors.grey,
-                                focusColor: Colors.grey,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
+                            /* SizedBox(height: 15),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextFormField(
+                                initialValue: email,
+                                decoration: InputDecoration(
+                                  hintText: "Email",
+                                  labelText: "Email",
+                                  fillColor: Colors.grey,
+                                  focusColor: Colors.grey,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                  ),
                                 ),
+                                onChanged: (value) {
+                                  email = value;
+                                },
                               ),
-                              onChanged: (value) {
-                                phone = value;
-                              },
+                            ), */
+                            SizedBox(height: 15),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty || value.length != 10) {
+                                    return 'Please Enter 10-digit Mobile No.';
+                                  }
+                                },
+                                keyboardType: TextInputType.number,
+                                initialValue: phone,
+                                decoration: InputDecoration(
+                                  hintText: "Contact",
+                                  labelText: "Contact",
+                                  fillColor: Colors.grey,
+                                  focusColor: Colors.grey,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  phone = value;
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -431,7 +444,7 @@ class _ProfileState extends State<Profile> {
                               ],
                             ),
                             Divider(),
-                            Padding(
+                            /* Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),
                               child: Row(
@@ -452,7 +465,7 @@ class _ProfileState extends State<Profile> {
                                 ],
                               ),
                             ),
-                            Divider(),
+                            Divider(), */
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),
@@ -542,6 +555,22 @@ class _ProfileState extends State<Profile> {
                                           ),
                                           child: InkWell(
                                             onTap: () {
+                                              var sheetController =
+                                                  showBottomSheet(
+                                                      elevation: 10,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15)),
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          AddSheet(
+                                                            userDoc: userDoc,
+                                                          ));
+
+                                              /* 
                                               showDialog(
                                                 context: context,
                                                 builder: (context) {
@@ -782,6 +811,7 @@ class _ProfileState extends State<Profile> {
                                                   );
                                                 },
                                               );
+                                            */
                                             },
                                             child: Container(
                                               width: 100,
@@ -970,6 +1000,266 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/* class AddButton extends StatefulWidget {
+  AddButton({Key key}) : super(key: key);
+
+  @override
+  _AddButtonState createState() => _AddButtonState();
+}
+
+class _AddButtonState extends State<AddButton> {
+  bool _show = true;
+  @override
+  Widget build(BuildContext context) {
+    return _show
+        ? FloatingActionButton(
+            backgroundColor: Colors.indigo[900],
+            child: Icon(Icons.add),
+            onPressed: () {
+              var sheetController = showBottomSheet(
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  context: context,
+                  builder: (context) => AddSheet());
+
+              _showButton(false);
+
+              sheetController.closed.then((value) {
+                _showButton(true);
+              });
+            },
+          )
+        : Container();
+  }
+
+  void _showButton(bool value) {
+    setState(() {
+      _show = value;
+    });
+  }
+}
+ */
+class AddSheet extends StatefulWidget {
+  var userDoc;
+  AddSheet({this.userDoc});
+  @override
+  _AddSheetState createState() => _AddSheetState();
+}
+
+class _AddSheetState extends State<AddSheet> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    Map newAdd = new Map();
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 40),
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            shrinkWrap: true,
+            addAutomaticKeepAlives: true,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Name';
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Name",
+                    labelText: "Name",
+                    fillColor: Colors.grey,
+                    focusColor: Colors.grey,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    newAdd['name'] = value;
+                  },
+                ),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter Address Line 1';
+                  }
+                },
+                minLines: null,
+                decoration: InputDecoration(
+                  hintText: "Flat, House no., Building, Company, Apartment",
+                  labelText: "Address Line 1",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['line1'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter Address Line 2';
+                  }
+                },
+                minLines: null,
+                decoration: InputDecoration(
+                  hintText: "Area, Colony, Street, Sector, Village",
+                  labelText: "Address Line 2",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['line2'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter City';
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: "Town/City",
+                  labelText: "city",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['city'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please Enter State';
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: "State / Province / Region",
+                  labelText: "State",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['state'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty || value.length != 6) {
+                    return 'Please Enter valid Pincode';
+                  }
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: "6 digits [0-9] PIN code",
+                  labelText: "PIN code",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['pincode'] = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty || value.length != 10) {
+                    return 'Please Enter 10-digit Number';
+                  }
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: "10-digit number without any prefixes",
+                  labelText: "Mobile Number",
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                ),
+                onChanged: (value) {
+                  newAdd['phone'] = value;
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ActionChip(
+                          backgroundColor: Colors.deepPurple,
+                          label: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Cancel',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white)),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                      ActionChip(
+                          backgroundColor: Colors.deepPurple,
+                          label: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Save',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              FirestoreService()
+                                  .newAddress(newAdd, widget.userDoc);
+                              Navigator.of(context).pop();
+                            }
+                          }),
+                    ]),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
