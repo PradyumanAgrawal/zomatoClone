@@ -274,7 +274,7 @@ class FirestoreService {
     await db.collection('users').document(uid).updateData({'mobileNo':newNumber});
   }
   
-  Future<void> addAddress(String newAdd)async{
+  Future<void> addAddress(Map newAdd)async{
     var uid = await LocalData().getUid();
     var userDoc = await db.collection('users').document(uid).get();
     List<dynamic> address = userDoc['address'];
