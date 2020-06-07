@@ -88,6 +88,9 @@ class _OrdersState extends State<Orders> {
                     ));
                   },);
                 }}
+                else{
+                  return Center(child: SpinKitChasingDots(color:Colors.deepPurple[900]),);
+                }
               },
             );
           }
