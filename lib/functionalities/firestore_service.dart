@@ -288,7 +288,14 @@ class FirestoreService {
     var uid = await LocalData().getUid();
     await db.collection('users').document(uid).updateData({'mobileNo':newNumber});
   }
-  
+  Future<void> addFeedback(String Feedback)async{
+    var uid = await LocalData().getUid();
+    await db.collection('feedback').document()
+    .setData({
+      "Feedback":Feedback,
+      "userId" : uid
+    });
+  }
   Future<void> addAddress(Map newAdd)async{
     var uid = await LocalData().getUid();
     var userDoc = await db.collection('users').document(uid).get();
