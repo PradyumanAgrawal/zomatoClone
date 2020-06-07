@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 class FeedbackPage extends StatefulWidget {
+   BuildContext navContext;
+  FeedbackPage({BuildContext navContext}) {
+    this.navContext = navContext;
+  }
   @override
   _FeedbackPageState createState() => _FeedbackPageState();
 }
@@ -7,7 +11,8 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Scaffold(
+      body:  Text("Feedback"),
       
     );
   }

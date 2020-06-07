@@ -115,7 +115,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ListTile(
             leading: Icon(Icons.feedback),
             title: Text('Feedback'),
-            onTap: () {},
+            onTap: () {
+               Navigator.of(widget.navContext)
+                          .pushNamed('/feedback', arguments: widget.navContext);
+            },
           ),
           ListTile(
             leading: Icon(Icons.backspace),
