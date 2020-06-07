@@ -117,7 +117,7 @@ class FirestoreService {
     return db.collection('users').document(userId).snapshots();
   }
 
-  Future<void> placeOrder(String address, String mobileNo) async {
+  Future<void> placeOrder(Map address, String mobileNo) async {
     var uid = await LocalData().getUid();
     db.collection('users').document(uid).get().then((DocumentSnapshot doc) {
       doc['cart'].forEach((k, v) {
