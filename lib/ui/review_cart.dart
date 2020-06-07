@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 
 class ReviewCart extends StatefulWidget {
@@ -488,11 +489,22 @@ class _ReviewCartState extends State<ReviewCart> {
                               snapshot.data['mobileNo'] == '') {
                             return detailsIncomplete(context);
                           } else {
-                            await FirestoreService().placeOrder(
+                            FirestoreService().placeOrder(
                                 snapshot.data['address'][selectedAdd],
-                                snapshot.data['mobileNo']);
-                            Navigator.of(widget.navContext).pop();
+                                snapshot.data['mobileNo']).then((value){
+                                   Fluttertoast.showToast(
+                                     toastLength: Toast.LENGTH_LONG,
+                                msg: "Order Placed, waiting for the seller to accept the order",
+                              );
+                              Navigator.of(widget.navContext).pop();
                             Navigator.of(context).pop();
+                                }).catchError((){
+                                  Fluttertoast.showToast(
+                                msg: "Something went wrong!!!",
+                              );
+                              Navigator.of(widget.navContext).pop();
+                            Navigator.of(context).pop();
+                                });
                           }
                         },
                         child: Row(
