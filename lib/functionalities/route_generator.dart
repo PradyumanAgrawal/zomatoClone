@@ -93,6 +93,10 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => ReviewCart(navContext: args,),
         );
+        case '/feedback':
+        return MaterialPageRoute(
+          builder: (_) => FeedbackPage(),
+        );
         // If args is not of the correct type, return an error page.
       default:
         return _errorRoute();
