@@ -404,7 +404,7 @@ class _AddSheetState extends State<AddSheet> {
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 40),
-        height: MediaQuery.of(context).size.height * 0.7,
+        height: MediaQuery.of(context).size.height * 0.9,
         child: Form(
           key: _formKey,
           child: ListView(
@@ -429,7 +429,7 @@ class _AddSheetState extends State<AddSheet> {
                       borderSide: BorderSide(color: Colors.transparent),
                     ),
                   ),
-                  onChanged: (value) {
+                  onSaved: (value) {
                     newAdd['name'] = value;
                   },
                 ),
@@ -452,7 +452,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['line1'] = value;
                 },
               ),
@@ -474,7 +474,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['line2'] = value;
                 },
               ),
@@ -495,7 +495,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['city'] = value;
                 },
               ),
@@ -516,7 +516,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['state'] = value;
                 },
               ),
@@ -538,7 +538,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['pincode'] = value;
                 },
               ),
@@ -560,7 +560,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['phone'] = value;
                 },
               ),
@@ -592,6 +592,7 @@ class _AddSheetState extends State<AddSheet> {
                           ),
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
+                              _formKey.currentState.save();
                               FirestoreService().addAddress(newAdd);
                               Navigator.of(context).pop();
                             }

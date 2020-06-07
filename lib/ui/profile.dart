@@ -804,7 +804,7 @@ class _AddSheetState extends State<AddSheet> {
                       borderSide: BorderSide(color: Colors.transparent),
                     ),
                   ),
-                  onChanged: (value) {
+                  onSaved: (value) {
                     newAdd['name'] = value;
                   },
                 ),
@@ -827,7 +827,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['line1'] = value;
                 },
               ),
@@ -849,7 +849,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['line2'] = value;
                 },
               ),
@@ -870,7 +870,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['city'] = value;
                 },
               ),
@@ -891,7 +891,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['state'] = value;
                 },
               ),
@@ -913,7 +913,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['pincode'] = value;
                 },
               ),
@@ -935,7 +935,7 @@ class _AddSheetState extends State<AddSheet> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
-                onChanged: (value) {
+                onSaved: (value) {
                   newAdd['phone'] = value;
                 },
               ),
@@ -967,6 +967,7 @@ class _AddSheetState extends State<AddSheet> {
                           ),
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
+                              _formKey.currentState.save();
                               FirestoreService()
                                   .newAddress(newAdd, widget.userDoc);
                               Navigator.of(context).pop();
