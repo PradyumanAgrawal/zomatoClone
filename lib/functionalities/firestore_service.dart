@@ -18,7 +18,7 @@ class FirestoreService {
     return _firestoreService;
   }
 
-  Stream getStores() {
+  Stream getAllStores() {
     return db.collection('shops').snapshots();
   }
 
@@ -99,8 +99,11 @@ class FirestoreService {
         .snapshots();
   }
 
-  Stream getProductsFromShop(pId){
-    return db.collection('products').where('productId',whereIn: pId).snapshots();
+  Stream getShopProducts(String shopID) {
+    return db
+        .collection('products')
+        .where('shop', isEqualTo: db.collection('shops').document(shopID))
+        .snapshots();
   }
 
   Stream getWishlistProducts(List wishlist) {

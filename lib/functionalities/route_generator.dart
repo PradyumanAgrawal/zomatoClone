@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/ui/discover_shop.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
 import 'package:my_flutter_app/ui/homescreen.dart';
@@ -34,13 +33,13 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Description(document: args),
         );
-      case '/discover':
+      case '/discover_category':
         return MaterialPageRoute(
           builder: (_) => Discover(category: args),
         );
       case '/discover_shop':
         return MaterialPageRoute(
-          builder: (_) => DiscoverShop(pId: args),
+          builder: (_) => Discover(shopID: args),
         );
       case '/homeScreen':
         return MaterialPageRoute(

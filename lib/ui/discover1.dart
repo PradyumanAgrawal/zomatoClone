@@ -135,7 +135,7 @@ class _Discover1State extends State<Discover1> {
                           InkWell(
                             onTap: () {
                               Navigator.of(widget.navContext).pushNamed(
-                                  '/discover',
+                                  '/discover_category',
                                   arguments: document.documentID);
                             },
                             child: Container(
@@ -173,7 +173,7 @@ class _Discover1State extends State<Discover1> {
                 },
               ),
               StreamBuilder(
-                stream: FirestoreService().getStores(),
+                stream: FirestoreService().getAllStores(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const Text('Loading...');
                   return ListView.builder(
@@ -183,20 +183,14 @@ class _Discover1State extends State<Discover1> {
                       DocumentSnapshot document =
                           snapshot.data.documents[index];
                       String type = document['type'];
-                      var ref = document['productId'];
-                      List<String> pId = List();
-                      for(int i=0; i<ref.toList().length;i++){
-                        pId.add(ref[i].path.toString().split("/")[1]);
-                      }
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              print(pId);
                               Navigator.of(widget.navContext).pushNamed(
                                   '/discover_shop',
-                                  arguments: pId);
+                                  arguments: document.documentID);
                               print(index);
                             },
                             child: Container(

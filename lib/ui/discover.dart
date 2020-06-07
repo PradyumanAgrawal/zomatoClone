@@ -12,7 +12,8 @@ class Discover extends StatefulWidget {
   //BuildContext navContext;
   //List productReferences;
   final String category;
-  Discover({BuildContext navContext, this.category});
+  final String shopID;
+  Discover({BuildContext navContext, this.category, this.shopID});
   @override
   _DiscoverState createState() => _DiscoverState();
 }
@@ -20,6 +21,16 @@ class Discover extends StatefulWidget {
 class _DiscoverState extends State<Discover>
     with SingleTickerProviderStateMixin {
   //var productList = new List<Product>();
+  Stream<dynamic> stream;
+
+  @override
+  void initState() {
+    if (widget.category != null)
+      stream = FirestoreService().getProductsFromCategory(widget.category);
+    else if (widget.shopID != null)
+      stream = FirestoreService().getShopProducts(widget.shopID);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,15 +140,29 @@ class _DiscoverState extends State<Discover>
                           DocumentSnapshot document = snapshot.data;
                           List wishlist = document['wishlist'];
                           return StreamBuilder(
-                            stream: (widget.category != null)
-                                ? FirestoreService()
-                                    .getProductsFromCategory(widget.category)
-                                : FirestoreService().getProducts(),
+                            stream: stream,
+                            // (widget.category != null)
+                            //     ? FirestoreService()
+                            //         .getProductsFromCategory(widget.category)
+                            //     : FirestoreService().getProducts(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData)
                                 return Center(
                                   child: SpinKitChasingDots(
                                       color: Colors.deepPurple),
+                                );
+                              if (snapshot.data.documents.length == 0)
+                                return Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(height: 100),
+                                      Text('No Products Yet!!',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
                                 );
                               return Column(
                                 children: List.generate(
