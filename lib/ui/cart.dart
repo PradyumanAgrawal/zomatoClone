@@ -20,443 +20,235 @@ class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: LocalData().getUid(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            userId = snapshot.data;
-            return StreamBuilder(
-              stream: FirestoreService().getUser(userId),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData)
-                  return Scaffold(
-                    body: Center(
-                        child: SpinKitChasingDots(
-                      color: Colors.purple,
-                    )),
-                  );
-                DocumentSnapshot document = snapshot.data;
-                if (document['cart'].isEmpty) {
-                  buttonVisible = false;
-                  return Scaffold(
-                    appBar: AppBar(
-                      leading: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
+      future: LocalData().getUid(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          userId = snapshot.data;
+          return StreamBuilder(
+            stream: FirestoreService().getUser(userId),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Scaffold(
+                  body: Center(
+                      child: SpinKitChasingDots(
+                    color: Colors.purple,
+                  )),
+                );
+              DocumentSnapshot document = snapshot.data;
+              if (document['cart'].isEmpty) {
+                buttonVisible = false;
+                return Scaffold(
+                  appBar: AppBar(
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    backgroundColor: Colors.deepPurple[800],
+                    title: Text(
+                      "My Cart",
+                      style: TextStyle(
                           color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                  body: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width - 100,
+                          height: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/emptyCart.png'),
+                              //colorFilter: ColorFilter.mode(Colors.purple, BlendMode.color),
+                            ),
+                          ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      backgroundColor: Colors.deepPurple[800],
-                      title: Text(
-                        "My Cart",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.normal),
-                      ),
-                    ),
-                    body: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width - 100,
-                            height: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image:
-                                    AssetImage('assets/images/emptyCart.png'),
-                                //colorFilter: ColorFilter.mode(Colors.purple, BlendMode.color),
-                              ),
+                        Center(
+                          child: Text(
+                            'Add products in your cart to see them here...',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Center(
-                            child: Text(
-                              'Add products in your cart to see them here...',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                }
-                var productList = document['cart'].keys.toList();
-                return StreamBuilder(
-                  stream: FirestoreService().getCartProducts(productList),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData)
-                      return Scaffold(
-                        body: Center(
-                            child: SpinKitChasingDots(
-                          color: Colors.purple,
-                        )),
-                      );
-                    totalPrice = 0;
-                    for (int i = 0; i < snapshot.data.documents.length; i++,) {
-                      DocumentSnapshot productDoc = snapshot.data.documents[i];
-                      totalPrice += int.parse(productDoc['price']) *
-                          document['cart'][productDoc.documentID];
-                    }
-                    //totalPrice = price;
-
+                  ),
+                );
+              }
+              var productList = document['cart'].keys.toList();
+              return StreamBuilder(
+                stream: FirestoreService().getCartProducts(productList),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
                     return Scaffold(
-                      bottomSheet: Material(
-                        elevation: 7.0,
-                        color: Colors.white70,
-                        child: Container(
-                          height: 50.0,
-                          width: MediaQuery.of(context).size.width,
-                          color: Colors.white,
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //SizedBox(width: 10.0),
-                                Flexible(
-                                  flex: 40,
-                                  child: Center(
-                                    child: Text(
-                                      '\u{20B9} ' + totalPrice.toString(),
-                                      style: TextStyle(
-                                        color: Colors.deepPurple,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                      body: Center(
+                          child: SpinKitChasingDots(
+                        color: Colors.purple,
+                      )),
+                    );
+                  totalPrice = 0;
+                  for (int i = 0; i < snapshot.data.documents.length; i++,) {
+                    DocumentSnapshot productDoc = snapshot.data.documents[i];
+                    totalPrice += int.parse(productDoc['price']) *
+                        document['cart'][productDoc.documentID];
+                  }
+                  //totalPrice = price;
+
+                  return Scaffold(
+                    bottomSheet: Material(
+                      elevation: 7.0,
+                      color: Colors.white70,
+                      child: Container(
+                        height: 50.0,
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.white,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              //SizedBox(width: 10.0),
+                              Flexible(
+                                flex: 40,
+                                child: Center(
+                                  child: Text(
+                                    '\u{20B9} ' + totalPrice.toString(),
+                                    style: TextStyle(
+                                      color: Colors.deepPurple,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                                Flexible(
-                                  flex: 60,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.deepPurple[800],
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            bottomLeft: Radius.circular(10))),
-                                    child: Center(
-                                      child: FlatButton(
-                                        onPressed: () async {
-                                          if (userId != null) {
-                                            Navigator.of(context).pushNamed(
-                                                '/review_order',
-                                                arguments: widget.navContext);
-                                            /* bool status = await FirestoreService()
+                              ),
+                              Flexible(
+                                flex: 60,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.deepPurple[800],
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10))),
+                                  child: Center(
+                                    child: FlatButton(
+                                      onPressed: () async {
+                                        if (userId != null) {
+                                          Navigator.of(context).pushNamed(
+                                              '/review_order',
+                                              arguments: widget.navContext);
+                                          /* bool status = await FirestoreService()
                                 .isProfileComplete(userId);
                             if (status) {
                               await FirestoreService().placeOrder();
                               Navigator.of(context).pop();
                             } else
                               Navigator.of(context).pushNamed('/profile'); */
-                                          }
-                                          // Navigator.of(widget.navContext)
-                                          //     .pushNamed('/loading');
-                                          // await FirestoreService().placeOrder();
-                                          // Navigator.of(widget.navContext).pop();
-                                          // Navigator.of(context).pop();
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              'Place Order',
-                                              style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
+                                        }
+                                        // Navigator.of(widget.navContext)
+                                        //     .pushNamed('/loading');
+                                        // await FirestoreService().placeOrder();
+                                        // Navigator.of(widget.navContext).pop();
+                                        // Navigator.of(context).pop();
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            'Place Order',
+                                            style: TextStyle(
+                                                fontSize: 18.0,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ),
-                              ]),
-                        ),
-                      ),
-                      body: CustomScrollView(
-                        slivers: <Widget>[
-                          SliverAppBar(
-                            leading: IconButton(
-                              icon: Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
                               ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                            ]),
+                      ),
+                    ),
+                    body: CustomScrollView(
+                      slivers: <Widget>[
+                        SliverAppBar(
+                          leading: IconButton(
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
                             ),
-                            floating: true,
-                            pinned: false,
-                            snap: true,
-                            backgroundColor: Colors.deepPurple[800],
-                            title: Text(
-                              "My Cart",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.normal),
-                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                           ),
-                          SliverList(
-                              delegate: SliverChildListDelegate(
-                            <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: List.generate(
-                                    snapshot.data.documents.length,
-                                    (index) {
-                                      DocumentSnapshot productDoc =
-                                          snapshot.data.documents[index];
-                                      return product(
-                                          widget.navContext,
-                                          index,
-                                          productDoc,
-                                          document['cart']
-                                              [productDoc.documentID]);
-                                    },
-                                  ),
+                          floating: true,
+                          pinned: false,
+                          snap: true,
+                          backgroundColor: Colors.deepPurple[800],
+                          title: Text(
+                            "My Cart",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ),
+                        SliverList(
+                            delegate: SliverChildListDelegate(
+                          <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: List.generate(
+                                  snapshot.data.documents.length,
+                                  (index) {
+                                    DocumentSnapshot productDoc =
+                                        snapshot.data.documents[index];
+                                    return product(
+                                        widget.navContext,
+                                        index,
+                                        productDoc,
+                                        document['cart']
+                                            [productDoc.documentID]);
+                                  },
                                 ),
                               ),
-                              SizedBox(
-                                height: 4.0,
-                              ),
-                              SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.09)
-                            ],
-                          )),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            );
-          } else {
-            return Scaffold(
-              body: Center(
-                child: SpinKitChasingDots(
-                  color: Colors.purple,
-                ),
+                            ),
+                            SizedBox(
+                              height: 4.0,
+                            ),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.09)
+                          ],
+                        )),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        } else {
+          return Scaffold(
+            body: Center(
+              child: SpinKitChasingDots(
+                color: Colors.purple,
               ),
-            );
-          }
-        });
-
-    // Scaffold(
-    //   //backgroundColor: Colors.deepPurple[100],
-    //   bottomSheet: Material(
-    //     elevation: 7.0,
-    //     color: Colors.white70,
-    //     child: Container(
-    //       height: 50.0,
-    //       width: MediaQuery.of(context).size.width,
-    //       color: Colors.white,
-    //       child:
-    //           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-    //         //SizedBox(width: 10.0),
-    //         Flexible(
-    //           flex: 40,
-    //           child: Center(
-    //             child: Text(
-    //               '\u{20B9} ' + price.toString(),
-    //               style: TextStyle(
-    //                 color: Colors.deepPurple,
-    //                 fontWeight: FontWeight.bold,
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         Flexible(
-    //           flex: 60,
-    //           child: Container(
-    //             decoration: BoxDecoration(
-    //                 color: Colors.deepPurple[800],
-    //                 borderRadius: BorderRadius.only(
-    //                     topLeft: Radius.circular(10),
-    //                     bottomLeft: Radius.circular(10))),
-    //             child: Center(
-    //               child: FlatButton(
-    //                 onPressed: () async {
-    //                   if (userId != null) {
-    //                     Navigator.of(context).pushNamed('/review_order',
-    //                         arguments: widget.navContext);
-    //                     /* bool status = await FirestoreService()
-    //                             .isProfileComplete(userId);
-    //                         if (status) {
-    //                           await FirestoreService().placeOrder();
-    //                           Navigator.of(context).pop();
-    //                         } else
-    //                           Navigator.of(context).pushNamed('/profile'); */
-    //                   }
-    //                   // Navigator.of(widget.navContext)
-    //                   //     .pushNamed('/loading');
-    //                   // await FirestoreService().placeOrder();
-    //                   // Navigator.of(widget.navContext).pop();
-    //                   // Navigator.of(context).pop();
-    //                 },
-    //                 child: Row(
-    //                   mainAxisAlignment: MainAxisAlignment.center,
-    //                   children: <Widget>[
-    //                     Text(
-    //                       'Place Order',
-    //                       style: TextStyle(
-    //                           fontSize: 18.0,
-    //                           color: Colors.white,
-    //                           fontWeight: FontWeight.bold),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //       ]),
-    //     ),
-    //   ),
-    //   body: CustomScrollView(
-    //     slivers: <Widget>[
-    //       SliverAppBar(
-    //         leading: IconButton(
-    //           icon: Icon(
-    //             Icons.arrow_back,
-    //             color: Colors.white,
-    //           ),
-    //           onPressed: () {
-    //             Navigator.of(context).pop();
-    //           },
-    //         ),
-    //         floating: true,
-    //         pinned: false,
-    //         snap: true,
-    //         backgroundColor: Colors.deepPurple[800],
-    //         title: Text(
-    //           "My Cart",
-    //           style: TextStyle(
-    //               color: Colors.white,
-    //               fontSize: 20.0,
-    //               fontWeight: FontWeight.normal),
-    //         ),
-    //       ),
-    //       SliverList(
-    //         delegate: SliverChildListDelegate(
-    //           <Widget>[
-    //             Container(
-    //               child: FutureBuilder(
-    //                 future: LocalData().getUid(),
-    //                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-    //                   if (snapshot.hasData) {
-    //                     userId = snapshot.data;
-    //                     return StreamBuilder(
-    //                         stream: FirestoreService().getUser(userId),
-    //                         builder: (context, snapshot) {
-    //                           if (!snapshot.hasData)
-    //                             return Center(
-    //                                 child: SpinKitChasingDots(
-    //                               color: Colors.purple,
-    //                             ));
-    //                           DocumentSnapshot document = snapshot.data;
-    //                           if (document['cart'].isEmpty) {
-    //                             // setState(() {
-    //                             //   buttonVisible = false;
-    //                             // });
-    //                             buttonVisible = false;
-    //                             return Center(
-    //                                 child: Column(
-    //                               mainAxisAlignment: MainAxisAlignment.center,
-    //                               children: <Widget>[
-    //                                 Container(
-    //                                     width:
-    //                                         MediaQuery.of(context).size.width -
-    //                                             100,
-    //                                     height:
-    //                                         MediaQuery.of(context).size.width,
-    //                                     decoration: BoxDecoration(
-    //                                       shape: BoxShape.circle,
-    //                                       image: DecorationImage(
-    //                                         image: AssetImage(
-    //                                             'assets/images/emptyCart.png'),
-    //                                         //colorFilter: ColorFilter.mode(Colors.purple, BlendMode.color),
-    //                                       ),
-    //                                     )),
-    //                                 Center(
-    //                                   child: Text(
-    //                                     'Add products in your cart to see them here...',
-    //                                     style: TextStyle(
-    //                                       color: Colors.grey[600],
-    //                                       fontWeight: FontWeight.bold,
-    //                                     ),
-    //                                   ),
-    //                                 ),
-    //                               ],
-    //                             ));
-    //                           }
-    //                           // setState(() {
-    //                           //     buttonVisible = true;
-    //                           //   });
-    //                           var productList = document['cart'].keys.toList();
-    //                           var quantityList =
-    //                               document['cart'].values.toList();
-
-    //                           return Container(
-    //                             child: StreamBuilder(
-    //                               stream: FirestoreService()
-    //                                   .getCartProducts(productList),
-    //                               builder: (context, snapshot) {
-    //                                 if (!snapshot.hasData)
-    //                                   return Center(
-    //                                     child: SpinKitChasingDots(
-    //                                       color: Colors.purple,
-    //                                     ),
-    //                                   );
-    //                                 return Padding(
-    //                                   padding: const EdgeInsets.all(8.0),
-    //                                   child: Column(
-    //                                     children: List.generate(
-    //                                       snapshot.data.documents
-    //                                           .toList()
-    //                                           .length,
-    //                                       (index) {
-    //                                         return product(
-    //                                             widget.navContext,
-    //                                             index,
-    //                                             snapshot.data.documents[index],
-    //                                             quantityList[index]);
-    //                                       },
-    //                                     ),
-    //                                   ),
-    //                                 );
-    //                               },
-    //                             ),
-    //                           );
-    //                         });
-    //                   } else {
-    //                     return Center(
-    //                       child: SpinKitChasingDots(
-    //                         color: Colors.purple,
-    //                       ),
-    //                     );
-    //                   }
-    //                 },
-    //               ),
-    //             ),
-    //             SizedBox(
-    //               height: 4.0,
-    //             ),
-    //             SizedBox(height: MediaQuery.of(context).size.height * 0.09)
-    //           ],
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
+            ),
+          );
+        }
+      },
+    );
   }
 
   product(context, index, DocumentSnapshot productDoc, int quantity) {

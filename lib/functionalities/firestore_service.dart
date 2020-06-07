@@ -233,14 +233,15 @@ class FirestoreService {
   Future<dynamic> reviewCart() async {
     int total = 0;
     int quant = 0;
+    List<Map> products = [];
     String uid = await LocalData().getUid();
-    var u = await db.collection('users').document(uid).get();
-    var cart = u.data['cart'].keys.toList();
+    var user = await db.collection('users').document(uid).get();
+    var cart = user.data['cart'].keys.toList();
     print(cart);
     if (cart.length == 0) {
       return 'empty';
     }
-    var quantity = u.data['cart'].values.toList();
+    var quantity = user.data['cart'].values.toList();
     print(quantity[0]);
     var q = await db
         .collection('products')
@@ -248,16 +249,23 @@ class FirestoreService {
         .getDocuments();
     var prodList = q.documents.toList();
     for (int i = 0; i < cart.length; i++) {
+      Map temp = new Map();
+      temp['name'] = prodList[i]['name'];
+      temp['price'] = prodList[i]['price'];
+      temp['quantity'] = user.data['cart'][prodList[i].documentID];
+      temp['image'] = prodList[i]['catalogue'][0];
+      products.add(temp);
       print(int.parse(prodList[i].data['price']));
-      total += int.parse(prodList[i].data['price'])*quantity[i];
+      total += int.parse(prodList[i].data['price']) * user.data['cart'][prodList[i].documentID];
       print(quantity[i]);
       quant += quantity[i];
     }
     var a = {
       'total': total,
       'itemCount': quant,
-      'mobileNo': u.data['mobileNo'],
-      'address':u.data['address']
+      'mobileNo': user.data['mobileNo'],
+      'address':user.data['address'],
+      'products': products,
     };
     return a;
   }

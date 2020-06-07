@@ -107,41 +107,121 @@ class _ReviewCartState extends State<ReviewCart> {
             }
             return ListView(
               children: [
-                Card(
-                  child: Column(children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text('Total Price',
-                              style: TextStyle(fontSize: 15)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(
-                              '\u{20B9} ' + snapshot.data['total'].toString(),
-                              style: TextStyle(fontSize: 15)),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text('Total Items',
-                              style: TextStyle(fontSize: 15)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(snapshot.data['itemCount'].toString(),
-                              style: TextStyle(fontSize: 15)),
-                        )
-                      ],
-                    ),
-                  ]),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Products Details',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
+                Card(
+                  child: Column(
+                    children: [
+                      Column(
+                        children: List.generate(
+                            snapshot.data['products'].length, (index) {
+                          List<Map> products = snapshot.data['products'];
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                top: 5, bottom: 5, left: 10, right: 5),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  "\u2022 ",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Container(
+                                    height:
+                                        MediaQuery.of(context).size.width / 6,
+                                    width:
+                                        MediaQuery.of(context).size.width / 6,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                            products[index]['image'],
+                                          ),
+                                          fit: BoxFit.cover),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    products[index]['name'],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 30,
+                                ),
+                                Text(
+                                  'X',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  width: 30,
+                                ),
+                                Text(
+                                  products[index]['quantity'].toString(),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              'Total Price',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.grey),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                                '\u{20B9} ' + snapshot.data['total'].toString(),
+                                style: TextStyle(fontSize: 15)),
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              'Total Items',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(snapshot.data['itemCount'].toString(),
+                                style: TextStyle(fontSize: 15)),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -150,163 +230,184 @@ class _ReviewCartState extends State<ReviewCart> {
                   ),
                 ),
                 Card(
-                    child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Phone Number'),
-                        ),
-                      ],
-                    ),
-                    snapshot.data['mobileNo'] == ''
-                        ? Padding(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: OutlineButton(
-                                onPressed: () {
-                                  newMobileNo(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.add),
-                                    Text('New Mobile Number')
-                                  ],
-                                )),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(snapshot.data['mobileNo']),
+                            child: Text(
+                              'Phone Number',
+                              style: TextStyle(
+                                color: Colors.grey,
                               ),
-                              IconButton(
-                                onPressed: () {
-                                  newMobileNo(context);
-                                },
-                                icon: Icon(Icons.edit),
-                              )
-                            ],
+                            ),
                           ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Address'),
-                        ),
-                      ],
-                    ),
-                    snapshot.data['address'].length == 0
-                        ? Container()
-                        : Wrap(
-                            children: List<Widget>.generate(
-                                snapshot.data['address'].length, (index) {
-                            return InkWell(
-                              onTap: () {
-                                setState(() {
-                                  selectedAdd = index;
-                                });
-                              },
-                              child: Card(
-                                clipBehavior: Clip.hardEdge,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
+                        ],
+                      ),
+                      snapshot.data['mobileNo'] == ''
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: OutlineButton(
+                                  onPressed: () {
+                                    newMobileNo(context);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.add),
+                                      Text('New Mobile Number')
+                                    ],
+                                  )),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(snapshot.data['mobileNo']),
                                 ),
-                                child: Container(
-                                  color: index == selectedAdd
-                                      ? Colors.deepPurple[100]
-                                      : Colors.white,
-                                  width: 150,
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Center(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          snapshot.data['address'][index]
-                                              ['name'],
-                                          // 'Name',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          snapshot.data['address'][index]
-                                              ['line1'],
-                                          //'Address Line xxxxxxxx 1',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                        SizedBox(height: 3),
-                                        Text(
-                                          snapshot.data['address'][index]
-                                              ['line2'],
-                                          //'AddressLine2',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          snapshot.data['address'][index]
-                                              ['city'],
-                                          //'City',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                        SizedBox(height: 3),
-                                        Text(
-                                          snapshot.data['address'][index]
-                                              ['state'],
-                                          //'State',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                        SizedBox(height: 3),
-                                        Text(
-                                          snapshot.data['address'][index]
-                                              ['pincode'],
-                                          //'Pincode',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Row(
-                                          children: <Widget>[
-                                            Icon(Icons.call, size: 10),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              snapshot.data['address'][index]
-                                                  ['phone'],
-                                              //'xxxxxxxxxx',
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    newMobileNo(context);
+                                  },
+                                  icon: Icon(Icons.edit),
+                                )
+                              ],
+                            ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Shipping Address',
+                              style: TextStyle(
+                                color: Colors.grey,
                               ),
-                            );
-                          })),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OutlineButton(
-                          onPressed: () {
-                            /* newAddress(context); */
+                            ),
+                          ),
+                        ],
+                      ),
+                      snapshot.data['address'].length == 0
+                          ? Container()
+                          : Container(
+                              height: 200,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: snapshot.data['address'].length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 5, left: 5),
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          selectedAdd = index;
+                                        });
+                                      },
+                                      child: Card(
+                                        clipBehavior: Clip.hardEdge,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15.0),
+                                        ),
+                                        child: Container(
+                                          color: index == selectedAdd
+                                              ? Colors.deepPurple[100]
+                                              : Colors.white,
+                                          width: 150,
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Center(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  snapshot.data['address']
+                                                      [index]['name'],
+                                                  // 'Name',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  snapshot.data['address']
+                                                      [index]['line1'],
+                                                  //'Address Line xxxxxxxx 1',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 3),
+                                                Text(
+                                                  snapshot.data['address']
+                                                      [index]['line2'],
+                                                  //'AddressLine2',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 4),
+                                                Text(
+                                                  snapshot.data['address']
+                                                      [index]['city'],
+                                                  //'City',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 3),
+                                                Text(
+                                                  snapshot.data['address']
+                                                      [index]['state'],
+                                                  //'State',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 3),
+                                                Text(
+                                                  snapshot.data['address']
+                                                      [index]['pincode'],
+                                                  //'Pincode',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 4),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Icon(Icons.call, size: 10),
+                                                    SizedBox(width: 10),
+                                                    Text(
+                                                      snapshot.data['address']
+                                                          [index]['phone'],
+                                                      //'xxxxxxxxxx',
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          splashColor: Colors.grey,
+                          onTap: () {
                             var sheetController = showBottomSheet(
                                 elevation: 15,
                                 shape: RoundedRectangleBorder(
@@ -314,67 +415,103 @@ class _ReviewCartState extends State<ReviewCart> {
                                 context: context,
                                 builder: (context) => AddSheet());
                           },
-                          child: Row(
-                            children: [Icon(Icons.add), Text('New Address')],
-                          )),
-                    ),
-                    SizedBox(height: 15)
-                  ],
-                )),
-                Material(
-                  elevation: 7.0,
-                  color: Colors.white70,
-                  child: Container(
-                    height: 50.0,
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.white,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            flex: 60,
-                            child: Container(
+                          child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.deepPurple[800],
-                              ),
-                              child: Center(
-                                child: FlatButton(
-                                  onPressed: () async {
-                                    if (snapshot.data['address'].length == 0 ||
-                                        snapshot.data['mobileNo'] == '') {
-                                      return detailsIncomplete(context);
-                                    } else {
-                                      await FirestoreService().placeOrder(
-                                          snapshot.data['address'][selectedAdd],
-                                          snapshot.data['mobileNo']);
-                                      Navigator.of(widget.navContext).pop();
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                  /* onPressed: () async {
-                      await FirestoreService().placeOrder();
-                      Navigator.of(widget.navContext).pop();
-                      Navigator.of(context).pop();
-                    }, */
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(
-                                        'Confirm Order',
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.deepPurple,
+                                    offset: Offset(0.0, 2.0), //(x,y)
+                                    blurRadius: 2.0,
                                   ),
-                                ),
+                                ],
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                            ),
-                          ),
-                        ]),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.add),
+                                    Text(
+                                      'New Address',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                    ],
                   ),
                 ),
+                SizedBox(height: 15),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Payment Details',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          '- Cash On Delivery',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 50.0,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RaisedButton(
+                        elevation: 10,
+                        color: Colors.deepPurple,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        onPressed: () async {
+                          if (snapshot.data['address'].length == 0 ||
+                              snapshot.data['mobileNo'] == '') {
+                            return detailsIncomplete(context);
+                          } else {
+                            await FirestoreService().placeOrder(
+                                snapshot.data['address'][selectedAdd],
+                                snapshot.data['mobileNo']);
+                            Navigator.of(widget.navContext).pop();
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Checkout',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 40),
               ],
             );
           } else {
@@ -404,7 +541,7 @@ class _AddSheetState extends State<AddSheet> {
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 40),
-        height: MediaQuery.of(context).size.height * 0.9,
+        height: MediaQuery.of(context).size.height,
         child: Form(
           key: _formKey,
           child: ListView(
@@ -592,8 +729,11 @@ class _AddSheetState extends State<AddSheet> {
                           ),
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
-                              _formKey.currentState.save();
-                              FirestoreService().addAddress(newAdd);
+                              setState(() {
+                                _formKey.currentState.save();
+                                FirestoreService().addAddress(newAdd);
+                              });
+
                               Navigator.of(context).pop();
                             }
                           }),
