@@ -132,6 +132,8 @@ class FirestoreService {
             'quantity': v,
             'amount': int.parse(value['price']) * v,
             'status': "pending",
+            'timeStamp': FieldValue.serverTimestamp(),
+            'image': value['catalogue'][0],
           });
           List orders = doc['orderHistory'];
           orders.add(docRef.documentID);
@@ -144,7 +146,7 @@ class FirestoreService {
   }
 
   Stream getOrders(String uid) {
-    return db.collection('orders').where('userId', isEqualTo: uid).snapshots();
+    return db.collection('orders').where('userId', isEqualTo: uid).orderBy('timeStamp',descending:true).snapshots();
   }
 
   Future<int> addToCart(String productId, int quantity, bool updating) async {
