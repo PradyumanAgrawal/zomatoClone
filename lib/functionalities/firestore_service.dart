@@ -245,7 +245,9 @@ class FirestoreService {
         .getDocuments();
     var prodList = q.documents.toList();
     for (int i = 0; i < cart.length; i++) {
+      print(int.parse(prodList[i].data['price']));
       total += int.parse(prodList[i].data['price'])*quantity[i];
+      print(quantity[i]);
       quant += quantity[i];
     }
     var a = {
