@@ -6,7 +6,6 @@ import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 
-
 class FirestoreService {
   static final FirestoreService _firestoreService =
       FirestoreService._internal();
@@ -22,12 +21,13 @@ class FirestoreService {
     return db.collection('shops').snapshots();
   }
 
-  Stream<List<DocumentSnapshot>> getNearbyStores(LatLng location)
-  {
-    Geoflutterfire geo = Geoflutterfire(); 
-    GeoFirePoint center = geo.point(latitude: location.latitude, longitude: location.longitude);
+  Stream<List<DocumentSnapshot>> getNearbyStores(LatLng location) {
+    Geoflutterfire geo = Geoflutterfire();
+    GeoFirePoint center =
+        geo.point(latitude: location.latitude, longitude: location.longitude);
     var collectionRef = db.collection('shops');
-    var geoRef = geo.collection(collectionRef: collectionRef).within(center: center, radius: 25, field: 'location',strictMode: false);
+    var geoRef = geo.collection(collectionRef: collectionRef).within(
+        center: center, radius: 25, field: 'location', strictMode: false);
     return geoRef;
   }
 
@@ -123,8 +123,8 @@ class FirestoreService {
       doc['cart'].forEach((k, v) {
         db.collection('products').document(k).get().then((value) async {
           DocumentReference docRef = await db.collection('orders').add({
-            'deliveryAddress':address,
-            'customerMobileNo':mobileNo,
+            'deliveryAddress': address,
+            'customerMobileNo': mobileNo,
             'userId': uid,
             'prodId': k,
             'prodName': value['name'],
@@ -146,7 +146,11 @@ class FirestoreService {
   }
 
   Stream getOrders(String uid) {
-    return db.collection('orders').where('userId', isEqualTo: uid).orderBy('timeStamp',descending:true).snapshots();
+    return db
+        .collection('orders')
+        .where('userId', isEqualTo: uid)
+        .orderBy('timeStamp', descending: true)
+        .snapshots();
   }
 
   Future<int> addToCart(String productId, int quantity, bool updating) async {
@@ -164,19 +168,20 @@ class FirestoreService {
             if (quantity == 0)
               cart.remove(productId);
             else
-              cart['$productId'] = quantity; // updating the quantity of the product in the cart
+              cart['$productId'] =
+                  quantity; // updating the quantity of the product in the cart
             db.collection('users').document(userId).updateData({'cart': cart});
             status = 3; // cart updated
           } else {
             if (cart.containsKey(productId))
-              status =  1; //product is already in the cart
+              status = 1; //product is already in the cart
             else {
               cart['$productId'] = quantity; // adding a new entry in the map
               db
                   .collection('users')
                   .document(userId)
                   .updateData({'cart': cart});
-              status =  2; //added a new product in the cart
+              status = 2; //added a new product in the cart
             }
           }
         }
@@ -258,7 +263,8 @@ class FirestoreService {
       temp['image'] = prodList[i]['catalogue'][0];
       products.add(temp);
       print(int.parse(prodList[i].data['price']));
-      total += int.parse(prodList[i].data['price']) * user.data['cart'][prodList[i].documentID];
+      total += int.parse(prodList[i].data['price']) *
+          user.data['cart'][prodList[i].documentID];
       print(quantity[i]);
       quant += quantity[i];
     }
@@ -266,8 +272,9 @@ class FirestoreService {
       'total': total,
       'itemCount': quant,
       'mobileNo': user.data['mobileNo'],
-      'address':user.data['address'],
+      'address': user.data['address'],
       'products': products,
+      'userId': uid,
     };
     return a;
   }
@@ -284,16 +291,19 @@ class FirestoreService {
     userDoc.reference.updateData({'address': address});
   }
 
-  Future<void> addMobile(String newNumber)async{
+  Future<void> addMobile(String newNumber) async {
     var uid = await LocalData().getUid();
-    await db.collection('users').document(uid).updateData({'mobileNo':newNumber});
+    await db
+        .collection('users')
+        .document(uid)
+        .updateData({'mobileNo': newNumber});
   }
-  
-  Future<void> addAddress(Map newAdd)async{
+
+  Future<void> addAddress(Map newAdd) async {
     var uid = await LocalData().getUid();
     var userDoc = await db.collection('users').document(uid).get();
     List<dynamic> address = userDoc['address'];
     address.add(newAdd);
-    await db.collection('users').document(uid).updateData({'address':address});
+    await db.collection('users').document(uid).updateData({'address': address});
   }
 }

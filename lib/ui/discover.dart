@@ -171,11 +171,7 @@ class _DiscoverState extends State<Discover>
                                     DocumentSnapshot document =
                                         snapshot.data.documents[index];
                                     return itemCard(
-                                        document['name'],
-                                        document['catalogue'][0],
-                                        document['description'],
                                         wishlist.contains(document.documentID),
-                                        '\u{20B9}' + document['price'],
                                         document,
                                         context);
                                   },
@@ -198,13 +194,7 @@ class _DiscoverState extends State<Discover>
 }
 
 Widget itemCard(
-    String name,
-    String imgPath,
-    String description,
-    bool inWishlist,
-    String price,
-    DocumentSnapshot document,
-    BuildContext context) {
+    bool inWishlist, DocumentSnapshot document, BuildContext context) {
   return Padding(
     padding: const EdgeInsets.only(top: 2, bottom: 2),
     child: Material(
@@ -233,7 +223,7 @@ Widget itemCard(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                        image: NetworkImage(imgPath),
+                        image: NetworkImage(document['catalogue'][0]),
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -267,7 +257,7 @@ Widget itemCard(
                                           (3 / 4) -
                                       10,
                                   child: Text(
-                                    name,
+                                    document['name'],
                                     style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.bold),
@@ -337,8 +327,7 @@ Widget itemCard(
                         child: Container(
                           width: MediaQuery.of(context).size.width * 2 / 3,
                           child: Text(
-                            description,
-                            // 'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                            document['description'],
                             textAlign: TextAlign.left,
                             style: TextStyle(color: Colors.grey, fontSize: 12),
                           ),
@@ -360,7 +349,8 @@ Widget itemCard(
                                 shadowColor: Colors.purple,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.purple,
+                                    color: (document['inStock'])?Colors.purple
+                                    :Colors.grey,
                                     borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(10),
                                         bottomLeft: Radius.circular(10)),
@@ -371,7 +361,7 @@ Widget itemCard(
                                   //     (1.7 / 3),
                                   child: Center(
                                     child: Text(
-                                      price,
+                                      document['price'],
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -389,7 +379,7 @@ Widget itemCard(
                                 shadowColor: Colors.purple,
                                 child: Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.purple[300],
+                                      color: (document['inStock'])?Colors.purple[300]:Colors.grey[300],
                                       borderRadius: BorderRadius.only(
                                           topRight: Radius.circular(10),
                                           bottomRight: Radius.circular(10)),
@@ -399,32 +389,48 @@ Widget itemCard(
                                         (1 / 3) *
                                         (2.7 / 3),
                                     child: Center(
-                                      child: FlatButton(
-                                        onPressed: () async {
-                                          int status = await FirestoreService()
-                                              .addToCart(document.documentID, 1,
-                                                  false);
-                                          if (status == 2) {
-                                            Fluttertoast.showToast(
-                                              msg: "Product added to the cart!",
-                                            );
-                                          } else if (status == 1) {
-                                            Fluttertoast.showToast(
-                                              msg:
-                                                  "This product is already in the cart",
-                                            );
-                                          } else if (status == 0) {
-                                            Fluttertoast.showToast(
-                                              msg: "Something went wrong!!!",
-                                            );
-                                          }
-                                        },
-                                        child: Text(
-                                          'Add To Cart',
-                                          style: TextStyle(
-                                              color: Colors.white,
+                                      child: Visibility(
+                                        visible: document['inStock'],
+                                        replacement: Center(
+                                          child: Text(
+                                            'Out of stock!!',
+                                            style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 12),
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        child: FlatButton(
+                                          onPressed: () async {
+                                            int status =
+                                                await FirestoreService()
+                                                    .addToCart(
+                                                        document.documentID,
+                                                        1,
+                                                        false);
+                                            if (status == 2) {
+                                              Fluttertoast.showToast(
+                                                msg:
+                                                    "Product added to the cart!",
+                                              );
+                                            } else if (status == 1) {
+                                              Fluttertoast.showToast(
+                                                msg:
+                                                    "This product is already in the cart",
+                                              );
+                                            } else if (status == 0) {
+                                              Fluttertoast.showToast(
+                                                msg: "Something went wrong!!!",
+                                              );
+                                            }
+                                          },
+                                          child: Text(
+                                            'Add To Cart',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12),
+                                          ),
                                         ),
                                       ),
                                     )),

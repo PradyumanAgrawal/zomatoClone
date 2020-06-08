@@ -474,46 +474,58 @@ class _DescriptionState extends State<Description> {
               flex: 60,
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.purpleAccent,
+                    color: (document['inStock'])?Colors.purpleAccent:Colors.grey,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10))),
-                child: Center(
-                  child: FlatButton(
-                    onPressed: () async {
-                      print('pressed');
-                      int status = await FirestoreService()
-                          .addToCart(document.documentID, 1, false);
+                child: Visibility(
+                  replacement: Center(
+                    child: Text(
+                      'Out of Stock!!',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)
+                    ),
+                  ),
+                  visible: document['inStock'],
+                  child: Center(
+                    child: FlatButton(
+                      onPressed: () async {
+                        print('pressed');
+                        int status = await FirestoreService()
+                            .addToCart(document.documentID, 1, false);
 
-                      if (status == 2) {
-                        final snackbar = SnackBar(content: Text('Product added to the cart!'));
-                        _scaffoldKey.currentState.showSnackBar(snackbar);
-                      } else if (status == 1) {
-                        final snackbar = SnackBar(content: Text('This product is already in the cart'));
-                        _scaffoldKey.currentState.showSnackBar(snackbar);
-                      } else if (status == 0) {
-                        final snackbar = SnackBar(content: Text('Something went wrong!!!'));
-                        _scaffoldKey.currentState.showSnackBar(snackbar);
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.add_shopping_cart,
-                          color: Colors.white,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Add to Cart',
-                          style: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                        if (status == 2) {
+                          final snackbar = SnackBar(
+                              content: Text('Product added to the cart!'));
+                          _scaffoldKey.currentState.showSnackBar(snackbar);
+                        } else if (status == 1) {
+                          final snackbar = SnackBar(
+                              content:
+                                  Text('This product is already in the cart'));
+                          _scaffoldKey.currentState.showSnackBar(snackbar);
+                        } else if (status == 0) {
+                          final snackbar = SnackBar(
+                              content: Text('Something went wrong!!!'));
+                          _scaffoldKey.currentState.showSnackBar(snackbar);
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.add_shopping_cart,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Add to Cart',
+                            style: TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
