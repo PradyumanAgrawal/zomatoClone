@@ -352,8 +352,8 @@ class _DescriptionState extends State<Description> {
                           child: SpinKitChasingDots(color: Colors.deepPurple));
                     DocumentSnapshot shopDoc = snapshot.data;
                     shopContact = shopDoc['contact'];
-                    shopLocation = new LatLng(shopDoc['location'].latitude,
-                        shopDoc['location'].longitude);
+                    shopLocation = new LatLng(shopDoc['location']['geopoint'].latitude,
+                        shopDoc['location']['geopoint'].longitude);
                     return Padding(
                       padding: EdgeInsets.only(left: 15.0),
                       child: Column(

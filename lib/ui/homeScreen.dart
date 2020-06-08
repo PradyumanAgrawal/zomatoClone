@@ -327,7 +327,7 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Store(),
+                      Store(navContext:widget.navContext),
                       Padding(
                         padding: EdgeInsets.all(10.0),
                         child: Row(
@@ -605,7 +605,6 @@ class HomeScreenState extends State<HomeScreen> {
                             width: MediaQuery.of(context).size.width * 2 / 3,
                             child: Text(
                               description,
-                              // 'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                               textAlign: TextAlign.left,
                               style:
                                   TextStyle(color: Colors.grey, fontSize: 12),
@@ -828,6 +827,8 @@ class HomeScreenState extends State<HomeScreen> {
 }
 
 class Store extends StatefulWidget {
+  BuildContext navContext;
+  Store({this.navContext});
   @override
   _StoreState createState() => _StoreState();
 }
@@ -864,7 +865,9 @@ class _StoreState extends State<Store> {
                                 String type = document['type'];
                                 return InkWell(
                                   onTap: () {
-                                    print(index);
+                                    Navigator.of(widget.navContext).pushNamed(
+                                  '/discover_shop',
+                                  arguments: document.documentID);
                                   },
                                   child: Container(
                                     padding: EdgeInsets.only(left: 4, right: 4),
