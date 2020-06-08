@@ -207,12 +207,8 @@ class _DiscoverState extends State<Discover>
                         (context, index) {
                           print(tempSearchStore[index]);
                           return itemCard(
-                              tempSearchStore[index].data['name'],
-                              tempSearchStore[index].data['catalogue'][0],
-                              tempSearchStore[index].data['description'],
                               wishlist
                                   .contains(tempSearchStore[index].documentID),
-                              tempSearchStore[index].data['price'],
                               tempSearchStore[index],
                               context);
                         },
@@ -220,75 +216,79 @@ class _DiscoverState extends State<Discover>
                       ),
                     )
               : SliverList(
-            delegate: SliverChildListDelegate(
-              <Widget>[
-                Container(
-                  child: FutureBuilder(
-                    future: LocalData().getUid(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (!snapshot.hasData)
-                        return Center(
-                            child:
-                                SpinKitChasingDots(color: Colors.deepPurple));
-                      String userId = snapshot.data;
-                      return StreamBuilder(
-                        stream: FirestoreService().getUser(userId),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData)
-                            return Center(
-                                child: SpinKitChasingDots(
-                              color: Colors.purple,
-                            ));
-                          DocumentSnapshot document = snapshot.data;
-                          wishlist = document['wishlist'];
-                          return StreamBuilder(
-                            stream: stream,
-                            // (widget.category != null)
-                            //     ? FirestoreService()
-                            //         .getProductsFromCategory(widget.category)
-                            //     : FirestoreService().getProducts(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData)
-                                return Center(
+                  delegate: SliverChildListDelegate(
+                    <Widget>[
+                      Container(
+                        child: FutureBuilder(
+                          future: LocalData().getUid(),
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData)
+                              return Center(
                                   child: SpinKitChasingDots(
-                                      color: Colors.deepPurple),
-                                );
-                              if (snapshot.data.documents.length == 0)
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox(height: 100),
-                                      Text('No Products Yet!!',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                );
-                              return Column(
-                                children: List.generate(
-                                  snapshot.data.documents.length,
-                                  (index) {
-                                    DocumentSnapshot document =
-                                        snapshot.data.documents[index];
-                                    return itemCard(
-                                        wishlist.contains(document.documentID),
-                                        document,
-                                        context);
+                                      color: Colors.deepPurple));
+                            String userId = snapshot.data;
+                            return StreamBuilder(
+                              stream: FirestoreService().getUser(userId),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData)
+                                  return Center(
+                                      child: SpinKitChasingDots(
+                                    color: Colors.purple,
+                                  ));
+                                DocumentSnapshot document = snapshot.data;
+                                wishlist = document['wishlist'];
+                                return StreamBuilder(
+                                  stream: stream,
+                                  // (widget.category != null)
+                                  //     ? FirestoreService()
+                                  //         .getProductsFromCategory(widget.category)
+                                  //     : FirestoreService().getProducts(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData)
+                                      return Center(
+                                        child: SpinKitChasingDots(
+                                            color: Colors.deepPurple),
+                                      );
+                                    if (snapshot.data.documents.length == 0)
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            SizedBox(height: 100),
+                                            Text('No Products Yet!!',
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ],
+                                        ),
+                                      );
+                                    return Column(
+                                      children: List.generate(
+                                        snapshot.data.documents.length,
+                                        (index) {
+                                          DocumentSnapshot document =
+                                              snapshot.data.documents[index];
+                                          return itemCard(
+                                              wishlist.contains(
+                                                  document.documentID),
+                                              document,
+                                              context);
+                                        },
+                                      ),
+                                    );
                                   },
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -451,8 +451,9 @@ Widget itemCard(
                                 shadowColor: Colors.purple,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: (document['inStock'])?Colors.purple
-                                    :Colors.grey,
+                                    color: (document['inStock'])
+                                        ? Colors.purple
+                                        : Colors.grey,
                                     borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(10),
                                         bottomLeft: Radius.circular(10)),
@@ -481,7 +482,9 @@ Widget itemCard(
                                 shadowColor: Colors.purple,
                                 child: Container(
                                     decoration: BoxDecoration(
-                                      color: (document['inStock'])?Colors.purple[300]:Colors.grey[300],
+                                      color: (document['inStock'])
+                                          ? Colors.purple[300]
+                                          : Colors.grey[300],
                                       borderRadius: BorderRadius.only(
                                           topRight: Radius.circular(10),
                                           bottomRight: Radius.circular(10)),
