@@ -213,6 +213,7 @@ class _DiscoverState extends State<Discover>
                               wishlist
                                   .contains(tempSearchStore[index].documentID),
                               tempSearchStore[index].data['price'],
+                              tempSearchStore[index].data['discount']!=null?tempSearchStore[index].data['discount']:'0',
                               tempSearchStore[index],
                               context);
                         },
@@ -220,79 +221,84 @@ class _DiscoverState extends State<Discover>
                       ),
                     )
               : SliverList(
-            delegate: SliverChildListDelegate(
-              <Widget>[
-                Container(
-                  child: FutureBuilder(
-                    future: LocalData().getUid(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (!snapshot.hasData)
-                        return Center(
-                            child:
-                                SpinKitChasingDots(color: Colors.deepPurple));
-                      String userId = snapshot.data;
-                      return StreamBuilder(
-                        stream: FirestoreService().getUser(userId),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData)
-                            return Center(
-                                child: SpinKitChasingDots(
-                              color: Colors.purple,
-                            ));
-                          DocumentSnapshot document = snapshot.data;
-                          wishlist = document['wishlist'];
-                          return StreamBuilder(
-                            stream: stream,
-                            // (widget.category != null)
-                            //     ? FirestoreService()
-                            //         .getProductsFromCategory(widget.category)
-                            //     : FirestoreService().getProducts(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData)
-                                return Center(
+                  delegate: SliverChildListDelegate(
+                    <Widget>[
+                      Container(
+                        child: FutureBuilder(
+                          future: LocalData().getUid(),
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData)
+                              return Center(
                                   child: SpinKitChasingDots(
-                                      color: Colors.deepPurple),
-                                );
-                              if (snapshot.data.documents.length == 0)
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox(height: 100),
-                                      Text('No Products Yet!!',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                );
-                              return Column(
-                                children: List.generate(
-                                  snapshot.data.documents.length,
-                                  (index) {
-                                    DocumentSnapshot document =
-                                        snapshot.data.documents[index];
-                                    return itemCard(
-                                        document['name'],
-                                        document['catalogue'][0],
-                                        document['description'],
-                                        wishlist.contains(document.documentID),
-                                        '\u{20B9}' + document['price'],
-                                        document,
-                                        context);
+                                      color: Colors.deepPurple));
+                            String userId = snapshot.data;
+                            return StreamBuilder(
+                              stream: FirestoreService().getUser(userId),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData)
+                                  return Center(
+                                      child: SpinKitChasingDots(
+                                    color: Colors.purple,
+                                  ));
+                                DocumentSnapshot document = snapshot.data;
+                                wishlist = document['wishlist'];
+                                return StreamBuilder(
+                                  stream: stream,
+                                  // (widget.category != null)
+                                  //     ? FirestoreService()
+                                  //         .getProductsFromCategory(widget.category)
+                                  //     : FirestoreService().getProducts(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData)
+                                      return Center(
+                                        child: SpinKitChasingDots(
+                                            color: Colors.deepPurple),
+                                      );
+                                    if (snapshot.data.documents.length == 0)
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            SizedBox(height: 100),
+                                            Text('No Products Yet!!',
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ],
+                                        ),
+                                      );
+                                    return Column(
+                                      children: List.generate(
+                                        snapshot.data.documents.length,
+                                        (index) {
+                                          DocumentSnapshot document =
+                                              snapshot.data.documents[index];
+                                          return itemCard(
+                                              document['name'],
+                                              document['catalogue'][0],
+                                              document['description'],
+                                              wishlist.contains(
+                                                  document.documentID),
+                                              document['price'],
+                                              document['discount']!=null?document['discount']:'0',
+                                              document,
+                                              context);
+                                        },
+                                      ),
+                                    );
                                   },
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -305,6 +311,7 @@ Widget itemCard(
     String description,
     bool inWishlist,
     String price,
+    String discount,
     DocumentSnapshot document,
     BuildContext context) {
   return Padding(
@@ -455,7 +462,7 @@ Widget itemCard(
                           children: <Widget>[
                             Flexible(flex: 5, child: Container()),
                             Flexible(
-                              flex: 10,
+                              flex: 20,
                               child: Material(
                                 elevation: 7,
                                 borderRadius: BorderRadius.circular(10),
@@ -472,19 +479,47 @@ Widget itemCard(
                                   //     (1 / 3) *
                                   //     (1.7 / 3),
                                   child: Center(
-                                    child: Text(
-                                      price,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12),
-                                    ),
+                                    child: discount != '0'
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  '\u{20B9} ' + price,
+                                                  style: TextStyle(
+                                                      decoration: TextDecoration
+                                                          .lineThrough,
+                                                      color: Colors.white
+                                                          .withOpacity(0.5),
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize: 12),
+                                                ),
+                                                Text(
+                                                  "  " +
+                                                      '\u{20B9} ' +
+                                                      '${int.parse(price) * (1 - int.parse(discount) / 100)}',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12),
+                                                )
+                                              ],
+                                            )
+                                          : Text(
+                                              '\u{20B9} ' + price,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12),
+                                            ),
                                   ),
                                 ),
                               ),
                             ),
                             Flexible(
-                              flex: 16,
+                              flex: 20,
                               child: Material(
                                 elevation: 7,
                                 borderRadius: BorderRadius.circular(10),

@@ -13,7 +13,7 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  int totalPrice = 0;
+  double totalPrice = 0;
   String userId;
   bool buttonVisible = true;
 
@@ -101,6 +101,11 @@ class _CartState extends State<Cart> {
                   for (int i = 0; i < snapshot.data.documents.length; i++,) {
                     DocumentSnapshot productDoc = snapshot.data.documents[i];
                     totalPrice += int.parse(productDoc['price']) *
+                        (1 -
+                            int.parse(productDoc['discount'] == null
+                                    ? '0'
+                                    : productDoc['discount']) /
+                                100) *
                         document['cart'][productDoc.documentID];
                   }
                   //totalPrice = price;
@@ -205,22 +210,18 @@ class _CartState extends State<Cart> {
                         SliverList(
                             delegate: SliverChildListDelegate(
                           <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: List.generate(
-                                  snapshot.data.documents.length,
-                                  (index) {
-                                    DocumentSnapshot productDoc =
-                                        snapshot.data.documents[index];
-                                    return product(
-                                        widget.navContext,
-                                        index,
-                                        productDoc,
-                                        document['cart']
-                                            [productDoc.documentID]);
-                                  },
-                                ),
+                            Column(
+                              children: List<Widget>.generate(
+                                snapshot.data.documents.length,
+                                (index) {
+                                  DocumentSnapshot productDoc =
+                                      snapshot.data.documents[index];
+                                  return product(
+                                      widget.navContext,
+                                      index,
+                                      productDoc,
+                                      document['cart'][productDoc.documentID]);
+                                },
                               ),
                             ),
                             SizedBox(
@@ -324,7 +325,52 @@ class _CartState extends State<Cart> {
                                   flex: 10,
                                   child: Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text(
+                                    child: (productDoc['discount'] == null
+                                                ? '0'
+                                                : productDoc['discount']) !=
+                                            '0'
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '\u{20B9} ' +
+                                                    '${int.parse(productDoc['price']) * quantity}',
+                                                style: TextStyle(
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                    color: Colors.grey,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 13),
+                                              ),
+                                              Text(
+                                                  ' ' +
+                                                      productDoc['discount'] +
+                                                      "% off",
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      color: Colors.grey)),
+                                              Text(
+                                                "  " +
+                                                    '\u{20B9} ' +
+                                                    '${int.parse(productDoc['price']) * (1 - int.parse(productDoc['discount']) / 100) * quantity}',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              )
+                                            ],
+                                          )
+                                        : Text(
+                                            '\u{20B9} ' + productDoc['price'],
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                    /* Text(
                                       'Price: ' +
                                           '\u{20B9}' +
                                           (int.parse(productDoc['price']) *
@@ -333,7 +379,7 @@ class _CartState extends State<Cart> {
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.deepPurple[900]),
-                                    ),
+                                    ), */
                                   ),
                                 ),
                               ],
@@ -404,8 +450,11 @@ class _CartState extends State<Cart> {
               child: Center(
                 child: IconButton(
                   onPressed: () {
+                    
                     FirestoreService()
-                        .addToCart(productDoc.documentID, 0, true);
+                        .addToCart(productDoc.documentID, 0, true)
+                        .then((value) {
+                    });
                   },
                   icon: Icon(Icons.delete),
                   color: Colors.red,

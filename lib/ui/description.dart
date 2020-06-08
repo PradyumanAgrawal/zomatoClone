@@ -176,6 +176,49 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(height: 10.0),
               Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Container(
+                  child: (document['discount']==null ?'0':document['discount'])!= '0'
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '\u{20B9} ' + document['price'],
+                              style: TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 20),
+                            ),
+                            Text(' ' + document['discount'] + "% off",
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.grey)),
+                            Text(
+                              "  " +
+                                  '\u{20B9} ' +
+                                  '${int.parse(document['price']) * (1 - int.parse(document['discount']) / 100)}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 22),
+                            )
+                          ],
+                        )
+                      : Text(
+                          '\u{20B9} ' + document['price'],
+                          style: TextStyle(
+                              fontSize: 22.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ), /* Text(
+                            '\u{20B9}' + document['price'],
+                            style: TextStyle(
+                                fontSize: 22.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ), */
+                ),
+              ),
+              Padding(
                   padding: EdgeInsets.only(left: 15.0, right: 15.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -196,20 +239,6 @@ class _DescriptionState extends State<Description> {
                       VerticalDivider(
                         color: Colors.grey.withOpacity(1),
                       ),
-                      Flexible(
-                        flex: 10,
-                        child: Center(
-                          child: Container(
-                            child: Text(
-                              '\u{20B9}' + document['price'],
-                              style: TextStyle(
-                                  fontSize: 22.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   )),
               Divider(
@@ -217,7 +246,8 @@ class _DescriptionState extends State<Description> {
                 height: 30,
                 indent: 50,
                 endIndent: 50,
-              ),/* 
+              ),
+              /* 
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -427,7 +457,7 @@ class _DescriptionState extends State<Description> {
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             //SizedBox(width: 10.0),
-            Flexible(
+            /* Flexible(
               flex: 20,
               child: InkWell(
                 onTap: () {},
@@ -443,7 +473,7 @@ class _DescriptionState extends State<Description> {
                   ),
                 ),
               ),
-            ),
+            ), */
             Flexible(
               flex: 20,
               child: InkWell(
@@ -464,7 +494,7 @@ class _DescriptionState extends State<Description> {
                     color: Colors.white,
                     child: Icon(
                       Icons.call,
-                      color: Colors.purple,
+                      color: Colors.deepPurple[700],
                     ),
                   ),
                 ),
@@ -474,7 +504,7 @@ class _DescriptionState extends State<Description> {
               flex: 60,
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.purpleAccent,
+                    color: Colors.deepPurple[700],
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10))),
@@ -486,13 +516,17 @@ class _DescriptionState extends State<Description> {
                           .addToCart(document.documentID, 1, false);
 
                       if (status == 2) {
-                        final snackbar = SnackBar(content: Text('Product added to the cart!'));
+                        final snackbar = SnackBar(
+                            content: Text('Product added to the cart!'));
                         _scaffoldKey.currentState.showSnackBar(snackbar);
                       } else if (status == 1) {
-                        final snackbar = SnackBar(content: Text('This product is already in the cart'));
+                        final snackbar = SnackBar(
+                            content:
+                                Text('This product is already in the cart'));
                         _scaffoldKey.currentState.showSnackBar(snackbar);
                       } else if (status == 0) {
-                        final snackbar = SnackBar(content: Text('Something went wrong!!!'));
+                        final snackbar =
+                            SnackBar(content: Text('Something went wrong!!!'));
                         _scaffoldKey.currentState.showSnackBar(snackbar);
                       }
                     },

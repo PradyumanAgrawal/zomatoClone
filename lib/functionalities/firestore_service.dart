@@ -233,7 +233,7 @@ class FirestoreService {
   }
 
   Future<dynamic> reviewCart() async {
-    int total = 0;
+    double total = 0;
     int quant = 0;
     List<Map> products = [];
     String uid = await LocalData().getUid();
@@ -256,9 +256,10 @@ class FirestoreService {
       temp['price'] = prodList[i]['price'];
       temp['quantity'] = user.data['cart'][prodList[i].documentID];
       temp['image'] = prodList[i]['catalogue'][0];
+      temp['discount'] = prodList[i]['discount']==null?'0':prodList[i]['discount'];
       products.add(temp);
       print(int.parse(prodList[i].data['price']));
-      total += int.parse(prodList[i].data['price']) * user.data['cart'][prodList[i].documentID];
+      total += int.parse(prodList[i].data['price']) * (1-int.parse(prodList[i].data['discount']==null?'0':prodList[i].data['discount'])/100) * user.data['cart'][prodList[i].documentID];
       print(quantity[i]);
       quant += quantity[i];
     }

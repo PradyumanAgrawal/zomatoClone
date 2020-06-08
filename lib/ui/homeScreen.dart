@@ -117,20 +117,15 @@ class HomeScreenState extends State<HomeScreen> {
             content: Container(
               height: 200,
               alignment: Alignment.center,
-              child: Column(
-                children: [
-                  Text(
-                    widget.add,
-                    style: TextStyle(
-                        color: Colors.blueGrey[900],
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                        height: 1.4),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(widget.location.toString()),
-                ],
+              child: Text(
+                widget.add,
+                style: TextStyle(
+                    color: Colors.blueGrey[900],
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    height: 1.4),
+                textAlign: TextAlign.center,
               ),
             ),
             actions: <Widget>[
@@ -268,6 +263,7 @@ class HomeScreenState extends State<HomeScreen> {
                               wishlist
                                   .contains(tempSearchStore[index].documentID),
                               tempSearchStore[index].data['price'],
+                              tempSearchStore[index].data['discount']!=null?tempSearchStore[index].data['discount']:'0',
                               tempSearchStore[index],
                               widget.navContext);
                         },
@@ -469,6 +465,7 @@ class HomeScreenState extends State<HomeScreen> {
       String description,
       bool inWishlist,
       String price,
+      String discount,
       DocumentSnapshot document,
       BuildContext context) {
     return Padding(
@@ -524,9 +521,8 @@ class HomeScreenState extends State<HomeScreen> {
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
-                                      '/description',
-                                      arguments: document,
-                                    );
+                                        '/description',
+                                        arguments: document);
                                   },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width *
@@ -589,9 +585,6 @@ class HomeScreenState extends State<HomeScreen> {
                                           onPressed: () {
                                             FirestoreService().addToWishlist(
                                                 document.documentID);
-                                            setState(() {
-                                              inWishlist = !inWishlist;
-                                            });
                                           },
                                         ),
                                       ),
@@ -610,6 +603,7 @@ class HomeScreenState extends State<HomeScreen> {
                             width: MediaQuery.of(context).size.width * 2 / 3,
                             child: Text(
                               description,
+                              // 'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                               textAlign: TextAlign.left,
                               style:
                                   TextStyle(color: Colors.grey, fontSize: 12),
@@ -625,7 +619,7 @@ class HomeScreenState extends State<HomeScreen> {
                             children: <Widget>[
                               Flexible(flex: 5, child: Container()),
                               Flexible(
-                                flex: 10,
+                                flex: 20,
                                 child: Material(
                                   elevation: 7,
                                   borderRadius: BorderRadius.circular(10),
@@ -642,19 +636,47 @@ class HomeScreenState extends State<HomeScreen> {
                                     //     (1 / 3) *
                                     //     (1.7 / 3),
                                     child: Center(
-                                      child: Text(
-                                        price,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12),
-                                      ),
+                                      child: discount != '0'
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  '\u{20B9} ' + price,
+                                                  style: TextStyle(
+                                                      decoration: TextDecoration
+                                                          .lineThrough,
+                                                      color: Colors.white
+                                                          .withOpacity(0.5),
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize: 12),
+                                                ),
+                                                Text(
+                                                  "  " +
+                                                      '\u{20B9} ' +
+                                                      '${int.parse(price) * (1 - int.parse(discount) / 100)}',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12),
+                                                )
+                                              ],
+                                            )
+                                          : Text(
+                                              '\u{20B9} ' + price,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12),
+                                            ),
                                     ),
                                   ),
                                 ),
                               ),
                               Flexible(
-                                flex: 16,
+                                flex: 20,
                                 child: Material(
                                   elevation: 7,
                                   borderRadius: BorderRadius.circular(10),
@@ -673,23 +695,27 @@ class HomeScreenState extends State<HomeScreen> {
                                       child: Center(
                                         child: FlatButton(
                                           onPressed: () async {
-                                              int status = await FirestoreService()
-                                              .addToCart(document.documentID, 1,
-                                                  false);
-                                          if (status == 2) {
-                                            Fluttertoast.showToast(
-                                              msg: "Product added to the cart!",
-                                            );
-                                          } else if (status == 1) {
-                                            Fluttertoast.showToast(
-                                              msg:
-                                                  "This product is already in the cart",
-                                            );
-                                          } else if (status == 0) {
-                                            Fluttertoast.showToast(
-                                              msg: "Something went wrong!!!",
-                                            );
-                                          }
+                                            int status =
+                                                await FirestoreService()
+                                                    .addToCart(
+                                                        document.documentID,
+                                                        1,
+                                                        false);
+                                            if (status == 2) {
+                                              Fluttertoast.showToast(
+                                                msg:
+                                                    "Product added to the cart!",
+                                              );
+                                            } else if (status == 1) {
+                                              Fluttertoast.showToast(
+                                                msg:
+                                                    "This product is already in the cart",
+                                              );
+                                            } else if (status == 0) {
+                                              Fluttertoast.showToast(
+                                                msg: "Something went wrong!!!",
+                                              );
+                                            }
                                           },
                                           child: Text(
                                             'Add To Cart',
@@ -857,9 +883,10 @@ class _StoreState extends State<Store> {
                             );
                     }),
           );
-        }
-        else{
-          return SpinKitChasingDots(color: Colors.deepPurple,);
+        } else {
+          return SpinKitChasingDots(
+            color: Colors.deepPurple,
+          );
         }
       },
     );

@@ -107,11 +107,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               Navigator.of(widget.navContext).pushNamed('/wishlist');
             },
           ),
-          ListTile(
+          /* ListTile(
             leading: Icon(Icons.history),
             title: Text('Order History'),
             onTap: () {},
-          ),
+          ), */
           ListTile(
             leading: Icon(Icons.feedback),
             title: Text('Feedback'),

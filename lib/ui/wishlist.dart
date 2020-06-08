@@ -41,12 +41,18 @@ class _WishlistState extends State<Wishlist> {
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return Center(
-                              child: SpinKitChasingDots(
-                                color: Colors.purple,
-                              ),
-                            );
+                            child:
+                                SpinKitChasingDots(color: Colors.deepPurple));
+                          
                           DocumentSnapshot document = snapshot.data;
                           List wishlist = document['wishlist'];
+                          if(wishlist.isEmpty){
+                            return Center(child:Padding(
+                              padding: const EdgeInsets.only(top:50.0),
+                              child: Text('No Products in Wishlist', style: TextStyle(fontSize: 15)),
+                            ));
+                          }
+
                           return StreamBuilder(
                             stream: FirestoreService().getWishlistProducts(wishlist),
                             builder: (context, snapshot) {
