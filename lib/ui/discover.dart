@@ -20,6 +20,64 @@ class Discover extends StatefulWidget {
 
 class _DiscoverState extends State<Discover>
     with SingleTickerProviderStateMixin {
+  List wishlist;
+  bool isTyping = false;
+  bool isSearching = false;
+  TextEditingController _controller = TextEditingController();
+  checkTyping(value) {
+    if (value.length > 0) {
+      setState(() {
+        isTyping = true;
+      });
+    } else {
+      setState(() {
+        isTyping = false;
+      });
+    }
+  }
+
+  var queryResultSet = [];
+  var tempSearchStore = [];
+
+  initiateSearch(value) {
+    if (value.length == 0) {
+      setState(() {
+        queryResultSet = [];
+        tempSearchStore = [];
+      });
+    }
+    setState(() {
+      isSearching = true;
+    });
+
+    var capitalizedValue =
+        value.substring(0, 1).toUpperCase() + value.substring(1);
+
+    if (queryResultSet.length == 0 && value.length == 1) {
+      FirestoreService().searchByName(value).then((QuerySnapshot docs) {
+        for (int i = 0; i < docs.documents.length; ++i) {
+          setState(() {
+            queryResultSet.add(docs.documents[i]);
+            tempSearchStore.add(docs.documents[i]);
+          });
+        }
+        setState(() {
+          isSearching = false;
+        });
+      });
+    } else {
+      setState(() {
+        tempSearchStore = [];
+        queryResultSet.forEach((element) {
+          if (element.data['name'].startsWith(capitalizedValue)) {
+            tempSearchStore.add(element);
+          }
+        });
+        isSearching = false;
+      });
+    }
+  }
+
   //var productList = new List<Product>();
   Stream<dynamic> stream;
 
@@ -98,6 +156,11 @@ class _DiscoverState extends State<Discover>
                       bottomRight: Radius.circular(20)),
                 ),
                 child: TextFormField(
+                  onChanged: (value) {
+                    checkTyping(value);
+                    initiateSearch(value);
+                  },
+                  controller: _controller,
                   decoration: InputDecoration(
                     hintText: "Search",
                     fillColor: Colors.white,
@@ -117,7 +180,46 @@ class _DiscoverState extends State<Discover>
               preferredSize: Size(50, 80),
             ),
           ),
-          SliverList(
+          isTyping
+              ? (tempSearchStore.length == 0)
+                  ? isSearching
+                      ? SliverList(
+                          delegate: SliverChildListDelegate(<Widget>[
+                            Center(
+                                child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 30),
+                                    child: SpinKitChasingDots(
+                                        color: Colors.deepPurple)))
+                          ]),
+                        )
+                      : SliverList(
+                          delegate: SliverChildListDelegate(<Widget>[
+                            Center(
+                                child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 30),
+                              child: Text('No Results Found!'),
+                            ))
+                          ]),
+                        )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          print(tempSearchStore[index]);
+                          return itemCard(
+                              tempSearchStore[index].data['name'],
+                              tempSearchStore[index].data['catalogue'][0],
+                              tempSearchStore[index].data['description'],
+                              wishlist
+                                  .contains(tempSearchStore[index].documentID),
+                              tempSearchStore[index].data['price'],
+                              tempSearchStore[index],
+                              context);
+                        },
+                        childCount: tempSearchStore.length,
+                      ),
+                    )
+              : SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
                 Container(
@@ -138,7 +240,7 @@ class _DiscoverState extends State<Discover>
                               color: Colors.purple,
                             ));
                           DocumentSnapshot document = snapshot.data;
-                          List wishlist = document['wishlist'];
+                          wishlist = document['wishlist'];
                           return StreamBuilder(
                             stream: stream,
                             // (widget.category != null)
