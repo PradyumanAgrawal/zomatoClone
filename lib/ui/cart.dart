@@ -364,7 +364,7 @@ class _CartState extends State<Cart> {
                                             ],
                                           )
                                         : Text(
-                                            '\u{20B9} ' + productDoc['price'],
+                                            '\u{20B9} ' + '${int.parse(productDoc['price']) * quantity}',
                                             style: TextStyle(
                                                 fontSize: 16.0,
                                                 color: Colors.black,

@@ -292,122 +292,142 @@ class _ReviewCartState extends State<ReviewCart> {
                       ),
                       snapshot.data['address'].length == 0
                           ? Container()
-                          : Container(
-                              height: 200,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: snapshot.data['address'].length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 5, left: 5),
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          selectedAdd = index;
-                                        });
-                                      },
-                                      child: Stack(
-                                        alignment: Alignment.topRight,
-                                        children: [
-                                          Card(
-                                            clipBehavior: Clip.hardEdge,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            child: Container(
-                                              color: index == selectedAdd
-                                                  ? Colors.deepPurple[100]
-                                                  : Colors.white,
-                                              width: 150,
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: Center(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      snapshot.data['address']
-                                                          [index]['name'],
-                                                      // 'Name',
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 10),
-                                                    Text(
-                                                      snapshot.data['address']
-                                                          [index]['line1'],
-                                                      //'Address Line xxxxxxxx 1',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 3),
-                                                    Text(
-                                                      snapshot.data['address']
-                                                          [index]['line2'],
-                                                      //'AddressLine2',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 4),
-                                                    Text(
-                                                      snapshot.data['address']
-                                                          [index]['city'],
-                                                      //'City',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 3),
-                                                    Text(
-                                                      snapshot.data['address']
-                                                          [index]['state'],
-                                                      //'State',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 3),
-                                                    Text(
-                                                      snapshot.data['address']
-                                                          [index]['pincode'],
-                                                      //'Pincode',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 4),
-                                                    Row(
+                          : StreamBuilder(
+                              stream: FirestoreService()
+                                  .getUser(snapshot.data['userId']),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData)
+                                  Center(
+                                    child: SpinKitChasingDots(
+                                      color: Colors.purple,
+                                    ),
+                                  );
+                                return Container(
+                                  height: 200,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: snapshot.data['address'].length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 5, left: 5),
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              selectedAdd = index;
+                                            });
+                                          },
+                                          child: Stack(
+                                            alignment: Alignment.topRight,
+                                            children: [
+                                              Card(
+                                                clipBehavior: Clip.hardEdge,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15.0),
+                                                ),
+                                                child: Container(
+                                                  color: index == selectedAdd
+                                                      ? Colors.deepPurple[100]
+                                                      : Colors.white,
+                                                  width: 150,
+                                                  padding:
+                                                      const EdgeInsets.all(10.0),
+                                                  child: Center(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment.start,
                                                       children: <Widget>[
-                                                        Icon(Icons.call, size: 10),
-                                                        SizedBox(width: 10),
                                                         Text(
                                                           snapshot.data['address']
-                                                              [index]['phone'],
-                                                          //'xxxxxxxxxx',
+                                                              [index]['name'],
+                                                          // 'Name',
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                          snapshot.data['address']
+                                                              [index]['line1'],
+                                                          //'Address Line xxxxxxxx 1',
                                                           style: TextStyle(
                                                             fontSize: 10,
                                                           ),
                                                         ),
+                                                        SizedBox(height: 3),
+                                                        Text(
+                                                          snapshot.data['address']
+                                                              [index]['line2'],
+                                                          //'AddressLine2',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 4),
+                                                        Text(
+                                                          snapshot.data['address']
+                                                              [index]['city'],
+                                                          //'City',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 3),
+                                                        Text(
+                                                          snapshot.data['address']
+                                                              [index]['state'],
+                                                          //'State',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 3),
+                                                        Text(
+                                                          snapshot.data['address']
+                                                              [index]['pincode'],
+                                                          //'Pincode',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 4),
+                                                        Row(
+                                                          children: <Widget>[
+                                                            Icon(Icons.call,
+                                                                size: 10),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                              snapshot.data[
+                                                                      'address']
+                                                                  [index]['phone'],
+                                                              //'xxxxxxxxxx',
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ],
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                              index==selectedAdd?CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                child: Icon(Icons.done, color: Colors.green,),
+                                                radius: 15,
+                                              ):Container(),
+                                            ],
                                           ),
-                                          index!=selectedAdd?Container():CircleAvatar(backgroundColor: Colors.white,radius:15, child:Icon(Icons.done, color:Colors.green))
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                             ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -495,22 +515,25 @@ class _ReviewCartState extends State<ReviewCart> {
                               snapshot.data['mobileNo'] == '') {
                             return detailsIncomplete(context);
                           } else {
-                            FirestoreService().placeOrder(
-                                snapshot.data['address'][selectedAdd],
-                                snapshot.data['mobileNo']).then((value){
-                                   Fluttertoast.showToast(
-                                     toastLength: Toast.LENGTH_LONG,
-                                msg: "Order Placed, waiting for the seller to accept the order",
+                            FirestoreService()
+                                .placeOrder(
+                                    snapshot.data['address'][selectedAdd],
+                                    snapshot.data['mobileNo'])
+                                .then((value) {
+                              Fluttertoast.showToast(
+                                toastLength: Toast.LENGTH_LONG,
+                                msg:
+                                    "Order Placed, waiting for the seller to accept the order",
                               );
                               Navigator.of(widget.navContext).pop();
-                            Navigator.of(context).pop();
-                                }).catchError((){
-                                  Fluttertoast.showToast(
+                              Navigator.of(context).pop();
+                            }).catchError(() {
+                              Fluttertoast.showToast(
                                 msg: "Something went wrong!!!",
                               );
                               Navigator.of(widget.navContext).pop();
-                            Navigator.of(context).pop();
-                                });
+                              Navigator.of(context).pop();
+                            });
                           }
                         },
                         child: Row(

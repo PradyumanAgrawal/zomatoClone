@@ -263,7 +263,9 @@ class HomeScreenState extends State<HomeScreen> {
                               wishlist
                                   .contains(tempSearchStore[index].documentID),
                               tempSearchStore[index].data['price'],
-                              tempSearchStore[index].data['discount']!=null?tempSearchStore[index].data['discount']:'0',
+                              tempSearchStore[index].data['discount'] != null
+                                  ? tempSearchStore[index].data['discount']
+                                  : '0',
                               tempSearchStore[index],
                               widget.navContext);
                         },
@@ -626,7 +628,9 @@ class HomeScreenState extends State<HomeScreen> {
                                   shadowColor: Colors.purple,
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.purple,
+                                      color: (document['inStock'])
+                                          ? Colors.purple
+                                          : Colors.grey,
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(10),
                                           bottomLeft: Radius.circular(10)),
@@ -683,7 +687,9 @@ class HomeScreenState extends State<HomeScreen> {
                                   shadowColor: Colors.purple,
                                   child: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.purple[300],
+                                        color: (document['inStock'])
+                                            ? Colors.purple[300]
+                                            : Colors.grey[300],
                                         borderRadius: BorderRadius.only(
                                             topRight: Radius.circular(10),
                                             bottomRight: Radius.circular(10)),
@@ -693,36 +699,49 @@ class HomeScreenState extends State<HomeScreen> {
                                           (1 / 3) *
                                           (2.7 / 3),
                                       child: Center(
-                                        child: FlatButton(
-                                          onPressed: () async {
-                                            int status =
-                                                await FirestoreService()
-                                                    .addToCart(
-                                                        document.documentID,
-                                                        1,
-                                                        false);
-                                            if (status == 2) {
-                                              Fluttertoast.showToast(
-                                                msg:
-                                                    "Product added to the cart!",
-                                              );
-                                            } else if (status == 1) {
-                                              Fluttertoast.showToast(
-                                                msg:
-                                                    "This product is already in the cart",
-                                              );
-                                            } else if (status == 0) {
-                                              Fluttertoast.showToast(
-                                                msg: "Something went wrong!!!",
-                                              );
-                                            }
-                                          },
-                                          child: Text(
-                                            'Add To Cart',
-                                            style: TextStyle(
-                                                color: Colors.white,
+                                        child: Visibility(
+                                          visible: document['inStock'],
+                                          replacement: Center(
+                                            child: Text(
+                                              'Out of stock!!',
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 12),
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          child: FlatButton(
+                                            onPressed: () async {
+                                              int status =
+                                                  await FirestoreService()
+                                                      .addToCart(
+                                                          document.documentID,
+                                                          1,
+                                                          false);
+                                              if (status == 2) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Product added to the cart!",
+                                                );
+                                              } else if (status == 1) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "This product is already in the cart",
+                                                );
+                                              } else if (status == 0) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Something went wrong!!!",
+                                                );
+                                              }
+                                            },
+                                            child: Text(
+                                              'Add To Cart',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12),
+                                            ),
                                           ),
                                         ),
                                       )),

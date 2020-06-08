@@ -146,42 +146,43 @@ class _OrdersState extends State<Orders> {
                                             ]) /* Center(child:Text(orderList[index]['prodId']+ ' \u{20B9} ' + orderList[index]['amount'].toString())), */
                                         ),
                                     Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 20,
-                                            bottom: 20,
-                                            left: 40,
-                                            right: 40),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Status: ',
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                              ),
+                                      padding: const EdgeInsets.only(
+                                          top: 20,
+                                          bottom: 20,
+                                          left: 40,
+                                          right: 40),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Status: ',
+                                            style: TextStyle(
+                                              color: Colors.grey,
                                             ),
-                                            Text(
-                                              orderList[index]['status'],
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: (orderList[index]
-                                                            ['status'] ==
-                                                        'pending')
-                                                    ? Colors.blue
-                                                    : (orderList[index]
-                                                                ['status'] ==
-                                                            'Rejected')
-                                                        ? Colors.red
-                                                        : (orderList[index][
-                                                                    'status'] ==
-                                                                'Accepted')
-                                                            ? Colors.green
-                                                            : Colors.black,
-                                              ),
-                                            )
-                                          ],
-                                        )),
+                                          ),
+                                          Text(
+                                            orderList[index]['status'],
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: (orderList[index]
+                                                          ['status'] ==
+                                                      'pending')
+                                                  ? Colors.blue
+                                                  : (orderList[index]
+                                                              ['status'] ==
+                                                          'Rejected')
+                                                      ? Colors.red
+                                                      : (orderList[index]
+                                                                  ['status'] ==
+                                                              'Accepted')
+                                                          ? Colors.green
+                                                          : Colors.black,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );

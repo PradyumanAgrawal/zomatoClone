@@ -65,7 +65,7 @@ class _WishlistState extends State<Wishlist> {
                               return Padding(
                                 padding: const EdgeInsets.all(0),
                                 child: Column(
-                                  children: List.generate(wishlist.length,(index){
+                                  children: List.generate(snapshot.data.documents.length,(index){
                                     DocumentSnapshot document =
                                         snapshot.data.documents[index];
                                     return itemCard(
