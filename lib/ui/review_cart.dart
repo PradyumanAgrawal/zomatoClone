@@ -307,96 +307,102 @@ class _ReviewCartState extends State<ReviewCart> {
                                           selectedAdd = index;
                                         });
                                       },
-                                      child: Card(
-                                        clipBehavior: Clip.hardEdge,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                        ),
-                                        child: Container(
-                                          color: index == selectedAdd
-                                              ? Colors.deepPurple[100]
-                                              : Colors.white,
-                                          width: 150,
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Center(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  snapshot.data['address']
-                                                      [index]['name'],
-                                                  // 'Name',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 10),
-                                                Text(
-                                                  snapshot.data['address']
-                                                      [index]['line1'],
-                                                  //'Address Line xxxxxxxx 1',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 3),
-                                                Text(
-                                                  snapshot.data['address']
-                                                      [index]['line2'],
-                                                  //'AddressLine2',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 4),
-                                                Text(
-                                                  snapshot.data['address']
-                                                      [index]['city'],
-                                                  //'City',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 3),
-                                                Text(
-                                                  snapshot.data['address']
-                                                      [index]['state'],
-                                                  //'State',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 3),
-                                                Text(
-                                                  snapshot.data['address']
-                                                      [index]['pincode'],
-                                                  //'Pincode',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 4),
-                                                Row(
+                                      child: Stack(
+                                        alignment: Alignment.topRight,
+                                        children: [
+                                          Card(
+                                            clipBehavior: Clip.hardEdge,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            child: Container(
+                                              color: index == selectedAdd
+                                                  ? Colors.deepPurple[100]
+                                                  : Colors.white,
+                                              width: 150,
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Center(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: <Widget>[
-                                                    Icon(Icons.call, size: 10),
-                                                    SizedBox(width: 10),
                                                     Text(
                                                       snapshot.data['address']
-                                                          [index]['phone'],
-                                                      //'xxxxxxxxxx',
+                                                          [index]['name'],
+                                                      // 'Name',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    Text(
+                                                      snapshot.data['address']
+                                                          [index]['line1'],
+                                                      //'Address Line xxxxxxxx 1',
                                                       style: TextStyle(
                                                         fontSize: 10,
                                                       ),
                                                     ),
+                                                    SizedBox(height: 3),
+                                                    Text(
+                                                      snapshot.data['address']
+                                                          [index]['line2'],
+                                                      //'AddressLine2',
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      snapshot.data['address']
+                                                          [index]['city'],
+                                                      //'City',
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 3),
+                                                    Text(
+                                                      snapshot.data['address']
+                                                          [index]['state'],
+                                                      //'State',
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 3),
+                                                    Text(
+                                                      snapshot.data['address']
+                                                          [index]['pincode'],
+                                                      //'Pincode',
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Icon(Icons.call, size: 10),
+                                                        SizedBox(width: 10),
+                                                        Text(
+                                                          snapshot.data['address']
+                                                              [index]['phone'],
+                                                          //'xxxxxxxxxx',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
-                                              ],
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                          index!=selectedAdd?Container():CircleAvatar(backgroundColor: Colors.white,radius:15, child:Icon(Icons.done, color:Colors.green))
+                                        ],
                                       ),
                                     ),
                                   );
