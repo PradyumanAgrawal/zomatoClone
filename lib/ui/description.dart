@@ -156,14 +156,14 @@ class _DescriptionState extends State<Description> {
                 ),
               ),
               SizedBox(height: 20.0),
-              Padding(
+              /* Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
                   'Product id: ' + document['productId'],
                   style: TextStyle(fontSize: 15.0, color: Colors.grey),
                 ),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 10.0), */
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -217,7 +217,7 @@ class _DescriptionState extends State<Description> {
                 height: 30,
                 indent: 50,
                 endIndent: 50,
-              ),
+              ),/* 
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -276,7 +276,7 @@ class _DescriptionState extends State<Description> {
                 height: 40,
                 indent: 50,
                 endIndent: 50,
-              ),
+              ), */
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -393,7 +393,7 @@ class _DescriptionState extends State<Description> {
                 indent: 50,
                 endIndent: 50,
               ),
-              Padding(
+              /* Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
                   'Similar Products',
@@ -406,13 +406,13 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(
                 height: 200,
-              ),
+              ), 
               Divider(
                 color: Colors.purple.withOpacity(0.5),
                 height: 30,
                 indent: 50,
                 endIndent: 50,
-              ),
+              ),*/
             ],
           )
         ],
