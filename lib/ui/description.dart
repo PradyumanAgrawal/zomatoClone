@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -30,6 +31,7 @@ class _DescriptionState extends State<Description> {
     }
   }
   String shopContact;
+  LatLng shopLocation;
   int index = 0;
   @override
   Widget build(BuildContext context) {
@@ -174,50 +176,72 @@ class _DescriptionState extends State<Description> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 20.0),
               Padding(
                 padding: const EdgeInsets.only(left: 15.0),
                 child: Container(
-                  child: (document['discount']==null ?'0':document['discount'])!= '0'
-                      ? Row(
+                  child: (document['discount'] == null
+                              ? '0'
+                              : document['discount']) !=
+                          '0'
+                      ? Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              '\u{20B9} ' + document['price'],
-                              style: TextStyle(
-                                  decoration: TextDecoration.lineThrough,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                  '\u{20B9} ' + document['price'],
+                                  style: TextStyle(
+                                      decoration: TextDecoration.lineThrough,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 20),
+                                ),
+                                Text(
+                                  ' ' + document['discount'] + "% off",
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.grey),
+                                ),
+                                SizedBox(width: 25),
+                              ],
                             ),
-                            Text(' ' + document['discount'] + "% off",
+                            Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: Text(
+                                "  " +
+                                    '\u{20B9} ' +
+                                    (int.parse(document['price']) *
+                                            (1 -
+                                                int.parse(
+                                                        document['discount']) /
+                                                    100))
+                                        .toStringAsFixed(2),
                                 style: TextStyle(
-                                    fontSize: 12, color: Colors.grey)),
-                            Text(
-                              "  " +
-                                  '\u{20B9} ' +
-                                  '${int.parse(document['price']) * (1 - int.parse(document['discount']) / 100)}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 22),
+                                    fontWeight: FontWeight.bold, fontSize: 22),
+                              ),
                             )
                           ],
                         )
-                      : Text(
-                          '\u{20B9} ' + document['price'],
-                          style: TextStyle(
-                              fontSize: 22.0,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ), /* Text(
-                            '\u{20B9}' + document['price'],
-                            style: TextStyle(
-                                fontSize: 22.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ), */
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: Text(
+                                '\u{20B9} ' + document['price'],
+                                style: TextStyle(
+                                    fontSize: 22.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
                 ),
               ),
+              SizedBox(height: 20.0),
               Padding(
                   padding: EdgeInsets.only(left: 15.0, right: 15.0),
                   child: Row(
@@ -228,7 +252,6 @@ class _DescriptionState extends State<Description> {
                         child: Container(
                           child: Text(
                             document['description'],
-                            //'Product description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                             style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey.withOpacity(0.8),
@@ -239,6 +262,9 @@ class _DescriptionState extends State<Description> {
                       VerticalDivider(
                         color: Colors.grey.withOpacity(1),
                       ),
+                      SizedBox(
+                        width: 20,
+                      )
                     ],
                   )),
               Divider(
@@ -247,7 +273,6 @@ class _DescriptionState extends State<Description> {
                 indent: 50,
                 endIndent: 50,
               ),
-              /* 
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -306,7 +331,7 @@ class _DescriptionState extends State<Description> {
                 height: 40,
                 indent: 50,
                 endIndent: 50,
-              ), */
+              ),
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -327,6 +352,8 @@ class _DescriptionState extends State<Description> {
                           child: SpinKitChasingDots(color: Colors.deepPurple));
                     DocumentSnapshot shopDoc = snapshot.data;
                     shopContact = shopDoc['contact'];
+                    shopLocation = new LatLng(shopDoc['location'].latitude,
+                        shopDoc['location'].longitude);
                     return Padding(
                       padding: EdgeInsets.only(left: 15.0),
                       child: Column(
@@ -456,28 +483,31 @@ class _DescriptionState extends State<Description> {
           color: Colors.white,
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            //SizedBox(width: 10.0),
-            /* Flexible(
-              flex: 20,
-              child: InkWell(
-                onTap: () {},
-                child: Center(
-                  child: Container(
-                    height: 40.0,
-                    width: 50.0,
-                    color: Colors.white,
-                    child: Icon(
-                      Icons.share,
-                      color: Colors.purple,
-                    ),
-                  ),
-                ),
-              ),
-            ), */
+            SizedBox(width: 10.0),
             Flexible(
               flex: 20,
-              child: InkWell(
-                onTap: () async {
+              child: IconButton(
+                tooltip: 'Open the shop in Maps',
+                icon: Icon(Icons.near_me, color: Colors.deepPurple[700]),
+                onPressed: () async {
+                  double latitude = shopLocation.latitude;
+                  double longitude = shopLocation.longitude;
+                  String googleUrl =
+                      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                  if (await canLaunch(googleUrl)) {
+                    await launch(googleUrl);
+                  } else {
+                    throw 'Could not open the map.';
+                  }
+                },
+              ),
+            ),
+            Flexible(
+              flex: 20,
+              child: IconButton(
+                tooltip: 'Call the shop',
+                icon: Icon(Icons.call, color: Colors.deepPurple[700]),
+                onPressed: () async {
                   if (shopContact != null) {
                     String url = 'tel:$shopContact';
                     if (await canLaunch(url)) {
@@ -487,32 +517,23 @@ class _DescriptionState extends State<Description> {
                     }
                   }
                 },
-                child: Center(
-                  child: Container(
-                    height: 40.0,
-                    width: 50.0,
-                    color: Colors.white,
-                    child: Icon(
-                      Icons.call,
-                      color: Colors.deepPurple[700],
-                    ),
-                  ),
-                ),
               ),
             ),
             Flexible(
               flex: 60,
               child: Container(
                 decoration: BoxDecoration(
-                    color: (document['inStock'])?Colors.purpleAccent:Colors.grey,
+                    color: (document['inStock'])
+                        ? Colors.purpleAccent
+                        : Colors.grey,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10))),
                 child: Visibility(
                   replacement: Center(
-                    child: Text(
-                      'Out of Stock!!',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)
-                    ),
+                    child: Text('Out of Stock!!',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                   visible: document['inStock'],
                   child: Center(

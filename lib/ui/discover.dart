@@ -481,33 +481,16 @@ Widget itemCard(
                                   //     (1.7 / 3),
                                   child: Center(
                                     child: discount != '0'
-                                          ? Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  '\u{20B9} ' + price,
-                                                  style: TextStyle(
-                                                      decoration: TextDecoration
-                                                          .lineThrough,
-                                                      color: Colors.white
-                                                          .withOpacity(0.5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 12),
-                                                ),
-                                                Text(
-                                                  "  " +
-                                                      '\u{20B9} ' +
-                                                      '${int.parse(price) * (1 - int.parse(discount) / 100)}',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12),
-                                                )
-                                              ],
-                                            )
+                                          ? Text(
+                                            "  " +
+                                                '\u{20B9} ' +
+                                                '${int.parse(price) * (1 - int.parse(discount) / 100)}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight:
+                                                    FontWeight.bold,
+                                                fontSize: 12),
+                                          )
                                           : Text(
                                               '\u{20B9} ' + price,
                                               style: TextStyle(
@@ -520,7 +503,7 @@ Widget itemCard(
                               ),
                             ),
                             Flexible(
-                              flex: 20,
+                              flex: 40,
                               child: Material(
                                 elevation: 7,
                                 borderRadius: BorderRadius.circular(10),
