@@ -113,7 +113,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-              Container(
+              /* Container(
                 padding: EdgeInsets.only(
                     top: bottonPadding,
                     bottom: bottonPadding,
@@ -136,7 +136,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-              ),
+              ), */
               Container(
                 padding:
                     EdgeInsets.only(left: rightpadding, right: rightpadding),

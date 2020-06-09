@@ -156,12 +156,15 @@ class HomeScreenState extends State<HomeScreen> {
             pinned: false,
             snap: true,
             backgroundColor: Colors.deepPurple[800],
-            title: Text(
-              "Porsio",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold),
+            title: Hero(
+              tag: 'porsio',
+                          child: Text(
+                "Porsio",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
             actions: <Widget>[
               widget.add == ''
@@ -416,7 +419,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 DocumentSnapshot document = snapshot.data;
                                 wishlist = document['wishlist'];
                                 return StreamBuilder(
-                                  stream: FirestoreService().getProducts(),
+                                  stream: FirestoreService().getHomeProducts(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData)
                                       return Center(
