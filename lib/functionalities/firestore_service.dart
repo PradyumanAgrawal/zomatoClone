@@ -36,6 +36,11 @@ class FirestoreService {
     return prods;
   }
 
+  Stream getHomeProducts() {
+    Stream<QuerySnapshot> prods = db.collection('products').where('onHome',isEqualTo: true).snapshots();
+    return prods;
+  }
+
   Stream getCartProducts(dynamic cart) {
     Stream<QuerySnapshot> prods =
         db.collection('products').where('productId', whereIn: cart).snapshots();

@@ -1,308 +1,74 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:my_flutter_app/functionalities/firestore_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
-import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
 
-class Discover extends StatefulWidget {
-  //BuildContext navContext;
-  //List productReferences;
-  final String category;
-  final String shopID;
-  final String offer;
-  Discover({BuildContext navContext, this.category, this.shopID, this.offer});
+class Products extends StatefulWidget {
   @override
-  _DiscoverState createState() => _DiscoverState();
+  _ProductsState createState() => _ProductsState();
 }
 
-class _DiscoverState extends State<Discover>
-    with SingleTickerProviderStateMixin {
-  List wishlist;
-  bool isTyping = false;
-  bool isSearching = false;
-  TextEditingController _controller = TextEditingController();
-  checkTyping(value) {
-    if (value.length > 0) {
-      setState(() {
-        isTyping = true;
-      });
-    } else {
-      setState(() {
-        isTyping = false;
-      });
-    }
-  }
-
-  var queryResultSet = [];
-  var tempSearchStore = [];
-
-  initiateSearch(value) {
-    if (value.length == 0) {
-      setState(() {
-        queryResultSet = [];
-        tempSearchStore = [];
-      });
-    }
-    setState(() {
-      isSearching = true;
-    });
-
-    var capitalizedValue =
-        value.substring(0, 1).toUpperCase() + value.substring(1);
-
-    if (queryResultSet.length == 0 && value.length == 1) {
-      FirestoreService().searchByName(value).then((QuerySnapshot docs) {
-        for (int i = 0; i < docs.documents.length; ++i) {
-          setState(() {
-            queryResultSet.add(docs.documents[i]);
-            tempSearchStore.add(docs.documents[i]);
-          });
-        }
-        setState(() {
-          isSearching = false;
-        });
-      });
-    } else {
-      setState(() {
-        tempSearchStore = [];
-        queryResultSet.forEach((element) {
-          if (element.data['name'].startsWith(capitalizedValue)) {
-            tempSearchStore.add(element);
-          }
-        });
-        isSearching = false;
-      });
-    }
-  }
-
-  //var productList = new List<Product>();
-  Stream<dynamic> stream;
-
-  @override
-  void initState() {
-    if (widget.category != null)
-      stream = FirestoreService().getProductsFromCategory(widget.category);
-    else if (widget.shopID != null)
-      stream = FirestoreService().getShopProducts(widget.shopID);
-    else if (widget.offer == 'offer')
-      stream = FirestoreService().getOfferProducts();
-    super.initState();
-  }
-
+class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //drawer: DrawerWidget(),
-      floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          backgroundColor: Colors.deepPurple[800],
-          foregroundColor: Colors.white,
-          //overlayOpacity: 0.2,
-          children: [
-            SpeedDialChild(
-                child: Icon(
-                  LineAwesomeIcons.sort,
-                ),
-                label: "sort",
-                backgroundColor: Colors.purple[300],
-                onTap: () {}),
-            SpeedDialChild(
-                child: Icon(
-                  LineAwesomeIcons.filter,
-                ),
-                label: "filter",
-                backgroundColor: Colors.purple[300],
-                onTap: () {})
-          ]),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            floating: true,
-            pinned: false,
-            snap: true,
-            backgroundColor: Colors.deepPurple[800],
-            title: Text(
-              "Porsio",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold),
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/cart', arguments: context);
-                },
-              )
-            ],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-              ),
-            ),
-            bottom: PreferredSize(
-              child: Container(
-                padding: EdgeInsets.all(15.0),
-                decoration: BoxDecoration(
-                  //color: Colors.deepPurple[800],
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20)),
-                ),
-                child: TextFormField(
-                  onChanged: (value) {
-                    checkTyping(value);
-                    initiateSearch(value);
-                  },
-                  controller: _controller,
-                  decoration: InputDecoration(
-                    hintText: "Search",
-                    fillColor: Colors.white,
-                    filled: true,
-                    suffixIcon: Icon(Icons.search, color: Colors.purple),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide(color: Colors.transparent),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 14.0,
-                    ),
-                  ),
-                ),
-              ),
-              preferredSize: Size(50, 80),
-            ),
-          ),
-          isTyping
-              ? (tempSearchStore.length == 0)
-                  ? isSearching
-                      ? SliverList(
-                          delegate: SliverChildListDelegate(<Widget>[
-                            Center(
-                                child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 30),
-                                    child: SpinKitChasingDots(
-                                        color: Colors.deepPurple)))
-                          ]),
-                        )
-                      : SliverList(
-                          delegate: SliverChildListDelegate(<Widget>[
-                            Center(
-                                child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 30),
-                              child: Text('No Results Found!'),
-                            ))
-                          ]),
-                        )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          print(tempSearchStore[index]);
+      appBar: AppBar(backgroundColor:Colors.deepPurple[700],title: Text('Products')),
+      body: FutureBuilder(
+        future: LocalData().getUid(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData)
+            return Center(child: SpinKitChasingDots(color: Colors.deepPurple));
+          String userId = snapshot.data;
+          return StreamBuilder(
+            stream: FirestoreService().getUser(userId),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Center(
+                    child: SpinKitChasingDots(
+                  color: Colors.purple,
+                ));
+              DocumentSnapshot document = snapshot.data;
+              List wishlist = document['wishlist'];
+              return StreamBuilder(
+                stream: FirestoreService().getProducts(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return Center(
+                      child: SpinKitChasingDots(
+                        color: Colors.deepPurple,
+                      ),
+                    );
+                  return Center(
+                    child: ListView(
+                      
+                      children: List.generate(
+                        snapshot.data.documents.length,
+                        (index) {
+                          DocumentSnapshot document =
+                              snapshot.data.documents[index];
+
                           return itemCard(
-                              tempSearchStore[index].data['name'],
-                              tempSearchStore[index].data['catalogue'][0],
-                              tempSearchStore[index].data['description'],
-                              wishlist
-                                  .contains(tempSearchStore[index].documentID),
-                              tempSearchStore[index].data['price'],
-                              tempSearchStore[index].data['discount']!=null?tempSearchStore[index].data['discount']:'0',
-                              tempSearchStore[index],
+                              document['name'],
+                              document['catalogue'][0],
+                              document['description'],
+                              wishlist.contains(document.documentID),
+                              document['price'],
+                              document['discount'] != null
+                                  ? document['discount']
+                                  : '0',
+                              document,
                               context);
                         },
-                        childCount: tempSearchStore.length,
                       ),
-                    )
-              : SliverList(
-                  delegate: SliverChildListDelegate(
-                    <Widget>[
-                      Container(
-                        child: FutureBuilder(
-                          future: LocalData().getUid(),
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (!snapshot.hasData)
-                              return Center(
-                                  child: SpinKitChasingDots(
-                                      color: Colors.deepPurple));
-                            String userId = snapshot.data;
-                            return StreamBuilder(
-                              stream: FirestoreService().getUser(userId),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData)
-                                  return Center(
-                                      child: SpinKitChasingDots(
-                                    color: Colors.purple,
-                                  ));
-                                DocumentSnapshot document = snapshot.data;
-                                wishlist = document['wishlist'];
-                                return StreamBuilder(
-                                  stream: stream,
-                                  // (widget.category != null)
-                                  //     ? FirestoreService()
-                                  //         .getProductsFromCategory(widget.category)
-                                  //     : FirestoreService().getProducts(),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData)
-                                      return Center(
-                                        child: SpinKitChasingDots(
-                                            color: Colors.deepPurple),
-                                      );
-                                    if (snapshot.data.documents.length == 0)
-                                      return Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 100),
-                                            Text('No Products Yet!!',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                          ],
-                                        ),
-                                      );
-                                    return Column(
-                                      children: List.generate(
-                                        snapshot.data.documents.length,
-                                        (index) {
-                                          DocumentSnapshot document =
-                                              snapshot.data.documents[index];
-                                          return itemCard(
-                                              document['name'],
-                                              document['catalogue'][0],
-                                              document['description'],
-                                              wishlist.contains(
-                                                  document.documentID),
-                                              document['price'],
-                                              document['discount']!=null?document['discount']:'0',
-                                              document,
-                                              context);
-                                        },
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-        ],
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -484,23 +250,22 @@ Widget itemCard(
                                   //     (1.7 / 3),
                                   child: Center(
                                     child: discount != '0'
-                                          ? Text(
+                                        ? Text(
                                             "  " +
                                                 '\u{20B9} ' +
                                                 '${(int.parse(price) * (1 - int.parse(discount) / 100)).round()}',
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontWeight:
-                                                    FontWeight.bold,
+                                                fontWeight: FontWeight.bold,
                                                 fontSize: 12),
                                           )
-                                          : Text(
-                                              '\u{20B9} ' + price,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                            ),
+                                        : Text(
+                                            '\u{20B9} ' + price,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12),
+                                          ),
                                   ),
                                 ),
                               ),

@@ -267,7 +267,7 @@ class _DescriptionState extends State<Description> {
                       )
                     ],
                   )),
-              Divider(
+              /* Divider(
                 color: Colors.purple.withOpacity(0.5),
                 height: 30,
                 indent: 50,
@@ -283,8 +283,8 @@ class _DescriptionState extends State<Description> {
                       color: Colors.black,
                       fontWeight: FontWeight.bold),
                 ),
-              ),
-              SizedBox(height: 20.0),
+              ), */
+              /* SizedBox(height: 20.0),
               Padding(
                   padding: EdgeInsets.only(left: 15.0),
                   child: Wrap(
@@ -325,7 +325,7 @@ class _DescriptionState extends State<Description> {
                         ),
                       ),
                     ],
-                  )),
+                  )), */
               Divider(
                 color: Colors.purple.withOpacity(0.5),
                 height: 40,
@@ -478,7 +478,7 @@ class _DescriptionState extends State<Description> {
         elevation: 7.0,
         color: Colors.white70,
         child: Container(
-          height: 40.0,
+          height: 50.0,
           width: MediaQuery.of(context).size.width,
           color: Colors.white,
           child:
@@ -524,7 +524,7 @@ class _DescriptionState extends State<Description> {
               child: Container(
                 decoration: BoxDecoration(
                     color: (document['inStock'])
-                        ? Colors.purpleAccent
+                        ? Colors.deepPurple[700]
                         : Colors.grey,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),

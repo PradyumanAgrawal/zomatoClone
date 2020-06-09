@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -156,12 +157,15 @@ class HomeScreenState extends State<HomeScreen> {
             pinned: false,
             snap: true,
             backgroundColor: Colors.deepPurple[800],
-            title: Text(
-              "Porsio",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold),
+            title: Hero(
+              tag: 'porsio',
+                          child: Text(
+                "Porsio",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
             actions: <Widget>[
               widget.add == ''
@@ -175,13 +179,13 @@ class HomeScreenState extends State<HomeScreen> {
                         _showAlertDialog(context);
                       },
                     ),
-              IconButton(
+              /* IconButton(
                 icon: Icon(
                   Icons.notifications,
                   color: Colors.white,
                 ),
                 onPressed: () {},
-              ),
+              ), */
               IconButton(
                 icon: Icon(
                   Icons.shopping_cart,
@@ -383,7 +387,9 @@ class HomeScreenState extends State<HomeScreen> {
                                   fontWeight: FontWeight.bold, fontSize: 20.0),
                             ),
                             OutlineButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(widget.navContext).pushNamed('/products');
+                              },
                               shape: StadiumBorder(),
                               splashColor: Colors.purple,
                               child: Text(
@@ -418,7 +424,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 DocumentSnapshot document = snapshot.data;
                                 wishlist = document['wishlist'];
                                 return StreamBuilder(
-                                  stream: FirestoreService().getProducts(),
+                                  stream: FirestoreService().getHomeProducts(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData)
                                       return Center(
@@ -660,7 +666,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                 Text(
                                                   "  " +
                                                       '\u{20B9} ' +
-                                                      '${int.parse(price) * (1 - int.parse(discount) / 100)}',
+                                                      '${(int.parse(price) * (1 - int.parse(discount) / 100)).round()}',
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:
