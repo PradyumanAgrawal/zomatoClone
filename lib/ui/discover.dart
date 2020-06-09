@@ -484,7 +484,7 @@ Widget itemCard(
                                           ? Text(
                                             "  " +
                                                 '\u{20B9} ' +
-                                                '${int.parse(price) * (1 - int.parse(discount) / 100)}',
+                                                '${(int.parse(price) * (1 - int.parse(discount) / 100)).round()}',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight:
