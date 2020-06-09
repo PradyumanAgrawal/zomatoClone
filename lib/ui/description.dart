@@ -33,6 +33,7 @@ class _DescriptionState extends State<Description> {
   String shopContact;
   LatLng shopLocation;
   int index = 0;
+  int selectedVariant;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -267,7 +268,7 @@ class _DescriptionState extends State<Description> {
                       )
                     ],
                   )),
-              /* Divider(
+              Divider(
                 color: Colors.purple.withOpacity(0.5),
                 height: 30,
                 indent: 50,
@@ -276,56 +277,67 @@ class _DescriptionState extends State<Description> {
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
-                  'Alternate Options',
+                  'Variants',
                   style: TextStyle(
                       letterSpacing: 1.5,
                       fontSize: 22.0,
                       color: Colors.black,
                       fontWeight: FontWeight.bold),
                 ),
-              ), */
-              /* SizedBox(height: 20.0),
-              Padding(
+              ),
+              SizedBox(height: 20.0),
+              Visibility(
+                visible: document['sizes'] != [],
+                child: Padding(
                   padding: EdgeInsets.only(left: 15.0),
                   child: Wrap(
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          height: 40.0,
-                          width: 40.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.amber,
+                    //crossAxisAlignment: WrapCrossAlignment.center,
+                    children: List.generate(document['sizes'].length, (index) {
+                      bool isSelected = (index == selectedVariant);
+                      double blur = isSelected ? 30 : 0;
+                      double offset = isSelected ? 20 : 0;
+                      double size = isSelected ? 60 : 50;
+                      Color color = isSelected
+                          ? Colors.deepPurple[500]
+                          : Colors.purple[300];
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedVariant = index;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AnimatedContainer(
+                            height: size,
+                            width: size,
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeOutQuint,
+                            decoration: BoxDecoration(
+                                color: color, // Colors.purple[200],
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black87,
+                                    blurRadius: blur,
+                                    offset: Offset(offset, offset),
+                                  )
+                                ]),
+                            child: Center(
+                              child: Text(
+                                document['sizes'][index],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: 20.0),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          height: 40.0,
-                          width: 40.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.pink,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 20.0),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          height: 40.0,
-                          width: 40.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.purple,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )), */
+                      );
+                    }),
+                  ),
+                ),
+              ),
               Divider(
                 color: Colors.purple.withOpacity(0.5),
                 height: 40,
@@ -352,7 +364,8 @@ class _DescriptionState extends State<Description> {
                           child: SpinKitChasingDots(color: Colors.deepPurple));
                     DocumentSnapshot shopDoc = snapshot.data;
                     shopContact = shopDoc['contact'];
-                    shopLocation = new LatLng(shopDoc['location']['geopoint'].latitude,
+                    shopLocation = new LatLng(
+                        shopDoc['location']['geopoint'].latitude,
                         shopDoc['location']['geopoint'].longitude);
                     return Padding(
                       padding: EdgeInsets.only(left: 15.0),

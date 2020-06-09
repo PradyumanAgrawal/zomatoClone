@@ -51,11 +51,10 @@ class _MainScreenState extends State<MainScreen> {
                               child: Text(
                                 'Porsio',
                                 style: TextStyle(
-                                  letterSpacing: 10,
+                                    letterSpacing: 10,
                                     fontSize: 35,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500),
-
                               ))
                         ],
                       ),
@@ -122,8 +121,11 @@ class _MainScreenState extends State<MainScreen> {
                                           .pushNamed('/login_screen');
                                     },
                                     child: Padding(
-                                      padding: const EdgeInsets.only(top: 13,bottom: 13,
-                                          left: 30, right: 30),
+                                      padding: const EdgeInsets.only(
+                                          top: 13,
+                                          bottom: 13,
+                                          left: 30,
+                                          right: 30),
                                       child: Text(
                                         'Get Started',
                                         style: TextStyle(
@@ -134,68 +136,27 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height:MediaQuery.of(context).size.height*.17),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .17),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('Made with ', style: TextStyle(letterSpacing: 2,color:Colors.white),),
-                                      SpinKitPumpingHeart(size:16,color: Colors.white,)
+                                      Text(
+                                        'Made with ',
+                                        style: TextStyle(
+                                            letterSpacing: 2,
+                                            color: Colors.white),
+                                      ),
+                                      SpinKitPumpingHeart(
+                                        size: 16,
+                                        color: Colors.white,
+                                      )
                                     ],
                                   )
                                 ],
                               );
-                              // Column(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: <Widget>[
-                              //     Padding(
-                              //       padding: EdgeInsets.only(
-                              //         bottom: 50,
-                              //       ),
-                              //     ),
-                              //     RaisedButton(
-                              //         color: Color.fromARGB(255, 90, 14, 151),
-                              //         padding: EdgeInsets.only(
-                              //             left: 120, right: 120),
-                              //         child: Text(
-                              //           'SignUp',
-                              //           textAlign: TextAlign.center,
-                              //           style: TextStyle(
-                              //             color: Color.fromARGB(
-                              //                 255, 255, 255, 255),
-                              //             fontSize: 15,
-                              //           ),
-                              //         ),
-                              //         splashColor:
-                              //             Color.fromARGB(255, 144, 28, 238),
-                              //         elevation: 10,
-                              //         onPressed: () {
-                              //           Navigator.of(context)
-                              //               .pushNamed('/signUp_email');
-                              //         }),
-                              //     RaisedButton(
-                              //         materialTapTargetSize:
-                              //             MaterialTapTargetSize.padded,
-                              //         padding: EdgeInsets.only(
-                              //             left: 120, right: 120),
-                              //         child: Text(
-                              //           'SignIn',
-                              //           textAlign: TextAlign.center,
-                              //           style: TextStyle(
-                              //             color: Color.fromARGB(
-                              //                 255, 255, 255, 255),
-                              //             fontSize: 15,
-                              //           ),
-                              //         ),
-                              //         color: Color.fromARGB(255, 90, 14, 151),
-                              //         elevation: 10,
-                              //         splashColor:
-                              //             Color.fromARGB(255, 144, 28, 238),
-                              //         onPressed: () {
-                              //           Navigator.of(context)
-                              //               .pushNamed('/login_screen');
-                              //         }),
-                              //   ],
-                              // );
                             }
                           } else {
                             return CircularProgressIndicator();

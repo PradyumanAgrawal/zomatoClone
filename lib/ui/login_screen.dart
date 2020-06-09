@@ -119,30 +119,6 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.circular(20)),
                   onPressed: () {},
                 ), */
-                // Container(
-                //   padding: EdgeInsets.only(
-                //       top: bottonPadding,
-                //       bottom: bottonPadding,
-                //       left: rightpadding,
-                //       right: rightpadding),
-                //   child: ClipRRect(
-                //     borderRadius: BorderRadius.circular(30),
-                //     child: SizedBox(
-                //       height: h,
-                //       width: double.infinity,
-                //       child: RaisedButton(
-                //         color: Colors.blue[900],
-                //         onPressed: () {},
-                //         child: Center(
-                //           child: Text(
-                //             'Continue with Facebook',
-                //             style: TextStyle(color: Colors.white),
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 Container(
                   padding:
                       EdgeInsets.only(left: rightpadding, right: rightpadding),

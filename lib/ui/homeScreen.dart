@@ -168,16 +168,22 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             actions: <Widget>[
               widget.add == ''
-                  ? Icon(Icons.location_off)
-                  : IconButton(
-                      icon: Icon(
-                        Icons.location_on,
-                        color: Colors.white,
+                  ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.location_off),
+                  )
+                  : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.location_on,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          _showAlertDialog(context);
+                        },
                       ),
-                      onPressed: () {
-                        _showAlertDialog(context);
-                      },
-                    ),
+                  ),
               /* IconButton(
                 icon: Icon(
                   Icons.notifications,
