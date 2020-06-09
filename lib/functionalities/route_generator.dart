@@ -5,6 +5,7 @@ import 'package:my_flutter_app/ui/homescreen.dart';
 import 'package:my_flutter_app/ui/description.dart';
 import 'package:my_flutter_app/ui/navigation.dart';
 import 'package:my_flutter_app/ui/login_email.dart';
+import 'package:my_flutter_app/ui/products.dart';
 import 'package:my_flutter_app/ui/profile.dart';
 import 'package:my_flutter_app/ui/review_cart.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
@@ -64,6 +65,10 @@ class RouteGenerator {
       case '/navigation':
         return MaterialPageRoute(
           builder: (_) => Navigation(),
+        );
+      case '/products':
+        return MaterialPageRoute(
+          builder: (_) => Products(),
         );
       case '/cart':
         return MaterialPageRoute(

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -178,13 +179,13 @@ class HomeScreenState extends State<HomeScreen> {
                         _showAlertDialog(context);
                       },
                     ),
-              IconButton(
+              /* IconButton(
                 icon: Icon(
                   Icons.notifications,
                   color: Colors.white,
                 ),
                 onPressed: () {},
-              ),
+              ), */
               IconButton(
                 icon: Icon(
                   Icons.shopping_cart,
@@ -384,7 +385,9 @@ class HomeScreenState extends State<HomeScreen> {
                                   fontWeight: FontWeight.bold, fontSize: 20.0),
                             ),
                             OutlineButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(widget.navContext).pushNamed('/products');
+                              },
                               shape: StadiumBorder(),
                               splashColor: Colors.purple,
                               child: Text(
