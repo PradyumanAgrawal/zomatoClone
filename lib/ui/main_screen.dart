@@ -46,25 +46,6 @@ class _MainScreenState extends State<MainScreen> {
                             height: 230,
                             width: 230,
                           ),
-                          //CircleAvatar(backgroundColor: Colors.black54,radius: 140,),
-                          Positioned(
-                            top: 70,
-                            child: Image.asset(
-                              'assets/images/LOGO1.png',
-                              height: 130,
-                              width: 130,
-                            ),
-                          ),
-                          Positioned(
-                              bottom: 30,
-                              child: Hero(
-                                tag: 'porsio',
-                                child: Text(
-                                  'Porsio',
-                                  style: TextStyle(
-                                      fontSize: 40, color: Colors.white, fontWeight: FontWeight.w500),
-                                ),
-                              )),
                         ],
                       ),
                     ),
