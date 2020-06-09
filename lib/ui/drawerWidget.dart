@@ -75,14 +75,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: CircleAvatar(
-                      backgroundColor: Colors.deepPurple[300],
+                      backgroundColor: Colors.white,
                       child: Icon(Icons.person, color: Colors.black),
                     ),
                   ),
                   SizedBox(height:10),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Text(userEmail == null ? '' : userEmail),
+                    child: Text(userEmail == null ? '' : userEmail, style: TextStyle(color:Colors.white),),
                   ),
                 ],
               ),
@@ -95,7 +95,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.pink[300], Colors.deepPurple[300]])),
+                  colors: [Colors.pink,Colors.deepPurple])),
           ),
           ListTile(
             leading: Icon(Icons.home),

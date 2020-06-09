@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -159,7 +158,7 @@ class HomeScreenState extends State<HomeScreen> {
             backgroundColor: Colors.deepPurple[800],
             title: Hero(
               tag: 'porsio',
-                          child: Text(
+              child: Text(
                 "Porsio",
                 style: TextStyle(
                     color: Colors.white,
@@ -331,7 +330,7 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Store(navContext:widget.navContext),
+                      Store(navContext: widget.navContext),
                       Padding(
                         padding: EdgeInsets.all(10.0),
                         child: Row(
@@ -345,7 +344,9 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             OutlineButton(
                               onPressed: () {
-                                Navigator.of(widget.navContext).pushNamed('/discover_offers',arguments: 'offer');
+                                Navigator.of(widget.navContext).pushNamed(
+                                    '/discover_offers',
+                                    arguments: 'offer');
                               },
                               child: Text(
                                 "View All",
@@ -388,7 +389,8 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             OutlineButton(
                               onPressed: () {
-                                Navigator.of(widget.navContext).pushNamed('/products');
+                                Navigator.of(widget.navContext)
+                                    .pushNamed('/products');
                               },
                               shape: StadiumBorder(),
                               splashColor: Colors.purple,
@@ -874,8 +876,8 @@ class _StoreState extends State<Store> {
                                 return InkWell(
                                   onTap: () {
                                     Navigator.of(widget.navContext).pushNamed(
-                                  '/discover_shop',
-                                  arguments: document.documentID);
+                                        '/discover_shop',
+                                        arguments: document.documentID);
                                   },
                                   child: Container(
                                     padding: EdgeInsets.only(left: 4, right: 4),

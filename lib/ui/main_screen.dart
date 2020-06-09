@@ -37,15 +37,26 @@ class _MainScreenState extends State<MainScreen> {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          // CircleAvatar(
-                          //   backgroundColor: Colors.black54,
-                          //   radius: 140,
-                          // ),
-                          Image.asset(
-                            'assets/images/LOGO2.png',
-                            height: 230,
-                            width: 230,
+                          Container(
+                            height: 250,
+                            width: 250,
                           ),
+                          Image.asset(
+                            'assets/images/LOGO1.png',
+                            height: 150,
+                            width: 150,
+                          ),
+                          Positioned(
+                              bottom: 10,
+                              child: Text(
+                                'Porsio',
+                                style: TextStyle(
+                                  letterSpacing: 10,
+                                    fontSize: 35,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500),
+
+                              ))
                         ],
                       ),
                     ),
@@ -59,8 +70,8 @@ class _MainScreenState extends State<MainScreen> {
                                     .popAndPushNamed('/navigation');
                               });
                               return Center(
-                                  child: SpinKitChasingDots(
-                                color: Colors.pink,
+                                  child: SpinKitThreeBounce(
+                                color: Colors.white,
                               ));
 
                               // return FutureBuilder(
@@ -100,7 +111,7 @@ class _MainScreenState extends State<MainScreen> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   SizedBox(
-                                    height: 100,
+                                    height: 50,
                                   ),
                                   RaisedButton(
                                     shape: RoundedRectangleBorder(
@@ -111,17 +122,26 @@ class _MainScreenState extends State<MainScreen> {
                                           .pushNamed('/login_screen');
                                     },
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
+                                      padding: const EdgeInsets.only(top: 13,bottom: 13,
                                           left: 30, right: 30),
                                       child: Text(
                                         'Get Started',
                                         style: TextStyle(
+                                          letterSpacing: 1,
                                           color: Colors.deepPurple,
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                     ),
                                   ),
+                                  SizedBox(height:MediaQuery.of(context).size.height*.17),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Made with ', style: TextStyle(letterSpacing: 2,color:Colors.white),),
+                                      SpinKitPumpingHeart(size:16,color: Colors.white,)
+                                    ],
+                                  )
                                 ],
                               );
                               // Column(

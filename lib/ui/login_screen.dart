@@ -94,6 +94,8 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 Container(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width*.99,
                   padding: EdgeInsets.only(
                       top: bottonPadding,
                       bottom: bottonPadding,
@@ -110,13 +112,13 @@ class _LoginState extends State<Login> {
                     },
                   ),
                 ),
-                SignInButton(
+                /* SignInButton(
                   Buttons.Facebook,
                   text: "Sign in with Facebook",
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   onPressed: () {},
-                ),
+                ), */
                 // Container(
                 //   padding: EdgeInsets.only(
                 //       top: bottonPadding,
@@ -206,7 +208,7 @@ class _LoginState extends State<Login> {
                       height: h,
                       width: double.infinity,
                       child: RaisedButton(
-                        color: Colors.deepPurple[900],
+                        color: Colors.white,
                         onPressed: () {
                           Navigator.of(context).pushNamed('/signUp_email');
                         },
@@ -214,7 +216,7 @@ class _LoginState extends State<Login> {
                         child: Text(
                           "Don't have account? Register",
                           style: TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255)),
+                              color: Colors.black),
                         ),
                       ),
                     ),
