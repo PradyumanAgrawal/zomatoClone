@@ -106,6 +106,11 @@ class FirestoreService {
         .snapshots();
   }
 
+  Stream getOfferProducts() {
+    return db
+        .collection('products').orderBy('discount',descending: true).snapshots();
+  }
+
   Stream getWishlistProducts(List wishlist) {
     return db
         .collection('products')

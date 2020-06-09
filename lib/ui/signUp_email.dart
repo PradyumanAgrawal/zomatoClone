@@ -1,5 +1,6 @@
 //import 'dart:html';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
 
 class SignUP extends StatefulWidget {
@@ -11,6 +12,18 @@ class _SignUPState extends State<SignUP> {
   AuthService _auth = AuthService();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _email, _password;
+  AuthService auth = new AuthService();
+  bool gs;
+  Future<void> gsignIn(context) async {
+    Navigator.of(context).pushNamed('/loading');
+    gs = await auth.googleSignIn();
+    Navigator.of(context).pop();
+    if (gs == true) {
+      Navigator.of(context).pushNamed('/navigation');
+    } else {
+      _showAlertDialog(context);
+    }
+  }
 
   void _showAlertDialog(context) {
     showDialog(
@@ -75,26 +88,33 @@ class _SignUPState extends State<SignUP> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            "Sign Up",
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.white,
-        ),
-        backgroundColor: Colors.deepPurple[900],
-        body: Center(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+        //backgroundColor: Colors.deepPurple[900],
+        body: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.pink, Colors.deepPurple])),
+          child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.width * 0.9,
+              //height: MediaQuery.of(context).size.width * 0.9,
               padding: EdgeInsets.only(left: 20, right: 20),
               child: Form(
                 key: _formKey,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    Center(
+                            child: Text(
+                              "Sign Up with Email",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  fontSize: 20),
+                            ),
+                          ),
+                          SizedBox(height:30),
                     Container(
                       padding: EdgeInsets.only(top: 10, bottom: 10),
                       child: TextFormField(
@@ -158,6 +178,38 @@ class _SignUPState extends State<SignUP> {
                           ),
                         ),
                       ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 20, bottom: 20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Center(
+                          child: Text(
+                            "OR",
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SignInButton(
+                      Buttons.Google,
+                      text: "Sign up with Google",
+                      padding: EdgeInsets.only(left: 10),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      onPressed: () {
+                        //Navigator.of(context).pushNamed('/loading');
+                        gsignIn(context);
+                      },
+                    ),
+                    SignInButton(
+                      Buttons.Facebook,
+                      text: "Sign in with Facebook",
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      onPressed: () {},
                     ),
                   ],
                 ),

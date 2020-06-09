@@ -16,7 +16,7 @@ class _LoginEmailState extends State<LoginEmail> {
       //forgot password screen
     },
     textColor: Colors.white,
-    child: Text('Forgot Password'),
+    child: Text('Forgot Password?'),
   );
 
   void _showAlertDialog(context) {
@@ -64,15 +64,20 @@ class _LoginEmailState extends State<LoginEmail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple,
-      body: Center(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+      //backgroundColor: Colors.deepPurple,
+      body: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.pink, Colors.deepPurple])),
+        child: Center(
           child: Container(
             padding: EdgeInsets.only(left: 20, right: 20),
-            height: 350,
+            //height: 350,
             width: double.infinity,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
                     padding: EdgeInsets.symmetric(
@@ -81,6 +86,18 @@ class _LoginEmailState extends State<LoginEmail> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
+                        Center(
+                          child: Text(
+                            "Login with Email",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                fontSize: 20),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
                         Container(
                           padding: EdgeInsets.symmetric(
                               vertical:
@@ -165,15 +182,18 @@ class _LoginEmailState extends State<LoginEmail> {
                       Text("Don't have an account?",
                           style: TextStyle(color: Colors.white)),
                       SizedBox(width: 10),
-                      ActionChip(
-                        padding: EdgeInsets.all(10),
-                        onPressed: () {
-                          Navigator.of(context).pushNamed('/signUp_email');
-                        },
-                        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                        label: Text(
-                          "Sign Up",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      Flexible(
+                        child: ActionChip(
+                          padding: EdgeInsets.all(10),
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/signUp_email');
+                          },
+                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                          label: Text(
+                            "Sign Up",
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w500),
+                          ),
                         ),
                       ),
                     ],

@@ -148,11 +148,12 @@ class _ProfileState extends State<Profile> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: TextFormField(
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Please Enter Name';
-                                  }
-                                },
+                                // validator: (value) {
+                                //   if (value.isEmpty) {
+                                //     return 'Please Enter Name';
+                                //   }
+                                // },
+                                //initialValue:name,
                                 decoration: InputDecoration(
                                   hintText: "Name",
                                   labelText: "Name",

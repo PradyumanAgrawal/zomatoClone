@@ -79,6 +79,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       child: Icon(Icons.person, color: Colors.black),
                     ),
                   ),
+                  SizedBox(height:10),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Text(userEmail == null ? '' : userEmail),
@@ -87,8 +88,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               ),
             ),
             decoration: BoxDecoration(
-              color: Colors.deepPurple[100],
-            ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ),
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.pink[300], Colors.deepPurple[300]])),
           ),
           ListTile(
             leading: Icon(Icons.home),

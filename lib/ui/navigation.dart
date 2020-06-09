@@ -25,18 +25,31 @@ class NavigationState extends State<Navigation> {
       _selectedIndex = index;
     });
   }
-  Future<void> printLoc() async{
-    LatLng loc = await LocationService().getLocation();
-    String add = await LocationService().getAddress(loc);
-    setState(() {
-      address = add;
-      location = loc;
+
+  Future<void> printLoc() async {
+    LatLng loc = await LocationService().getLocation().then((value){
+      setState((){
+        location = value;
+      });
     });
+    String add = await LocationService().getAddress(location).then((value){
+      setState((){
+        address = value;
+      });
+    });
+
+    // address = add;
+    // location = loc;
+    // setState(() {
+    //   address = add;
+    //   location = loc;
+    // });
     print('------------------');
-    print(loc.latitude);
-    print(add.replaceAll(' ', '').substring(0,20));
+    print(location.latitude);
+    print(address.replaceAll(' ', '').substring(0, 20));
     print('------------------');
   }
+
   @override
   void initState() {
     printLoc();

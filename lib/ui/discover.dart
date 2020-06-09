@@ -13,7 +13,8 @@ class Discover extends StatefulWidget {
   //List productReferences;
   final String category;
   final String shopID;
-  Discover({BuildContext navContext, this.category, this.shopID});
+  final String offer;
+  Discover({BuildContext navContext, this.category, this.shopID, this.offer});
   @override
   _DiscoverState createState() => _DiscoverState();
 }
@@ -87,6 +88,8 @@ class _DiscoverState extends State<Discover>
       stream = FirestoreService().getProductsFromCategory(widget.category);
     else if (widget.shopID != null)
       stream = FirestoreService().getShopProducts(widget.shopID);
+    else if (widget.offer == 'offer')
+      stream = FirestoreService().getOfferProducts();
     super.initState();
   }
 

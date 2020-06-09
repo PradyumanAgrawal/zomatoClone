@@ -41,6 +41,10 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Discover(shopID: args),
         );
+        case '/discover_offers':
+        return MaterialPageRoute(
+          builder: (_) => Discover(offer: args),
+        );
       case '/homeScreen':
         return MaterialPageRoute(
           builder: (_) => HomeScreen(),

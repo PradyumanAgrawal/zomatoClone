@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -55,168 +57,171 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.deepPurple[300],
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              Padding(padding: EdgeInsets.only(top: 100)),
-              Container(
-                padding: EdgeInsets.only(
-                    top: bottonPadding,
-                    bottom: bottonPadding,
-                    left: rightpadding,
-                    right: rightpadding),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: SizedBox(
-                    height: h,
-                    width: double.infinity,
-                    child: Container(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Center(
+        //backgroundColor: Colors.deepPurple[300],
+        body: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.pink, Colors.deepPurple])),
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                Padding(padding: EdgeInsets.only(top: 100)),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: bottonPadding,
+                      bottom: bottonPadding,
+                      left: rightpadding,
+                      right: rightpadding),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: SizedBox(
+                      height: h,
+                      width: double.infinity,
+                      child: Container(
+                          padding: EdgeInsets.only(left: 20),
+                          child: Center(
+                            child: Text(
+                              "Login Your Account",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  fontSize: 20),
+                            ),
+                          )),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: bottonPadding,
+                      bottom: bottonPadding,
+                      left: rightpadding,
+                      right: rightpadding),
+                  child: SignInButton(
+                    Buttons.Google,
+                    text: "Sign in with Google",
+                    padding: EdgeInsets.only(left: 10),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    onPressed: () {
+                      gsignIn(context);
+                    },
+                  ),
+                ),
+                SignInButton(
+                  Buttons.Facebook,
+                  text: "Sign in with Facebook",
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  onPressed: () {},
+                ),
+                // Container(
+                //   padding: EdgeInsets.only(
+                //       top: bottonPadding,
+                //       bottom: bottonPadding,
+                //       left: rightpadding,
+                //       right: rightpadding),
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.circular(30),
+                //     child: SizedBox(
+                //       height: h,
+                //       width: double.infinity,
+                //       child: RaisedButton(
+                //         color: Colors.blue[900],
+                //         onPressed: () {},
+                //         child: Center(
+                //           child: Text(
+                //             'Continue with Facebook',
+                //             style: TextStyle(color: Colors.white),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                Container(
+                  padding:
+                      EdgeInsets.only(left: rightpadding, right: rightpadding),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: SizedBox(
+                      height: h,
+                      width: double.infinity,
+                      child: Center(
                           child: Text(
-                            "Login Your Account",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                fontSize: 20),
-                          ),
-                        )),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                    top: bottonPadding,
-                    bottom: bottonPadding,
-                    left: rightpadding,
-                    right: rightpadding),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: SizedBox(
-                    height: h,
-                    width: double.infinity,
-                    child: RaisedButton(
-                      color: Colors.red,
-                      onPressed: () {
-                        //Navigator.of(context).pushNamed('/google_signin');
-                        gsignIn(context);
-                      },
-                      child: Center(
-                        child: Text(
-                          'Continue with Google',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                    top: bottonPadding,
-                    bottom: bottonPadding,
-                    left: rightpadding,
-                    right: rightpadding),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: SizedBox(
-                    height: h,
-                    width: double.infinity,
-                    child: RaisedButton(
-                      color: Colors.blue[900],
-                      onPressed: () {},
-                      child: Center(
-                        child: Text(
-                          'Continue with Facebook',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                padding:
-                    EdgeInsets.only(left: rightpadding, right: rightpadding),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: SizedBox(
-                    height: h,
-                    width: double.infinity,
-                    child: Center(
-                        child: Text(
-                      "OR",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          fontSize: 20),
-                    )),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                    top: bottonPadding,
-                    bottom: bottonPadding,
-                    left: rightpadding,
-                    right: rightpadding),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: SizedBox(
-                    height: h,
-                    width: double.infinity,
-                    child: RaisedButton(
-                      color: Color.fromARGB(255, 255, 255, 255),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/login_email');
-                      },
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              'Continue with Email',
-                              style: TextStyle(),
-                            ),
-                            Icon(
-                              Icons.email,
-                              color: Colors.deepPurple[900],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                    top: bottonPadding,
-                    bottom: bottonPadding,
-                    left: rightpadding,
-                    right: rightpadding),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: SizedBox(
-                    height: h,
-                    width: double.infinity,
-                    child: RaisedButton(
-                      color: Colors.deepPurple[900],
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/signUp_email');
-                      },
-                      splashColor: Colors.deepPurple[900],
-                      child: Text(
-                        "Don't have account? Register",
+                        "OR",
                         style: TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255)),
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            fontSize: 20),
+                      )),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: bottonPadding,
+                      bottom: bottonPadding,
+                      left: rightpadding,
+                      right: rightpadding),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: SizedBox(
+                      height: h,
+                      width: double.infinity,
+                      child: RaisedButton(
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/login_email');
+                        },
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'Continue with Email',
+                                style: TextStyle(),
+                              ),
+                              Icon(
+                                Icons.email,
+                                color: Colors.deepPurple[900],
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  padding: EdgeInsets.only(
+                      top: bottonPadding,
+                      bottom: bottonPadding,
+                      left: rightpadding,
+                      right: rightpadding),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: SizedBox(
+                      height: h,
+                      width: double.infinity,
+                      child: RaisedButton(
+                        color: Colors.deepPurple[900],
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/signUp_email');
+                        },
+                        splashColor: Colors.deepPurple[900],
+                        child: Text(
+                          "Don't have account? Register",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

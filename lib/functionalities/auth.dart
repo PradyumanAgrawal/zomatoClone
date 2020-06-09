@@ -82,6 +82,8 @@ class AuthService {
       localData.saveData(
           userEmail: user.email, password: '', loggedIn: "yes", uid: user.uid);
       print("user name: ${user.displayName}");
+      print(user.displayName);
+      print(user.photoUrl);
       //updateUserData(user);
       return true;
     } catch (error) {

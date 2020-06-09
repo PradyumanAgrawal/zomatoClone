@@ -340,7 +340,9 @@ class HomeScreenState extends State<HomeScreen> {
                                   fontWeight: FontWeight.bold, fontSize: 20.0),
                             ),
                             OutlineButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(widget.navContext).pushNamed('/discover_offers',arguments: 'offer');
+                              },
                               child: Text(
                                 "View All",
                                 style: TextStyle(
