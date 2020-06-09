@@ -106,7 +106,7 @@ class _CartState extends State<Cart> {
                                     ? '0'
                                     : productDoc['discount']) /
                                 100) *
-                        document['cart'][productDoc.documentID];
+                        document['cart'][productDoc.documentID]['quantity'];
                   }
                   //totalPrice = price;
 
@@ -220,7 +220,8 @@ class _CartState extends State<Cart> {
                                       widget.navContext,
                                       index,
                                       productDoc,
-                                      document['cart'][productDoc.documentID]);
+                                      document['cart'][productDoc.documentID]['quantity'],
+                                      document['cart'][productDoc.documentID]['variant']);
                                 },
                               ),
                             ),
@@ -252,7 +253,7 @@ class _CartState extends State<Cart> {
     );
   }
 
-  product(context, index, DocumentSnapshot productDoc, int quantity) {
+  product(context, index, DocumentSnapshot productDoc, int quantity, String variant) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Stack(
@@ -321,8 +322,13 @@ class _CartState extends State<Cart> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(height:10),
+                                Visibility(
+                                  visible: (variant!=''),
+                                  child: Text(variant),
+                                ),
                                 Flexible(
-                                  flex: 10,
+                                  flex: 20,
                                   child: Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: (productDoc['discount'] == null
@@ -410,7 +416,7 @@ class _CartState extends State<Cart> {
                               if (quantity > 1) {
                                 int newQuantity = quantity - 1;
                                 FirestoreService().addToCart(
-                                    productDoc.documentID, newQuantity, true);
+                                    productDoc.documentID, newQuantity,variant, true);
                               }
                             }),
                         Text(
@@ -422,7 +428,7 @@ class _CartState extends State<Cart> {
                             onPressed: () {
                               int newQuantity = quantity + 1;
                               FirestoreService().addToCart(
-                                  productDoc.documentID, newQuantity, true);
+                                  productDoc.documentID, newQuantity,variant, true);
                             }),
                       ],
                     ),
@@ -452,7 +458,7 @@ class _CartState extends State<Cart> {
                   onPressed: () {
                     
                     FirestoreService()
-                        .addToCart(productDoc.documentID, 0, true)
+                        .addToCart(productDoc.documentID, 0,variant, true)
                         .then((value) {
                     });
                   },

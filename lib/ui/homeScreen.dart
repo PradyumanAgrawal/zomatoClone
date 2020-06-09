@@ -727,11 +727,13 @@ class HomeScreenState extends State<HomeScreen> {
                                           ),
                                           child: FlatButton(
                                             onPressed: () async {
+                                              if (document['sizes'].length == 0) {
                                               int status =
                                                   await FirestoreService()
                                                       .addToCart(
                                                           document.documentID,
                                                           1,
+                                                          '',
                                                           false);
                                               if (status == 2) {
                                                 Fluttertoast.showToast(
@@ -749,6 +751,11 @@ class HomeScreenState extends State<HomeScreen> {
                                                       "Something went wrong!!!",
                                                 );
                                               }
+                                            } else {
+                                              Fluttertoast.showToast(
+                                                msg: "Please open and select a size",
+                                              );
+                                            }
                                             },
                                             child: Text(
                                               'Add To Cart',

@@ -109,6 +109,13 @@ class _OrdersState extends State<Orders> {
                                                 ),
                                               ),
                                               SizedBox(height: 20),
+                                              Visibility(
+                                                visible: (orderList[index]['variant']!=''),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(bottom:10),
+                                                  child: Text(orderList[index]['variant']),
+                                                ),
+                                              ),
                                               Text(
                                                 'Quantity : ' +
                                                     orderList[index]['quantity']

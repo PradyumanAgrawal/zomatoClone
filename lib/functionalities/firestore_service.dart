@@ -139,8 +139,9 @@ class FirestoreService {
             'prodId': k,
             'prodName': value['name'],
             'shop': value['shop'],
-            'quantity': v,
-            'amount': int.parse(value['price']) * v,
+            'quantity': v['quantity'],
+            'amount': int.parse(value['price']) * v['quantity'],
+            'variant': v['variant'],
             'status': "pending",
             'timeStamp': FieldValue.serverTimestamp(),
             'image': value['catalogue'][0],
@@ -163,7 +164,7 @@ class FirestoreService {
         .snapshots();
   }
 
-  Future<int> addToCart(String productId, int quantity, bool updating) async {
+  Future<int> addToCart(String productId, int quantity,String variant, bool updating) async {
     int status;
     await LocalData().getUserEmail().then((userEmail) async {
       await db
@@ -179,14 +180,14 @@ class FirestoreService {
               cart.remove(productId);
             else
               cart['$productId'] =
-                  quantity; // updating the quantity of the product in the cart
+                  {'quantity': quantity, 'variant': variant}; // updating the quantity of the product in the cart
             db.collection('users').document(userId).updateData({'cart': cart});
             status = 3; // cart updated
           } else {
             if (cart.containsKey(productId))
               status = 1; //product is already in the cart
             else {
-              cart['$productId'] = quantity; // adding a new entry in the map
+              cart['$productId'] = {'quantity': quantity, 'variant': variant}; // adding a new entry in the map
               db
                   .collection('users')
                   .document(userId)
@@ -258,8 +259,8 @@ class FirestoreService {
     if (cart.length == 0) {
       return 'empty';
     }
-    var quantity = user.data['cart'].values.toList();
-    print(quantity[0]);
+    //var quantity = user.data['cart'].values.toList();
+    //print(quantity[0]);
     var q = await db
         .collection('products')
         .where('productId', whereIn: cart)
@@ -269,14 +270,15 @@ class FirestoreService {
       Map temp = new Map();
       temp['name'] = prodList[i]['name'];
       temp['price'] = prodList[i]['price'];
-      temp['quantity'] = user.data['cart'][prodList[i].documentID];
+      temp['quantity'] = user.data['cart'][prodList[i].documentID]['quantity'];
       temp['image'] = prodList[i]['catalogue'][0];
       temp['discount'] = prodList[i]['discount']==null?'0':prodList[i]['discount'];
+      temp['variant'] = user.data['cart'][prodList[i].documentID]['variant'];
       products.add(temp);
       print(int.parse(prodList[i].data['price']));
-      total += int.parse(prodList[i].data['price']) * (1-int.parse(prodList[i].data['discount']==null?'0':prodList[i].data['discount'])/100) * user.data['cart'][prodList[i].documentID];
-      print(quantity[i]);
-      quant += quantity[i];
+      total += int.parse(prodList[i].data['price']) * (1-int.parse(prodList[i].data['discount']==null?'0':prodList[i].data['discount'])/100) * user.data['cart'][prodList[i].documentID]['quantity'];
+      //print(quantity[i]);
+      quant += user.data['cart'][prodList[i].documentID]['quantity'];
     }
     var a = {
       'total': total,

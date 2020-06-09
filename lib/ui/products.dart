@@ -14,7 +14,8 @@ class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor:Colors.deepPurple[700],title: Text('Products')),
+      appBar: AppBar(
+          backgroundColor: Colors.deepPurple[700], title: Text('Products')),
       body: FutureBuilder(
         future: LocalData().getUid(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -42,7 +43,6 @@ class _ProductsState extends State<Products> {
                     );
                   return Center(
                     child: ListView(
-                      
                       children: List.generate(
                         snapshot.data.documents.length,
                         (index) {
@@ -303,25 +303,33 @@ Widget itemCard(
                                         ),
                                         child: FlatButton(
                                           onPressed: () async {
-                                            int status =
-                                                await FirestoreService()
-                                                    .addToCart(
-                                                        document.documentID,
-                                                        1,
-                                                        false);
-                                            if (status == 2) {
+                                            if (document['sizes'].length == 0) {
+                                              int status =
+                                                  await FirestoreService()
+                                                      .addToCart(
+                                                          document.documentID,
+                                                          1,
+                                                          '',
+                                                          false);
+                                              if (status == 2) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Product added to the cart!",
+                                                );
+                                              } else if (status == 1) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "This product is already in the cart",
+                                                );
+                                              } else if (status == 0) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Something went wrong!!!",
+                                                );
+                                              }
+                                            } else {
                                               Fluttertoast.showToast(
-                                                msg:
-                                                    "Product added to the cart!",
-                                              );
-                                            } else if (status == 1) {
-                                              Fluttertoast.showToast(
-                                                msg:
-                                                    "This product is already in the cart",
-                                              );
-                                            } else if (status == 0) {
-                                              Fluttertoast.showToast(
-                                                msg: "Something went wrong!!!",
+                                                msg: "Please open and select a size",
                                               );
                                             }
                                           },

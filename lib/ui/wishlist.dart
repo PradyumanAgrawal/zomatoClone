@@ -328,25 +328,33 @@ Widget itemCard(
                                         ),
                                         child: FlatButton(
                                           onPressed: () async {
-                                            int status =
-                                                await FirestoreService()
-                                                    .addToCart(
-                                                        document.documentID,
-                                                        1,
-                                                        false);
-                                            if (status == 2) {
+                                            if (document['sizes'].length == 0) {
+                                              int status =
+                                                  await FirestoreService()
+                                                      .addToCart(
+                                                          document.documentID,
+                                                          1,
+                                                          '',
+                                                          false);
+                                              if (status == 2) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Product added to the cart!",
+                                                );
+                                              } else if (status == 1) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "This product is already in the cart",
+                                                );
+                                              } else if (status == 0) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Something went wrong!!!",
+                                                );
+                                              }
+                                            } else {
                                               Fluttertoast.showToast(
-                                                msg:
-                                                    "Product added to the cart!",
-                                              );
-                                            } else if (status == 1) {
-                                              Fluttertoast.showToast(
-                                                msg:
-                                                    "This product is already in the cart",
-                                              );
-                                            } else if (status == 0) {
-                                              Fluttertoast.showToast(
-                                                msg: "Something went wrong!!!",
+                                                msg: "Please open and select a size",
                                               );
                                             }
                                           },

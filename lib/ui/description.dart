@@ -554,7 +554,7 @@ class _DescriptionState extends State<Description> {
                       onPressed: () async {
                         print('pressed');
                         int status = await FirestoreService()
-                            .addToCart(document.documentID, 1, false);
+                            .addToCart(document.documentID, 1, document['sizes'][selectedVariant], false);
 
                         if (status == 2) {
                           final snackbar = SnackBar(
