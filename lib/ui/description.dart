@@ -18,6 +18,7 @@ class Description extends StatefulWidget {
 }
 
 class _DescriptionState extends State<Description> {
+  bool a = true;
   DocumentSnapshot document;
   int photoIndex = 0;
   List<String> photos = [];
@@ -36,6 +37,13 @@ class _DescriptionState extends State<Description> {
   int selectedVariant;
   @override
   Widget build(BuildContext context) {
+    for (int i = 0; i < document['sizesInStock'].length; i++) {
+      if (document['sizesInStock'][i] == false) {
+        setState(() {
+          a = false;
+        });
+      }
+    }
     return Scaffold(
       key: _scaffoldKey,
       body: ListView(
@@ -302,7 +310,7 @@ class _DescriptionState extends State<Description> {
                           : Colors.purple[300];
                       return Visibility(
                         visible: document['sizesInStock'][index],
-                                              child: GestureDetector(
+                        child: GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedVariant = index;
@@ -329,7 +337,7 @@ class _DescriptionState extends State<Description> {
                                 child: Text(
                                   document['sizes'][index],
                                   style: TextStyle(
-                                    color:Colors.white,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -540,7 +548,7 @@ class _DescriptionState extends State<Description> {
               flex: 60,
               child: Container(
                 decoration: BoxDecoration(
-                    color: (document['inStock'])
+                    color: (document['sizes'].toList().length==0 ? document['inStock'] : a)
                         ? Colors.deepPurple[700]
                         : Colors.grey,
                     borderRadius: BorderRadius.only(
@@ -552,7 +560,7 @@ class _DescriptionState extends State<Description> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
-                  visible: document['inStock'],
+                  visible: document['sizes'].toList().length==0 ? document['inStock'] : a,
                   child: Center(
                     child: FlatButton(
                       onPressed: () async {
