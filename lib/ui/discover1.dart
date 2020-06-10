@@ -46,13 +46,13 @@ class _Discover1State extends State<Discover1> {
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 actions: <Widget>[
-                  IconButton(
+                  /* IconButton(
                     icon: Icon(
                       Icons.notifications,
                       color: Colors.white,
                     ),
                     onPressed: () {},
-                  ),
+                  ), */
                   IconButton(
                     icon: Icon(
                       Icons.shopping_cart,

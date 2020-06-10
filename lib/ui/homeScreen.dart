@@ -489,7 +489,7 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height:80),
+                      SizedBox(height:50),
                     ],
                   ),
                 ),

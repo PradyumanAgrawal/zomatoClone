@@ -126,7 +126,7 @@ class _CartState extends State<Cart> {
                                 flex: 40,
                                 child: Center(
                                   child: Text(
-                                    '\u{20B9} ' + totalPrice.toString(),
+                                    '\u{20B9} ' + totalPrice.roundToDouble().toString(),
                                     style: TextStyle(
                                       color: Colors.deepPurple,
                                       fontWeight: FontWeight.bold,
@@ -362,7 +362,7 @@ class _CartState extends State<Cart> {
                                               Text(
                                                 "  " +
                                                     '\u{20B9} ' +
-                                                    '${int.parse(productDoc['price']) * (1 - int.parse(productDoc['discount']) / 100) * quantity}',
+                                                    '${(int.parse(productDoc['price']) * (1 - int.parse(productDoc['discount']) / 100) * quantity).roundToDouble()}',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 16),

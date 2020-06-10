@@ -300,34 +300,38 @@ class _DescriptionState extends State<Description> {
                       Color color = isSelected
                           ? Colors.deepPurple[500]
                           : Colors.purple[300];
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedVariant = index;
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: AnimatedContainer(
-                            height: size,
-                            width: size,
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.easeOutQuint,
-                            decoration: BoxDecoration(
-                                color: color, // Colors.purple[200],
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black87,
-                                    blurRadius: blur,
-                                    offset: Offset(offset, offset),
-                                  )
-                                ]),
-                            child: Center(
-                              child: Text(
-                                document['sizes'][index],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                      return Visibility(
+                        visible: document['sizesInStock'][index],
+                                              child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedVariant = index;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: AnimatedContainer(
+                              height: size,
+                              width: size,
+                              duration: Duration(milliseconds: 500),
+                              curve: Curves.easeOutQuint,
+                              decoration: BoxDecoration(
+                                  color: color, // Colors.purple[200],
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black87,
+                                      blurRadius: blur,
+                                      offset: Offset(offset, offset),
+                                    )
+                                  ]),
+                              child: Center(
+                                child: Text(
+                                  document['sizes'][index],
+                                  style: TextStyle(
+                                    color:Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
