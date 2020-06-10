@@ -28,14 +28,13 @@ class NavigationState extends State<Navigation> {
 
   Future<void> printLoc() async {
     LatLng loc = await LocationService().getLocation().then((value){
-      setState((){
         location = value;
-      });
+
     });
     String add = await LocationService().getAddress(location).then((value){
-      setState((){
+
         address = value;
-      });
+
     });
 
     // address = add;
