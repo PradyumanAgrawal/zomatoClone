@@ -17,8 +17,6 @@ class Navigation extends StatefulWidget {
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
-  String address = '';
-  LatLng location;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -26,32 +24,10 @@ class NavigationState extends State<Navigation> {
     });
   }
 
-  Future<void> printLoc() async {
-    LatLng loc = await LocationService().getLocation().then((value){
-        location = value;
-
-    });
-    String add = await LocationService().getAddress(location).then((value){
-
-        address = value;
-
-    });
-
-    // address = add;
-    // location = loc;
-    // setState(() {
-    //   address = add;
-    //   location = loc;
-    // });
-    print('------------------');
-    print(location.latitude);
-    print(address.replaceAll(' ', '').substring(0, 20));
-    print('------------------');
-  }
 
   @override
   void initState() {
-    printLoc();
+    
     super.initState();
   }
 
@@ -86,8 +62,6 @@ class NavigationState extends State<Navigation> {
             index: _selectedIndex,
             children: <Widget>[
               HomeScreen(
-                add: address,
-                location: location,
                 navContext: context,
               ),
               Discover1(
