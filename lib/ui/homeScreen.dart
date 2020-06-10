@@ -467,6 +467,29 @@ class HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                       ),
+                      Divider(
+                        color: Colors.purple.withOpacity(0.5),
+                        height: 80,
+                        indent: 50,
+                        endIndent: 50,
+                      ),
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Porsio ',
+                              style: TextStyle(
+                                  letterSpacing: 2, color: Colors.grey),
+                            ),
+                            SpinKitPumpingHeart(
+                              size: 16,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(height:80),
                     ],
                   ),
                 ),
