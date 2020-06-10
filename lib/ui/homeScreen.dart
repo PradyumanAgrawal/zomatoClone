@@ -14,16 +14,7 @@ class HomeScreen extends StatefulWidget {
   BuildContext navContext;
   String add;
   LatLng location;
-  HomeScreen({Key key, BuildContext navContext, String add, LatLng location}) {
-    this.add = add;
-    this.navContext = navContext;
-    this.location = location;
-  } //: super(key: key);
-
-  void setAdd(String address) {
-    this.add = address;
-    HomeScreenState().rebuild();
-  }
+  HomeScreen({Key key, this.navContext, this.add, this.location}) : super(key: key);
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -53,10 +44,6 @@ class HomeScreenState extends State<HomeScreen> {
         isTyping = false;
       });
     }
-  }
-
-  void rebuild() {
-    setState(() {});
   }
 
   var queryResultSet = [];
@@ -140,6 +127,22 @@ class HomeScreenState extends State<HomeScreen> {
             ],
           );
         });
+  }
+
+  @override
+  void initState() {
+    LocationService().getLocation().then((value) {
+      setState(() {
+        widget.location = value;
+      });
+      LocationService().getAddress(value).then((value) {
+        setState(() {
+          widget.add = value;
+        });
+      });
+    });
+
+    super.initState();
   }
 
   @override
@@ -351,7 +354,7 @@ class HomeScreenState extends State<HomeScreen> {
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(widget.navContext).pushNamed(
-                                    '/discover_offers',
+                                    '/discover_other',
                                     arguments: 'offer');
                               },
                               child: Text(
@@ -395,8 +398,9 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             OutlineButton(
                               onPressed: () {
-                                Navigator.of(widget.navContext)
-                                    .pushNamed('/products');
+                                Navigator.of(widget.navContext).pushNamed(
+                                    '/discover_other',
+                                    arguments: 'allProducts');
                               },
                               shape: StadiumBorder(),
                               splashColor: Colors.purple,
@@ -489,7 +493,7 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height:50),
+                      SizedBox(height: 50),
                     ],
                   ),
                 ),

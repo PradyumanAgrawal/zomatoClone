@@ -126,7 +126,8 @@ class _CartState extends State<Cart> {
                                 flex: 40,
                                 child: Center(
                                   child: Text(
-                                    '\u{20B9} ' + totalPrice.roundToDouble().toString(),
+                                    '\u{20B9} ' +
+                                        totalPrice.roundToDouble().toString(),
                                     style: TextStyle(
                                       color: Colors.deepPurple,
                                       fontWeight: FontWeight.bold,
@@ -149,19 +150,7 @@ class _CartState extends State<Cart> {
                                           Navigator.of(context).pushNamed(
                                               '/review_order',
                                               arguments: widget.navContext);
-                                          /* bool status = await FirestoreService()
-                                .isProfileComplete(userId);
-                            if (status) {
-                              await FirestoreService().placeOrder();
-                              Navigator.of(context).pop();
-                            } else
-                              Navigator.of(context).pushNamed('/profile'); */
                                         }
-                                        // Navigator.of(widget.navContext)
-                                        //     .pushNamed('/loading');
-                                        // await FirestoreService().placeOrder();
-                                        // Navigator.of(widget.navContext).pop();
-                                        // Navigator.of(context).pop();
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -220,8 +209,10 @@ class _CartState extends State<Cart> {
                                       widget.navContext,
                                       index,
                                       productDoc,
-                                      document['cart'][productDoc.documentID]['quantity'],
-                                      document['cart'][productDoc.documentID]['variant']);
+                                      document['cart'][productDoc.documentID]
+                                          ['quantity'],
+                                      document['cart'][productDoc.documentID]
+                                          ['variant']);
                                 },
                               ),
                             ),
@@ -253,7 +244,8 @@ class _CartState extends State<Cart> {
     );
   }
 
-  product(context, index, DocumentSnapshot productDoc, int quantity, String variant) {
+  product(context, index, DocumentSnapshot productDoc, int quantity,
+      String variant) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Stack(
@@ -322,9 +314,9 @@ class _CartState extends State<Cart> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height:10),
+                                SizedBox(height: 10),
                                 Visibility(
-                                  visible: (variant!=''),
+                                  visible: (variant != ''),
                                   child: Text(variant),
                                 ),
                                 Flexible(
@@ -370,7 +362,8 @@ class _CartState extends State<Cart> {
                                             ],
                                           )
                                         : Text(
-                                            '\u{20B9} ' + '${int.parse(productDoc['price']) * quantity}',
+                                            '\u{20B9} ' +
+                                                '${int.parse(productDoc['price']) * quantity}',
                                             style: TextStyle(
                                                 fontSize: 16.0,
                                                 color: Colors.black,
@@ -416,7 +409,10 @@ class _CartState extends State<Cart> {
                               if (quantity > 1) {
                                 int newQuantity = quantity - 1;
                                 FirestoreService().addToCart(
-                                    productDoc.documentID, newQuantity,variant, true);
+                                    productDoc.documentID,
+                                    newQuantity,
+                                    variant,
+                                    true);
                               }
                             }),
                         Text(
@@ -428,7 +424,10 @@ class _CartState extends State<Cart> {
                             onPressed: () {
                               int newQuantity = quantity + 1;
                               FirestoreService().addToCart(
-                                  productDoc.documentID, newQuantity,variant, true);
+                                  productDoc.documentID,
+                                  newQuantity,
+                                  variant,
+                                  true);
                             }),
                       ],
                     ),
@@ -456,11 +455,9 @@ class _CartState extends State<Cart> {
               child: Center(
                 child: IconButton(
                   onPressed: () {
-                    
                     FirestoreService()
-                        .addToCart(productDoc.documentID, 0,variant, true)
-                        .then((value) {
-                    });
+                        .addToCart(productDoc.documentID, 0, variant, true)
+                        .then((value) {});
                   },
                   icon: Icon(Icons.delete),
                   color: Colors.red,

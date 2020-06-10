@@ -13,8 +13,8 @@ class Discover extends StatefulWidget {
   //List productReferences;
   final String category;
   final String shopID;
-  final String offer;
-  Discover({BuildContext navContext, this.category, this.shopID, this.offer});
+  final String other;
+  Discover({BuildContext navContext, this.category, this.shopID, this.other});
   @override
   _DiscoverState createState() => _DiscoverState();
 }
@@ -88,13 +88,16 @@ class _DiscoverState extends State<Discover>
       stream = FirestoreService().getProductsFromCategory(widget.category);
     else if (widget.shopID != null)
       stream = FirestoreService().getShopProducts(widget.shopID);
-    else if (widget.offer == 'offer')
+    else if (widget.other == 'offer')
       stream = FirestoreService().getOfferProducts();
+    else if (widget.other == 'allProducts')
+      stream = FirestoreService().getProducts();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       //drawer: DrawerWidget(),
       floatingActionButton: SpeedDial(
@@ -216,7 +219,9 @@ class _DiscoverState extends State<Discover>
                               wishlist
                                   .contains(tempSearchStore[index].documentID),
                               tempSearchStore[index].data['price'],
-                              tempSearchStore[index].data['discount']!=null?tempSearchStore[index].data['discount']:'0',
+                              tempSearchStore[index].data['discount'] != null
+                                  ? tempSearchStore[index].data['discount']
+                                  : '0',
                               tempSearchStore[index],
                               context);
                         },
@@ -286,7 +291,9 @@ class _DiscoverState extends State<Discover>
                                               wishlist.contains(
                                                   document.documentID),
                                               document['price'],
-                                              document['discount']!=null?document['discount']:'0',
+                                              document['discount'] != null
+                                                  ? document['discount']
+                                                  : '0',
                                               document,
                                               context);
                                         },
@@ -306,9 +313,7 @@ class _DiscoverState extends State<Discover>
       ),
     );
   }
-}
-
-Widget itemCard(
+  Widget itemCard(
     String name,
     String imgPath,
     String description,
@@ -317,6 +322,8 @@ Widget itemCard(
     String discount,
     DocumentSnapshot document,
     BuildContext context) {
+      
+      
   return Padding(
     padding: const EdgeInsets.only(top: 2, bottom: 2),
     child: Material(
@@ -484,23 +491,22 @@ Widget itemCard(
                                   //     (1.7 / 3),
                                   child: Center(
                                     child: discount != '0'
-                                          ? Text(
+                                        ? Text(
                                             "  " +
                                                 '\u{20B9} ' +
                                                 '${(int.parse(price) * (1 - int.parse(discount) / 100)).round()}',
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontWeight:
-                                                    FontWeight.bold,
+                                                fontWeight: FontWeight.bold,
                                                 fontSize: 12),
                                           )
-                                          : Text(
-                                              '\u{20B9} ' + price,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                            ),
+                                        : Text(
+                                            '\u{20B9} ' + price,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12),
+                                          ),
                                   ),
                                 ),
                               ),
@@ -564,7 +570,8 @@ Widget itemCard(
                                               }
                                             } else {
                                               Fluttertoast.showToast(
-                                                msg: "Please open and select a size",
+                                                msg:
+                                                    "Please open and select a size",
                                               );
                                             }
                                           },
@@ -594,3 +601,6 @@ Widget itemCard(
     ),
   );
 }
+
+}
+

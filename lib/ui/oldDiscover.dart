@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Discover extends StatefulWidget {
@@ -13,7 +12,7 @@ class Discover extends StatefulWidget {
 }
 
 class _DiscoverState extends State<Discover> {
-  var productList = new List<Product>();
+  //var productList = new List<Product>();
 
   @override
   Widget build(BuildContext context) {
