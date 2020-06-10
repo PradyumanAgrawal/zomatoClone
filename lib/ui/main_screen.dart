@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
@@ -7,8 +9,16 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-Future<bool> wait() {
-  return Future.delayed(Duration(seconds: 3)).then((value) => true);
+Future<bool> wait() async{
+  try {
+  final result = await InternetAddress.lookup('google.com');
+  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+    return true;
+  }
+} on SocketException catch (_) {
+  return false;
+}
+  //return Future.delayed(Duration(seconds: 3)).then((value) => true);
 }
 
 class _MainScreenState extends State<MainScreen> {
@@ -69,42 +79,10 @@ class _MainScreenState extends State<MainScreen> {
                                     .popAndPushNamed('/navigation');
                               });
                               return Center(
-                                  child: SpinKitThreeBounce(
-                                color: Colors.white,
-                              ));
-
-                              // return FutureBuilder(
-                              //   future: wait(),
-                              //   builder: (context, snapshot) {
-                              //     if (snapshot.hasData) {
-                              //       Navigator.of(context)
-                              //           .popAndPushNamed('/navigation');
-                              //     }
-                              //     return Center(
-                              //         child: SpinKitChasingDots(
-                              //       color: Colors.purple,
-                              //     ));
-                              //   },
-                              // );
-                              // return RaisedButton(
-                              //     color: Color.fromARGB(255, 90, 14, 151),
-                              //     padding:
-                              //         EdgeInsets.only(left: 120, right: 120),
-                              //     child: Text(
-                              //       'Continue',
-                              //       textAlign: TextAlign.center,
-                              //       style: TextStyle(
-                              //         color: Color.fromARGB(255, 255, 255, 255),
-                              //         fontSize: 15,
-                              //       ),
-                              //     ),
-                              //     splashColor:
-                              //         Color.fromARGB(255, 144, 28, 238),
-                              //     elevation: 10,
-                              //     onPressed: () {
-                              //       Navigator.of(context)
-                              //           .popAndPushNamed('/navigation');
-                              //     });
+                                child: SpinKitChasingDots(
+                                  color: Colors.white,
+                                ),
+                              );
                             } else {
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
