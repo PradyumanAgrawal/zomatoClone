@@ -14,7 +14,7 @@ class _SignUPState extends State<SignUP> {
   String _email, _password;
   AuthService auth = new AuthService();
   bool gs;
-  Future<void> gsignIn(context) async {
+  /* Future<void> gsignIn(context) async {
     Navigator.of(context).pushNamed('/loading');
     gs = await auth.googleSignIn();
     Navigator.of(context).pop();
@@ -23,7 +23,7 @@ class _SignUPState extends State<SignUP> {
     } else {
       _showAlertDialog(context);
     }
-  }
+  } */
 
   void _showAlertDialog(context) {
     showDialog(
@@ -164,7 +164,7 @@ class _SignUPState extends State<SignUP> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: SizedBox(
-                          height: 50,
+                          height: 40,
                           width: double.infinity,
                           child: RaisedButton(
                             color: Color.fromARGB(255, 255, 255, 255),
@@ -179,7 +179,7 @@ class _SignUPState extends State<SignUP> {
                         ),
                       ),
                     ),
-                    Container(
+                    /* Container(
                       padding: EdgeInsets.only(top: 20, bottom: 20),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30),
@@ -210,7 +210,7 @@ class _SignUPState extends State<SignUP> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       onPressed: () {},
-                    ),
+                    ), */
                   ],
                 ),
               ),

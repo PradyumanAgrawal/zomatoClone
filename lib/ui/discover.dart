@@ -97,6 +97,7 @@ class _DiscoverState extends State<Discover>
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       //drawer: DrawerWidget(),
       floatingActionButton: SpeedDial(
@@ -312,9 +313,7 @@ class _DiscoverState extends State<Discover>
       ),
     );
   }
-}
-
-Widget itemCard(
+  Widget itemCard(
     String name,
     String imgPath,
     String description,
@@ -323,6 +322,8 @@ Widget itemCard(
     String discount,
     DocumentSnapshot document,
     BuildContext context) {
+      
+      
   return Padding(
     padding: const EdgeInsets.only(top: 2, bottom: 2),
     child: Material(
@@ -600,3 +601,6 @@ Widget itemCard(
     ),
   );
 }
+
+}
+

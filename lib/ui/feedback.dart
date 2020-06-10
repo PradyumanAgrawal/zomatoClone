@@ -39,7 +39,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               padding: EdgeInsets.only(left: 20, right: 20),
           child: Form(
               key: _fKey,
-              child: Column(
+              child: ListView(
                   children: [
                     TextFormField(
                   validator: validatefeedback,

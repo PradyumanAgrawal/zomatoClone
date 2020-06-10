@@ -83,11 +83,11 @@ class _LoginState extends State<Login> {
                           padding: EdgeInsets.only(left: 20),
                           child: Center(
                             child: Text(
-                              "Login Your Account",
+                              "Sign In",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                   color: Color.fromARGB(255, 255, 255, 255),
-                                  fontSize: 20),
+                                  fontSize: 25),
                             ),
                           )),
                     ),
@@ -155,10 +155,10 @@ class _LoginState extends State<Login> {
                         },
                         child: Center(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
                               Text(
-                                'Continue with Email',
+                                'Sign in with Email',
                                 style: TextStyle(),
                               ),
                               Icon(
@@ -188,11 +188,19 @@ class _LoginState extends State<Login> {
                         onPressed: () {
                           Navigator.of(context).pushNamed('/signUp_email');
                         },
-                        splashColor: Colors.deepPurple[900],
-                        child: Text(
-                          "Don't have account? Register",
-                          style: TextStyle(
-                              color: Colors.black),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              "Register with email",
+                              style: TextStyle(
+                                  color: Colors.black),
+                            ),
+                            Icon(
+                                Icons.email,
+                                color: Colors.deepPurple[900],
+                              ),
+                          ],
                         ),
                       ),
                     ),
