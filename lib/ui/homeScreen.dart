@@ -169,12 +169,12 @@ class HomeScreenState extends State<HomeScreen> {
             actions: <Widget>[
               widget.add == ''
                   ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.location_off),
-                  )
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.location_off),
+                    )
                   : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
+                      padding: const EdgeInsets.all(8.0),
+                      child: IconButton(
                         icon: Icon(
                           Icons.location_on,
                           color: Colors.white,
@@ -183,7 +183,7 @@ class HomeScreenState extends State<HomeScreen> {
                           _showAlertDialog(context);
                         },
                       ),
-                  ),
+                    ),
               /* IconButton(
                 icon: Icon(
                   Icons.notifications,
@@ -727,35 +727,37 @@ class HomeScreenState extends State<HomeScreen> {
                                           ),
                                           child: FlatButton(
                                             onPressed: () async {
-                                              if (document['sizes'].length == 0) {
-                                              int status =
-                                                  await FirestoreService()
-                                                      .addToCart(
-                                                          document.documentID,
-                                                          1,
-                                                          '',
-                                                          false);
-                                              if (status == 2) {
+                                              if (document['sizes'].length ==
+                                                  0) {
+                                                int status =
+                                                    await FirestoreService()
+                                                        .addToCart(
+                                                            document.documentID,
+                                                            1,
+                                                            '',
+                                                            false);
+                                                if (status == 2) {
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        "Product added to the cart!",
+                                                  );
+                                                } else if (status == 1) {
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        "This product is already in the cart",
+                                                  );
+                                                } else if (status == 0) {
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        "Something went wrong!!!",
+                                                  );
+                                                }
+                                              } else {
                                                 Fluttertoast.showToast(
                                                   msg:
-                                                      "Product added to the cart!",
-                                                );
-                                              } else if (status == 1) {
-                                                Fluttertoast.showToast(
-                                                  msg:
-                                                      "This product is already in the cart",
-                                                );
-                                              } else if (status == 0) {
-                                                Fluttertoast.showToast(
-                                                  msg:
-                                                      "Something went wrong!!!",
+                                                      "Please open and select a size",
                                                 );
                                               }
-                                            } else {
-                                              Fluttertoast.showToast(
-                                                msg: "Please open and select a size",
-                                              );
-                                            }
                                             },
                                             child: Text(
                                               'Add To Cart',
@@ -877,8 +879,20 @@ class _StoreState extends State<Store> {
                                 SpinKitChasingDots(color: Colors.deepPurple));
                       return snapshot.data.length == 0
                           ? Center(
-                              child: Text('No Stores Nearby'),
-                            )
+                              child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Shops coming soon ',
+                                  style: TextStyle(
+                                      letterSpacing: 2, color: Colors.grey),
+                                ),
+                                SpinKitPumpingHeart(
+                                  size: 16,
+                                  color: Colors.grey,
+                                )
+                              ],
+                            ))
                           : ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: snapshot.data.length,
