@@ -557,8 +557,22 @@ class _DescriptionState extends State<Description> {
                     child: FlatButton(
                       onPressed: () async {
                         print('pressed');
-                        int status = await FirestoreService()
-                            .addToCart(document.documentID, 1, document['sizes'][selectedVariant], false);
+                        int status;
+                        if (document['sizes'].length != 0 &&
+                            selectedVariant != null) {
+                          status = await FirestoreService().addToCart(
+                              document.documentID,
+                              1,
+                              document['sizes'][selectedVariant],
+                              false);
+                        } else if (document['sizes'].length == 0) {
+                          status = await FirestoreService()
+                              .addToCart(document.documentID, 1, '', false);
+                        } else {
+                          final snackbar = SnackBar(
+                              content: Text('Please select a variant'));
+                          _scaffoldKey.currentState.showSnackBar(snackbar);
+                        }
 
                         if (status == 2) {
                           final snackbar = SnackBar(
