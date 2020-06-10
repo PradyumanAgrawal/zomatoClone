@@ -5,7 +5,6 @@ import 'package:my_flutter_app/ui/homescreen.dart';
 import 'package:my_flutter_app/ui/description.dart';
 import 'package:my_flutter_app/ui/navigation.dart';
 import 'package:my_flutter_app/ui/login_email.dart';
-import 'package:my_flutter_app/ui/products.dart';
 import 'package:my_flutter_app/ui/profile.dart';
 import 'package:my_flutter_app/ui/review_cart.dart';
 import 'package:my_flutter_app/ui/signUp_email.dart';
@@ -42,9 +41,9 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Discover(shopID: args),
         );
-        case '/discover_offers':
+      case '/discover_other':
         return MaterialPageRoute(
-          builder: (_) => Discover(offer: args),
+          builder: (_) => Discover(other: args),
         );
       case '/homeScreen':
         return MaterialPageRoute(
@@ -70,43 +69,41 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Navigation(),
         );
-      case '/products':
-        return MaterialPageRoute(
-          builder: (_) => Products(),
-        );
       case '/cart':
         return MaterialPageRoute(
           builder: (_) => Cart(navContext: args),
         );
-        case '/share':
+      case '/share':
         return MaterialPageRoute(
           builder: (_) => Share(),
         );
-        case '/discover1':
+      case '/discover1':
         return MaterialPageRoute(
           builder: (_) => Discover1(),
         );
-        case '/wishlist':
+      case '/wishlist':
         return MaterialPageRoute(
           builder: (_) => Wishlist(),
         );
-        case '/profile':
+      case '/profile':
         return MaterialPageRoute(
           builder: (_) => Profile(),
         );
-        case '/feedback':
+      case '/feedback':
         return MaterialPageRoute(
           builder: (_) => FeedbackPage(),
         );
-        case '/review_order':
+      case '/review_order':
         return MaterialPageRoute(
-          builder: (_) => ReviewCart(navContext: args,),
+          builder: (_) => ReviewCart(
+            navContext: args,
+          ),
         );
-        case '/feedback':
+      case '/feedback':
         return MaterialPageRoute(
           builder: (_) => FeedbackPage(),
         );
-        // If args is not of the correct type, return an error page.
+      // If args is not of the correct type, return an error page.
       default:
         return _errorRoute();
     }
