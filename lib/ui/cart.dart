@@ -101,13 +101,16 @@ class _CartState extends State<Cart> {
                   totalPrice = 0;
                   for (int i = 0; i < snapshot.data.documents.length; i++,) {
                     DocumentSnapshot productDoc = snapshot.data.documents[i];
-                    totalPrice += int.parse(productDoc['price']) *
-                        (1 -
-                            int.parse(productDoc['discount'] == null
-                                    ? '0'
-                                    : productDoc['discount']) /
-                                100) *
-                        document['cart'][productDoc.documentID]['quantity'];
+                    if(productList.contains(productDoc.documentID))
+                    {
+                      totalPrice += int.parse(productDoc['price']) *
+                          (1 -
+                              int.parse(productDoc['discount'] == null
+                                      ? '0'
+                                      : productDoc['discount']) /
+                                  100) *
+                          document['cart'][productDoc.documentID]['quantity'];
+                    }
                   }
                   int listLength = snapshot.data.documents.length;
                   return Scaffold(

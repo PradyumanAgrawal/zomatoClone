@@ -194,7 +194,10 @@ class _ReviewCartState extends State<ReviewCart> {
                           Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
-                                '\u{20B9} ' + snapshot.data['total'].toString(),
+                                '\u{20B9} ' +
+                                    (snapshot.data['total'])
+                                        .roundToDouble()
+                                        .toString(),
                                 style: TextStyle(fontSize: 15)),
                           )
                         ],
@@ -313,159 +316,148 @@ class _ReviewCartState extends State<ReviewCart> {
                             ),
                           ),
                         ],
-                      ),                     
-                       StreamBuilder(
-                              stream: FirestoreService()
-                                  .getUser(snapshot.data['userId']),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData)
-                                  return Center(
-                                    child: SpinKitChasingDots(
-                                      color: Colors.purple,
-                                    ),
-                                  );
-                                return Container(
-                                  height: (snapshot.data['address'].length!=0) ?200 : 0,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data['address'].length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: 5, left: 5),
-                                        child: InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedAdd = index;
-                                            });
-                                          },
-                                          child: Stack(
-                                            alignment: Alignment.topRight,
-                                            children: [
-                                              Card(
-                                                clipBehavior: Clip.hardEdge,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15.0),
-                                                ),
-                                                child: Container(
-                                                  color: index == selectedAdd
-                                                      ? Colors.deepPurple[100]
-                                                      : Colors.white,
-                                                  width: 150,
-                                                  padding: const EdgeInsets.all(
-                                                      10.0),
-                                                  child: Center(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          snapshot.data[
-                                                                  'address']
-                                                              [index]['name'],
-                                                          // 'Name',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          snapshot.data[
-                                                                  'address']
-                                                              [index]['line1'],
-                                                          //'Address Line xxxxxxxx 1',
-                                                          style: TextStyle(
-                                                            fontSize: 10,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 3),
-                                                        Text(
-                                                          snapshot.data[
-                                                                  'address']
-                                                              [index]['line2'],
-                                                          //'AddressLine2',
-                                                          style: TextStyle(
-                                                            fontSize: 10,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 4),
-                                                        Text(
-                                                          snapshot.data[
-                                                                  'address']
-                                                              [index]['city'],
-                                                          //'City',
-                                                          style: TextStyle(
-                                                            fontSize: 10,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 3),
-                                                        Text(
-                                                          snapshot.data[
-                                                                  'address']
-                                                              [index]['state'],
-                                                          //'State',
-                                                          style: TextStyle(
-                                                            fontSize: 10,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 3),
-                                                        Text(
-                                                          snapshot.data[
-                                                                      'address']
-                                                                  [index]
-                                                              ['pincode'],
-                                                          //'Pincode',
-                                                          style: TextStyle(
-                                                            fontSize: 10,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 4),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Icon(Icons.call,
-                                                                size: 10),
-                                                            SizedBox(width: 10),
-                                                            Text(
-                                                              snapshot.data[
-                                                                      'address']
-                                                                  [
-                                                                  index]['phone'],
-                                                              style: TextStyle(
-                                                                fontSize: 10,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                      ),
+                      StreamBuilder(
+                        stream:
+                            FirestoreService().getUser(snapshot.data['userId']),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData)
+                            return Center(
+                              child: SpinKitChasingDots(
+                                color: Colors.purple,
+                              ),
+                            );
+                          return Container(
+                            height: (snapshot.data['address'].length != 0)
+                                ? 200
+                                : 0,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: snapshot.data['address'].length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.only(right: 5, left: 5),
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedAdd = index;
+                                      });
+                                    },
+                                    child: Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        Card(
+                                          clipBehavior: Clip.hardEdge,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                          ),
+                                          child: Container(
+                                            color: index == selectedAdd
+                                                ? Colors.deepPurple[100]
+                                                : Colors.white,
+                                            width: 150,
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Center(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    snapshot.data['address']
+                                                        [index]['name'],
+                                                    // 'Name',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
-                                                ),
-                                              ),
-                                              index == selectedAdd
-                                                  ? CircleAvatar(
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      child: Icon(
-                                                        Icons.done,
-                                                        color: Colors.green,
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                    snapshot.data['address']
+                                                        [index]['line1'],
+                                                    //'Address Line xxxxxxxx 1',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    snapshot.data['address']
+                                                        [index]['line2'],
+                                                    //'AddressLine2',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                  Text(
+                                                    snapshot.data['address']
+                                                        [index]['city'],
+                                                    //'City',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    snapshot.data['address']
+                                                        [index]['state'],
+                                                    //'State',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    snapshot.data['address']
+                                                        [index]['pincode'],
+                                                    //'Pincode',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Icon(Icons.call,
+                                                          size: 10),
+                                                      SizedBox(width: 10),
+                                                      Text(
+                                                        snapshot.data['address']
+                                                            [index]['phone'],
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
                                                       ),
-                                                      radius: 15,
-                                                    )
-                                                  : Container(),
-                                            ],
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      );
-                                    },
+                                        index == selectedAdd
+                                            ? CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                child: Icon(
+                                                  Icons.done,
+                                                  color: Colors.green,
+                                                ),
+                                                radius: 15,
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
                             ),
+                          );
+                        },
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
@@ -616,6 +608,13 @@ class _AddSheetState extends State<AddSheet> {
   @override
   Widget build(BuildContext context) {
     Map newAdd = new Map();
+    newAdd['name'] = '';
+    newAdd['line1'] = '';
+    newAdd['line2'] = '';
+    newAdd['city'] = '';
+    newAdd['state'] = '';
+    newAdd['pincode'] = '' ;
+    newAdd['phone'] = '';
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
@@ -630,6 +629,7 @@ class _AddSheetState extends State<AddSheet> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: TextFormField(
+                  initialValue: newAdd['name'],
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Please Enter Name';
@@ -652,6 +652,7 @@ class _AddSheetState extends State<AddSheet> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                initialValue:newAdd['line1'],
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please Enter Address Line 1';
@@ -674,6 +675,7 @@ class _AddSheetState extends State<AddSheet> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                initialValue:  newAdd['line2'],
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please Enter Address Line 2';
@@ -696,6 +698,7 @@ class _AddSheetState extends State<AddSheet> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                initialValue:  newAdd['city'],
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please Enter City';
@@ -717,6 +720,7 @@ class _AddSheetState extends State<AddSheet> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                initialValue:  newAdd['state'],
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please Enter State';
@@ -738,6 +742,7 @@ class _AddSheetState extends State<AddSheet> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                initialValue:  newAdd['pincode'],
                 validator: (value) {
                   if (value.isEmpty || value.length != 6) {
                     return 'Please Enter valid Pincode';
@@ -760,6 +765,7 @@ class _AddSheetState extends State<AddSheet> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                initialValue:  newAdd['phone'],
                 validator: (value) {
                   if (value.isEmpty || value.length != 10) {
                     return 'Please Enter 10-digit Number';

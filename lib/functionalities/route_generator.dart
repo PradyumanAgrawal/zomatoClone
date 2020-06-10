@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
 import 'package:my_flutter_app/ui/homescreen.dart';
@@ -113,11 +114,10 @@ class RouteGenerator {
     return MaterialPageRoute(builder: (_) {
       //SystemNavigator.pop();
       return Scaffold(
-        appBar: AppBar(
-          title: Text('/'),
-        ),
         body: Center(
-          child: Text('/'),
+          child: SpinKitChasingDots(
+            color: Colors.purple,
+          ),
         ),
       );
     });
