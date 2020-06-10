@@ -250,16 +250,40 @@ class _ReviewCartState extends State<ReviewCart> {
                       snapshot.data['mobileNo'] == ''
                           ? Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: OutlineButton(
-                                  onPressed: () {
-                                    newMobileNo(context);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.add),
-                                      Text('New Mobile Number')
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                splashColor: Colors.grey,
+                                onTap: () {
+                                  newMobileNo(context);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.deepPurple,
+                                        offset: Offset(0.0, 2.0), //(x,y)
+                                        blurRadius: 2.0,
+                                      ),
                                     ],
-                                  )),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.add),
+                                        Text(
+                                          'New Mobile Number',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             )
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -289,21 +313,19 @@ class _ReviewCartState extends State<ReviewCart> {
                             ),
                           ),
                         ],
-                      ),
-                      snapshot.data['address'].length == 0
-                          ? Container()
-                          : StreamBuilder(
+                      ),                     
+                       StreamBuilder(
                               stream: FirestoreService()
                                   .getUser(snapshot.data['userId']),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData)
-                                  Center(
+                                  return Center(
                                     child: SpinKitChasingDots(
                                       color: Colors.purple,
                                     ),
                                   );
                                 return Container(
-                                  height: 200,
+                                  height: (snapshot.data['address'].length!=0) ?200 : 0,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: snapshot.data['address'].length,
@@ -324,22 +346,25 @@ class _ReviewCartState extends State<ReviewCart> {
                                                 clipBehavior: Clip.hardEdge,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(15.0),
+                                                      BorderRadius.circular(
+                                                          15.0),
                                                 ),
                                                 child: Container(
                                                   color: index == selectedAdd
                                                       ? Colors.deepPurple[100]
                                                       : Colors.white,
                                                   width: 150,
-                                                  padding:
-                                                      const EdgeInsets.all(10.0),
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
                                                   child: Center(
                                                     child: Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: <Widget>[
                                                         Text(
-                                                          snapshot.data['address']
+                                                          snapshot.data[
+                                                                  'address']
                                                               [index]['name'],
                                                           // 'Name',
                                                           style: TextStyle(
@@ -350,7 +375,8 @@ class _ReviewCartState extends State<ReviewCart> {
                                                         ),
                                                         SizedBox(height: 10),
                                                         Text(
-                                                          snapshot.data['address']
+                                                          snapshot.data[
+                                                                  'address']
                                                               [index]['line1'],
                                                           //'Address Line xxxxxxxx 1',
                                                           style: TextStyle(
@@ -359,7 +385,8 @@ class _ReviewCartState extends State<ReviewCart> {
                                                         ),
                                                         SizedBox(height: 3),
                                                         Text(
-                                                          snapshot.data['address']
+                                                          snapshot.data[
+                                                                  'address']
                                                               [index]['line2'],
                                                           //'AddressLine2',
                                                           style: TextStyle(
@@ -368,7 +395,8 @@ class _ReviewCartState extends State<ReviewCart> {
                                                         ),
                                                         SizedBox(height: 4),
                                                         Text(
-                                                          snapshot.data['address']
+                                                          snapshot.data[
+                                                                  'address']
                                                               [index]['city'],
                                                           //'City',
                                                           style: TextStyle(
@@ -377,7 +405,8 @@ class _ReviewCartState extends State<ReviewCart> {
                                                         ),
                                                         SizedBox(height: 3),
                                                         Text(
-                                                          snapshot.data['address']
+                                                          snapshot.data[
+                                                                  'address']
                                                               [index]['state'],
                                                           //'State',
                                                           style: TextStyle(
@@ -386,8 +415,10 @@ class _ReviewCartState extends State<ReviewCart> {
                                                         ),
                                                         SizedBox(height: 3),
                                                         Text(
-                                                          snapshot.data['address']
-                                                              [index]['pincode'],
+                                                          snapshot.data[
+                                                                      'address']
+                                                                  [index]
+                                                              ['pincode'],
                                                           //'Pincode',
                                                           style: TextStyle(
                                                             fontSize: 10,
@@ -402,8 +433,8 @@ class _ReviewCartState extends State<ReviewCart> {
                                                             Text(
                                                               snapshot.data[
                                                                       'address']
-                                                                  [index]['phone'],
-                                                              //'xxxxxxxxxx',
+                                                                  [
+                                                                  index]['phone'],
                                                               style: TextStyle(
                                                                 fontSize: 10,
                                                               ),
@@ -415,11 +446,17 @@ class _ReviewCartState extends State<ReviewCart> {
                                                   ),
                                                 ),
                                               ),
-                                              index==selectedAdd?CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                child: Icon(Icons.done, color: Colors.green,),
-                                                radius: 15,
-                                              ):Container(),
+                                              index == selectedAdd
+                                                  ? CircleAvatar(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      child: Icon(
+                                                        Icons.done,
+                                                        color: Colors.green,
+                                                      ),
+                                                      radius: 15,
+                                                    )
+                                                  : Container(),
                                             ],
                                           ),
                                         ),
@@ -435,7 +472,7 @@ class _ReviewCartState extends State<ReviewCart> {
                           borderRadius: BorderRadius.circular(15),
                           splashColor: Colors.grey,
                           onTap: () {
-                            var sheetController = showBottomSheet(
+                            showBottomSheet(
                                 elevation: 15,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15)),
@@ -443,31 +480,32 @@ class _ReviewCartState extends State<ReviewCart> {
                                 builder: (context) => AddSheet());
                           },
                           child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.deepPurple,
-                                    offset: Offset(0.0, 2.0), //(x,y)
-                                    blurRadius: 2.0,
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.add),
-                                    Text(
-                                      'New Address',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                  ],
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.deepPurple,
+                                  offset: Offset(0.0, 2.0), //(x,y)
+                                  blurRadius: 2.0,
                                 ),
-                              )),
+                              ],
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.add),
+                                  Text(
+                                    'New Address',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(height: 15),
@@ -745,40 +783,43 @@ class _AddSheetState extends State<AddSheet> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ActionChip(
-                          backgroundColor: Colors.deepPurple,
-                          label: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('Cancel',
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white)),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          }),
-                      ActionChip(
-                          backgroundColor: Colors.deepPurple,
-                          label: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Save',
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ActionChip(
+                        backgroundColor: Colors.deepPurple,
+                        label: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Cancel',
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
-                            ),
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              setState(() {
-                                _formKey.currentState.save();
-                                FirestoreService().addAddress(newAdd);
-                              });
+                                  TextStyle(fontSize: 20, color: Colors.white)),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                    ActionChip(
+                      backgroundColor: Colors.deepPurple,
+                      label: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Save',
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          setState(
+                            () {
+                              _formKey.currentState.save();
+                              FirestoreService().addAddress(newAdd);
+                            },
+                          );
 
-                              Navigator.of(context).pop();
-                            }
-                          }),
-                    ]),
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                  ],
+                ),
               )
             ],
           ),

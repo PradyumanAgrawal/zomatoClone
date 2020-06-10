@@ -71,7 +71,7 @@ class NavigationState extends State<Navigation> {
                 navContext: context,
               ),
               //Description(navContext: context,),
-              Share(),
+              Share(navContext: context,),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(

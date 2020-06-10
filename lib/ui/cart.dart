@@ -93,9 +93,10 @@ class _CartState extends State<Cart> {
                   if (!snapshot.hasData)
                     return Scaffold(
                       body: Center(
-                          child: SpinKitChasingDots(
-                        color: Colors.purple,
-                      )),
+                        child: SpinKitChasingDots(
+                          color: Colors.purple,
+                        ),
+                      ),
                     );
                   totalPrice = 0;
                   for (int i = 0; i < snapshot.data.documents.length; i++,) {
@@ -108,8 +109,7 @@ class _CartState extends State<Cart> {
                                 100) *
                         document['cart'][productDoc.documentID]['quantity'];
                   }
-                  //totalPrice = price;
-
+                  int listLength = snapshot.data.documents.length;
                   return Scaffold(
                     bottomSheet: Material(
                       elevation: 7.0,
@@ -201,18 +201,22 @@ class _CartState extends State<Cart> {
                           <Widget>[
                             Column(
                               children: List<Widget>.generate(
-                                snapshot.data.documents.length,
+                                listLength,
                                 (index) {
                                   DocumentSnapshot productDoc =
                                       snapshot.data.documents[index];
-                                  return product(
-                                      widget.navContext,
-                                      index,
-                                      productDoc,
-                                      document['cart'][productDoc.documentID]
-                                          ['quantity'],
-                                      document['cart'][productDoc.documentID]
-                                          ['variant']);
+                                  try {
+                                    return product(
+                                        widget.navContext,
+                                        index,
+                                        productDoc,
+                                        document['cart'][productDoc.documentID]
+                                            ['quantity'],
+                                        document['cart'][productDoc.documentID]
+                                            ['variant']);
+                                  } catch (e) {
+                                    return Container();
+                                  }
                                 },
                               ),
                             ),
