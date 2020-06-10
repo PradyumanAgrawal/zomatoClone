@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/ui/about.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
 import 'package:my_flutter_app/ui/homescreen.dart';
@@ -102,6 +103,10 @@ class RouteGenerator {
       case '/feedback':
         return MaterialPageRoute(
           builder: (_) => FeedbackPage(),
+        );
+        case '/about':
+        return MaterialPageRoute(
+          builder: (_) => About(),
         );
       // If args is not of the correct type, return an error page.
       default:
