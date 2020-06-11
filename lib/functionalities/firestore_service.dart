@@ -36,6 +36,10 @@ class FirestoreService {
     return prods;
   }
 
+  Stream getOfferPosters() {
+    return db.collection('offers').document('posters').snapshots();
+  }
+
   Stream getHomeProducts() {
     Stream<QuerySnapshot> prods = db.collection('products').where('onHome',isEqualTo: true).snapshots();
     return prods;
