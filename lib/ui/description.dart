@@ -18,7 +18,7 @@ class Description extends StatefulWidget {
 }
 
 class _DescriptionState extends State<Description> {
-  bool a = true;
+  bool a = false;
   DocumentSnapshot document;
   int photoIndex = 0;
   List<String> photos = [];
@@ -38,9 +38,9 @@ class _DescriptionState extends State<Description> {
   @override
   Widget build(BuildContext context) {
     for (int i = 0; i < document['sizesInStock'].length; i++) {
-      if (document['sizesInStock'][i] == false) {
+      if (document['sizesInStock'][i] == true) {
         setState(() {
-          a = false;
+          a = true;
         });
       }
     }
