@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/ui/about.dart';
+import 'package:my_flutter_app/ui/forgot_password.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
 import 'package:my_flutter_app/ui/homescreen.dart';
@@ -62,6 +63,10 @@ class RouteGenerator {
       case '/signUp_email':
         return MaterialPageRoute(
           builder: (_) => SignUP(),
+        );
+      case '/forgot_password':
+        return MaterialPageRoute(
+          builder: (_) => ForgotPass(),
         );
       case '/loading':
         return MaterialPageRoute(
