@@ -45,7 +45,7 @@ class _OrdersState extends State<Orders> {
                     return Center(
                       child: Column(
                         children: <Widget>[
-                          Icon(LineAwesomeIcons.shopping_basket),
+                          Image.asset('assets/images/emptyOrders.png'),
                           Text(
                             'No orders yet!',
                             style: TextStyle(
@@ -63,17 +63,18 @@ class _OrdersState extends State<Orders> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Icon(LineAwesomeIcons.shopping_basket,
-                                      color: Colors.grey, size: 30),
-                                ),
-                                Text(
-                                  'No orders yet!',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                Column(
+                                  children: <Widget>[
+                                    Image.asset(
+                                        'assets/images/emptyOrders.png'),
+                                    Text(
+                                      'No orders yet!',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

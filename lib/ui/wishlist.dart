@@ -52,19 +52,15 @@ class _WishlistState extends State<Wishlist> {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                SizedBox(height:100),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(Icons.favorite,
-                                  color: Colors.grey, size: 30),
-                            ),
-                            Text(
-                              'No products in wishlist!',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                                SizedBox(height: 70),
+                                Image.asset('assets/images/emptyWishlist.png'),
+                                Text(
+                                  'No products in wishlist!',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             );
                           }
