@@ -11,14 +11,6 @@ class _LoginEmailState extends State<LoginEmail> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _email, _password;
 
-  final forgotPassword = FlatButton(
-    onPressed: () {
-      //forgot password screen
-    },
-    textColor: Colors.white,
-    child: Text('Forgot Password?'),
-  );
-
   void _showAlertDialog(context) {
     showDialog(
         context: context,
@@ -76,129 +68,143 @@ class _LoginEmailState extends State<LoginEmail> {
             padding: EdgeInsets.only(left: 20, right: 20),
             //height: 350,
             width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height * 0.01)),
-                Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        Center(
-                          child: Text(
-                            "Login with Email",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                fontSize: 20),
-                          ),
-                        ),
-                        SizedBox(
+            child: ListView(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.1)),
+                    Form(
+                        key: _formKey,
+                        child: Column(
+                          children: <Widget>[
+                            Center(
+                              child: Text(
+                                "Login with Email",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: 20),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 40,
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: MediaQuery.of(context).size.height *
+                                      0.01),
+                              child: TextFormField(
+                                validator: (input) {
+                                  if (input.isEmpty) {
+                                    return 'Please enter the email';
+                                  }
+                                },
+                                onSaved: (input) => _email = input,
+                                obscureText: false,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(10),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 10)),
+                                  hintText: "xyz@email.com",
+                                  fillColor: Colors.white,
+                                  focusColor: Colors.white,
+                                  filled: true,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: MediaQuery.of(context).size.height *
+                                      0.01),
+                              child: TextFormField(
+                                validator: (input) {
+                                  if (input.length < 6) {
+                                    return 'Passwords should be of atleat 6 characters';
+                                  }
+                                },
+                                onSaved: (input) => _password = input,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(10),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 10)),
+                                  hintText: "Password",
+                                  fillColor: Colors.white,
+                                  focusColor: Colors.white,
+                                  filled: true,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.01),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: SizedBox(
                           height: 40,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.01),
-                          child: TextFormField(
-                            validator: (input) {
-                              if (input.isEmpty) {
-                                return 'Please enter the email';
-                              }
-                            },
-                            onSaved: (input) => _email = input,
-                            obscureText: false,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(10),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: Colors.black, width: 10)),
-                              hintText: "xyz@email.com",
-                              fillColor: Colors.white,
-                              focusColor: Colors.white,
-                              filled: true,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.01),
-                          child: TextFormField(
-                            validator: (input) {
-                              if (input.length < 6) {
-                                return 'Passwords should be of atleat 6 characters';
-                              }
-                            },
-                            onSaved: (input) => _password = input,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(10),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: Colors.black, width: 10)),
-                              hintText: "Password",
-                              fillColor: Colors.white,
-                              focusColor: Colors.white,
-                              filled: true,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * 0.01),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: SizedBox(
-                      height: 50,
-                      width: double.infinity,
-                      child: RaisedButton(
-                        color: Colors.white,
-                        onPressed: signIn,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Login',
-                              style: TextStyle(fontSize: 20),
+                          width: double.infinity,
+                          child: RaisedButton(
+                            color: Colors.white,
+                            onPressed: signIn,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Login',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                forgotPassword,
-                Center(
-                  child: Row(
-                    children: <Widget>[
-                      Padding(padding: EdgeInsets.only(right: 10, left: 20)),
-                      Text("Don't have an account?",
-                          style: TextStyle(color: Colors.white)),
-                      SizedBox(width: 10),
-                      Flexible(
-                        child: ActionChip(
-                          padding: EdgeInsets.all(10),
-                          onPressed: () {
-                            Navigator.of(context).pushNamed('/signUp_email');
-                          },
-                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                          label: Text(
-                            "Sign Up",
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w500),
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/forgot_password');
+                      },
+                      textColor: Colors.white,
+                      child: Text('Forgot Password?'),
+                    ),
+                    Center(
+                      child: Row(
+                        children: <Widget>[
+                          Padding(
+                              padding: EdgeInsets.only(right: 10, left: 20)),
+                          Text("Don't have an account?",
+                              style: TextStyle(color: Colors.white)),
+                          SizedBox(width: 10),
+                          Flexible(
+                            child: ActionChip(
+                              padding: EdgeInsets.all(10),
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed('/signUp_email');
+                              },
+                              backgroundColor:
+                                  Color.fromARGB(255, 255, 255, 255),
+                              label: Text(
+                                "Sign Up",
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w500),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                )
+                    )
+                  ],
+                ),
               ],
             ),
           ),

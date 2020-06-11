@@ -65,7 +65,7 @@ class _LoginState extends State<Login> {
                   end: Alignment.bottomCenter,
                   colors: [Colors.pink, Colors.deepPurple])),
           child: Center(
-            child: Column(
+            child: ListView(
               children: <Widget>[
                 Padding(padding: EdgeInsets.only(top: 100)),
                 Container(

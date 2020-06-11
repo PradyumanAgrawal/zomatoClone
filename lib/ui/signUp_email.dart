@@ -1,6 +1,5 @@
 //import 'dart:html';
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
 
 class SignUP extends StatefulWidget {
@@ -102,115 +101,120 @@ class _SignUPState extends State<SignUP> {
               padding: EdgeInsets.only(left: 20, right: 20),
               child: Form(
                 key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Center(
-                            child: Text(
-                              "Sign Up with Email",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  fontSize: 20),
+                child: ListView(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*.2),),
+                        Center(
+                                child: Text(
+                                  "Sign Up with Email",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 255, 255, 255),
+                                      fontSize: 20),
+                                ),
+                              ),
+                              SizedBox(height:30),
+                        Container(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            obscureText: false,
+                            validator: validateEmail,
+                            onSaved: (input) {
+                              _email = input;
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide:
+                                      BorderSide(color: Colors.black, width: 10)),
+                              hintText: "xyz@email.com",
+                              fillColor: Colors.white,
+                              focusColor: Colors.white,
+                              filled: true,
                             ),
                           ),
-                          SizedBox(height:30),
-                    Container(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        obscureText: false,
-                        validator: validateEmail,
-                        onSaved: (input) {
-                          _email = input;
-                        },
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(10),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 10)),
-                          hintText: "xyz@email.com",
-                          fillColor: Colors.white,
-                          focusColor: Colors.white,
-                          filled: true,
                         ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: TextFormField(
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: true,
-                        validator: validatePassword,
-                        onSaved: (input) {
-                          _password = input;
-                        },
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(10),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 10)),
-                          hintText: "Password",
-                          fillColor: Colors.white,
-                          focusColor: Colors.white,
-                          filled: true,
+                        Container(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: TextFormField(
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: true,
+                            validator: validatePassword,
+                            onSaved: (input) {
+                              _password = input;
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide:
+                                      BorderSide(color: Colors.black, width: 10)),
+                              hintText: "Password",
+                              fillColor: Colors.white,
+                              focusColor: Colors.white,
+                              filled: true,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: SizedBox(
-                          height: 40,
-                          width: double.infinity,
-                          child: RaisedButton(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            onPressed: signUp,
-                            child: Center(
-                              child: Text(
-                                'Sign Up',
-                                style: TextStyle(fontSize: 18.0),
+                        Container(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: SizedBox(
+                              height: 40,
+                              width: double.infinity,
+                              child: RaisedButton(
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                onPressed: signUp,
+                                child: Center(
+                                  child: Text(
+                                    'Sign Up',
+                                    style: TextStyle(fontSize: 18.0),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    /* Container(
-                      padding: EdgeInsets.only(top: 20, bottom: 20),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Center(
-                          child: Text(
-                            "OR",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                fontSize: 20),
+                        /* Container(
+                          padding: EdgeInsets.only(top: 20, bottom: 20),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Center(
+                              child: Text(
+                                "OR",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: 20),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        SignInButton(
+                          Buttons.Google,
+                          text: "Sign up with Google",
+                          padding: EdgeInsets.only(left: 10),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          onPressed: () {
+                            //Navigator.of(context).pushNamed('/loading');
+                            gsignIn(context);
+                          },
+                        ),
+                        SignInButton(
+                          Buttons.Facebook,
+                          text: "Sign in with Facebook",
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          onPressed: () {},
+                        ), */
+                      ],
                     ),
-                    SignInButton(
-                      Buttons.Google,
-                      text: "Sign up with Google",
-                      padding: EdgeInsets.only(left: 10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      onPressed: () {
-                        //Navigator.of(context).pushNamed('/loading');
-                        gsignIn(context);
-                      },
-                    ),
-                    SignInButton(
-                      Buttons.Facebook,
-                      text: "Sign in with Facebook",
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      onPressed: () {},
-                    ), */
                   ],
                 ),
               ),

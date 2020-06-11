@@ -53,6 +53,18 @@ class AuthService {
     }
   }
 
+  Future<bool> resetPassword(String email) async {
+    try{
+      await _auth.sendPasswordResetEmail(email: email);
+      return true;
+    }
+    catch(e){
+      print(e);
+      return false;
+    }
+    
+}
+
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("loggedIn", "no");
