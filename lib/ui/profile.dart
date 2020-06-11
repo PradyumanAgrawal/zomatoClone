@@ -132,7 +132,7 @@ class _ProfileState extends State<Profile> {
                                         onPressed: () async {
                                           final tempImage =
                                               await picker.getImage(
-                                                  source: ImageSource.gallery);
+                                                  source: ImageSource.gallery,imageQuality: 50);
                                           setState(() {
                                             profilePic = File(tempImage.path);
                                           });
