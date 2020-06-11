@@ -61,17 +61,7 @@ class _CartState extends State<Cart> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width - 100,
-                          height: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/emptyCart.png'),
-                              //colorFilter: ColorFilter.mode(Colors.purple, BlendMode.color),
-                            ),
-                          ),
-                        ),
+                        Image.asset('assets/images/emptyCart.png'),
                         Center(
                           child: Text(
                             'Add products in your cart to see them here...',
@@ -101,8 +91,7 @@ class _CartState extends State<Cart> {
                   totalPrice = 0;
                   for (int i = 0; i < snapshot.data.documents.length; i++,) {
                     DocumentSnapshot productDoc = snapshot.data.documents[i];
-                    if(productList.contains(productDoc.documentID))
-                    {
+                    if (productList.contains(productDoc.documentID)) {
                       totalPrice += int.parse(productDoc['price']) *
                           (1 -
                               int.parse(productDoc['discount'] == null

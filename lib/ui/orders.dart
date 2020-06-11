@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 import '../functionalities/firestore_service.dart';
 import '../functionalities/local_data.dart';
@@ -41,13 +42,42 @@ class _OrdersState extends State<Orders> {
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data == {}) {
-                    return Center(child: Text('No Orders'));
+                    return Center(
+                      child: Column(
+                        children: <Widget>[
+                          Image.asset('assets/images/emptyOrders.png'),
+                          Text(
+                            'No orders yet!',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   } else {
                     var orderList = snapshot.data.documents.toList();
                     return orderList.length == 0
                         ? Center(
-                            child: Text('No Orders!',
-                                style: TextStyle(fontSize: 20)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Image.asset(
+                                        'assets/images/emptyOrders.png'),
+                                    Text(
+                                      'No orders yet!',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           )
                         : ListView.builder(
                             itemCount: orderList.length,
@@ -56,21 +86,22 @@ class _OrdersState extends State<Orders> {
                                 child: Column(
                                   children: [
                                     Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                child: Text(
-                                                  'Order ID:',
-                                                  style: TextStyle(
-                                                      color: Colors.grey),
-                                                ),
-                                              ),
-                                              Text(orderList[index].documentID),
-                                            ]) /* Center(child:Text(orderList[index]['prodId']+ ' \u{20B9} ' + orderList[index]['amount'].toString())), */
-                                        ),
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Order ID:',
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                          ),
+                                          Text(orderList[index].documentID),
+                                        ],
+                                      ),
+                                    ),
                                     Row(
                                       children: <Widget>[
                                         Container(
@@ -110,10 +141,15 @@ class _OrdersState extends State<Orders> {
                                               ),
                                               SizedBox(height: 20),
                                               Visibility(
-                                                visible: (orderList[index]['variant']!=''),
+                                                visible: (orderList[index]
+                                                        ['variant'] !=
+                                                    ''),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(bottom:10),
-                                                  child: Text(orderList[index]['variant']),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 10),
+                                                  child: Text(orderList[index]
+                                                      ['variant']),
                                                 ),
                                               ),
                                               Text(
@@ -130,9 +166,34 @@ class _OrdersState extends State<Orders> {
                                       ],
                                     ),
                                     Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 20,
+                                          bottom: 15,
+                                          left: 40,
+                                          right: 40),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Order Placed:',
+                                              style: TextStyle(
+                                                  color: Colors.grey)),
+                                          Text(
+                                            orderList[index]['timeStamp']
+                                                .toDate()
+                                                .toString()
+                                                .substring(0, 10),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 20,
-                                            bottom: 20,
+                                            top: 15,
+                                            bottom: 15,
                                             left: 40,
                                             right: 40),
                                         child: Row(
@@ -154,7 +215,7 @@ class _OrdersState extends State<Orders> {
                                         ),
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                          top: 20,
+                                          top: 15,
                                           bottom: 20,
                                           left: 40,
                                           right: 40),

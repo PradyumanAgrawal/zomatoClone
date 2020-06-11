@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 
@@ -42,20 +43,31 @@ class _WishlistState extends State<Wishlist> {
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return Center(
-                            child:
-                                SpinKitChasingDots(color: Colors.deepPurple));
-                          
+                                child: SpinKitChasingDots(
+                                    color: Colors.deepPurple));
+
                           DocumentSnapshot document = snapshot.data;
                           List wishlist = document['wishlist'];
-                          if(wishlist.isEmpty){
-                            return Center(child:Padding(
-                              padding: const EdgeInsets.only(top:50.0),
-                              child: Text('No Products in Wishlist', style: TextStyle(fontSize: 15)),
-                            ));
+                          if (wishlist.isEmpty) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(height: 70),
+                                Image.asset('assets/images/emptyWishlist.png'),
+                                Text(
+                                  'No products in wishlist!',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            );
                           }
 
                           return StreamBuilder(
-                            stream: FirestoreService().getWishlistProducts(wishlist),
+                            stream: FirestoreService()
+                                .getWishlistProducts(wishlist),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData)
                                 return Center(
@@ -66,19 +78,21 @@ class _WishlistState extends State<Wishlist> {
                               return Padding(
                                 padding: const EdgeInsets.all(0),
                                 child: Column(
-                                  children: List.generate(snapshot.data.documents.length,(index){
+                                  children: List.generate(
+                                      snapshot.data.documents.length, (index) {
                                     DocumentSnapshot document =
                                         snapshot.data.documents[index];
                                     return itemCard(
                                         document['name'],
-                                              document['catalogue'][0],
-                                              document['description'],
-                                              wishlist.contains(
-                                                  document.documentID),
-                                              document['price'],
-                                              document['discount']!=null?document['discount']:'0',
-                                              document,
-                                              context);
+                                        document['catalogue'][0],
+                                        document['description'],
+                                        wishlist.contains(document.documentID),
+                                        document['price'],
+                                        document['discount'] != null
+                                            ? document['discount']
+                                            : '0',
+                                        document,
+                                        context);
                                   }),
                                 ),
                               );
@@ -274,23 +288,22 @@ Widget itemCard(
                                   //     (1.7 / 3),
                                   child: Center(
                                     child: discount != '0'
-                                          ? Text(
+                                        ? Text(
                                             "  " +
                                                 '\u{20B9} ' +
                                                 '${(int.parse(price) * (1 - int.parse(discount) / 100)).round()}',
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontWeight:
-                                                    FontWeight.bold,
+                                                fontWeight: FontWeight.bold,
                                                 fontSize: 12),
                                           )
-                                          : Text(
-                                              '\u{20B9} ' + price,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                            ),
+                                        : Text(
+                                            '\u{20B9} ' + price,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12),
+                                          ),
                                   ),
                                 ),
                               ),
@@ -354,7 +367,8 @@ Widget itemCard(
                                               }
                                             } else {
                                               Fluttertoast.showToast(
-                                                msg: "Please open and select a size",
+                                                msg:
+                                                    "Please open and select a size",
                                               );
                                             }
                                           },

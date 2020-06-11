@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,25 +15,21 @@ class HomeScreen extends StatefulWidget {
   BuildContext navContext;
   String add;
   LatLng location;
-  HomeScreen({Key key, this.navContext, this.add, this.location}) : super(key: key);
+  HomeScreen({Key key, this.navContext, this.add, this.location})
+      : super(key: key);
 
   @override
-  HomeScreenState createState() => HomeScreenState();
+  HomeScreenState createState() =>
+      HomeScreenState();
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  String add;
+  LatLng location;
   List wishlist;
   bool isTyping = false;
   bool isSearching = false;
-  List<String> photos = [
-    'assets/airpods.jpg',
-    'assets/dress.jpg',
-    'assets/headphones.jpg',
-    'assets/iphone.png',
-    'assets/iphone11.jpg',
-    'assets/laptop.jpg'
-  ];
-
+  HomeScreenState({this.add, this.location});
   TextEditingController _controller = TextEditingController();
   checkTyping(value) {
     if (value.length > 0) {
@@ -105,7 +102,7 @@ class HomeScreenState extends State<HomeScreen> {
               height: 200,
               alignment: Alignment.center,
               child: Text(
-                widget.add,
+                add,
                 style: TextStyle(
                     color: Colors.blueGrey[900],
                     fontStyle: FontStyle.normal,
@@ -133,11 +130,11 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     LocationService().getLocation().then((value) {
       setState(() {
-        widget.location = value;
+        location = value;
       });
       LocationService().getAddress(value).then((value) {
         setState(() {
-          widget.add = value;
+          add = value;
         });
       });
     });
@@ -170,7 +167,7 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ),
             actions: <Widget>[
-              widget.add == ''
+              add == ''
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Icon(Icons.location_off),
@@ -312,8 +309,8 @@ class HomeScreenState extends State<HomeScreen> {
                                       .getAddress(result)
                                       .then((value) {
                                     setState(() {
-                                      widget.location = result;
-                                      widget.add = value;
+                                      location = result;
+                                      add = value;
                                       Scaffold.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text('Location Updated!'),
@@ -369,21 +366,52 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        height: 200.0,
-                        child: Carousel(
-                          onImageTap: null,
-                          boxFit: BoxFit.cover,
-                          images: List.generate(photos.length, (index) {
-                            return Image.asset(photos[index]);
-                          }),
-                          autoplay: true,
-                          dotSize: 5.0,
-                          dotColor: Colors.black,
-                          dotIncreasedColor: Colors.purple,
-                          dotBgColor: Colors.transparent,
-                          indicatorBgPadding: 2.0,
-                        ),
+                      StreamBuilder(
+                        stream: FirestoreService().getOfferPosters(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData)
+                            return Center(
+                                child: SpinKitChasingDots(
+                              color: Colors.purple,
+                            ));
+                          DocumentSnapshot posterDoc = snapshot.data;
+                          List<String> posters = [];
+                          for (int i = 0;
+                              i < posterDoc['posters'].length;
+                              i++) {
+                            posters.add(posterDoc['posters'][i]);
+                          }
+                          return Container(
+                            height: 200.0,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Carousel(
+                              onImageTap: null,
+                              boxFit: BoxFit.cover,
+                              images: List.generate(
+                                posters.length,
+                                (index) {
+                                  return CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    imageUrl: posters[index],
+                                    placeholder: (context, url) =>
+                                        SpinKitChasingDots(
+                                      color: Colors.purple,
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  );
+                                },
+                              ),
+                              autoplay: true,
+                              dotSize: 5.0,
+                              dotColor: Colors.black,
+                              dotIncreasedColor: Colors.purple,
+                              dotBgColor: Colors.transparent,
+                              indicatorBgPadding: 2.0,
+                            ),
+                          );
+                        },
                       ),
                       Padding(
                         padding: EdgeInsets.all(10.0),
