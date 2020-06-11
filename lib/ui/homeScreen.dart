@@ -19,22 +19,17 @@ class HomeScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  HomeScreenState createState() => HomeScreenState();
+  HomeScreenState createState() =>
+      HomeScreenState();
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  String add;
+  LatLng location;
   List wishlist;
   bool isTyping = false;
   bool isSearching = false;
-  // List<String> photos = [
-  //   'assets/airpods.jpg',
-  //   'assets/dress.jpg',
-  //   'assets/headphones.jpg',
-  //   'assets/iphone.png',
-  //   'assets/iphone11.jpg',
-  //   'assets/laptop.jpg'
-  // ];
-
+  HomeScreenState({this.add, this.location});
   TextEditingController _controller = TextEditingController();
   checkTyping(value) {
     if (value.length > 0) {
@@ -107,7 +102,7 @@ class HomeScreenState extends State<HomeScreen> {
               height: 200,
               alignment: Alignment.center,
               child: Text(
-                widget.add,
+                add,
                 style: TextStyle(
                     color: Colors.blueGrey[900],
                     fontStyle: FontStyle.normal,
@@ -135,11 +130,11 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     LocationService().getLocation().then((value) {
       setState(() {
-        widget.location = value;
+        location = value;
       });
       LocationService().getAddress(value).then((value) {
         setState(() {
-          widget.add = value;
+          add = value;
         });
       });
     });
@@ -172,7 +167,7 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ),
             actions: <Widget>[
-              widget.add == ''
+              add == ''
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Icon(Icons.location_off),
@@ -314,8 +309,8 @@ class HomeScreenState extends State<HomeScreen> {
                                       .getAddress(result)
                                       .then((value) {
                                     setState(() {
-                                      widget.location = result;
-                                      widget.add = value;
+                                      location = result;
+                                      add = value;
                                       Scaffold.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text('Location Updated!'),
@@ -379,17 +374,17 @@ class HomeScreenState extends State<HomeScreen> {
                                 child: SpinKitChasingDots(
                               color: Colors.purple,
                             ));
-                            DocumentSnapshot posterDoc = snapshot.data;
-                          List<String> posters=[];
-                          for(int i=0; i<posterDoc['posters'].length;i++)
-                          {
+                          DocumentSnapshot posterDoc = snapshot.data;
+                          List<String> posters = [];
+                          for (int i = 0;
+                              i < posterDoc['posters'].length;
+                              i++) {
                             posters.add(posterDoc['posters'][i]);
                           }
                           return Container(
                             height: 200.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15)
-                            ),
+                                borderRadius: BorderRadius.circular(15)),
                             child: Carousel(
                               onImageTap: null,
                               boxFit: BoxFit.cover,

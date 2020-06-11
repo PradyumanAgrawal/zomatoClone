@@ -1,5 +1,7 @@
 //import 'dart:html';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_view.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
 
 class SignUP extends StatefulWidget {
@@ -83,6 +85,17 @@ class _SignUPState extends State<SignUP> {
       return null;
   }
 
+  Future<void> gsignIn(context) async {
+    Navigator.of(context).pushNamed('/loading');
+    gs = await auth.googleSignIn();
+    Navigator.of(context).pop();
+    if (gs == true) {
+      Navigator.of(context).pushNamed('/navigation');
+    } else {
+      _showAlertDialog(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -106,17 +119,20 @@ class _SignUPState extends State<SignUP> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*.2),),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * .2),
+                        ),
                         Center(
-                                child: Text(
-                                  "Sign Up with Email",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(255, 255, 255, 255),
-                                      fontSize: 20),
-                                ),
-                              ),
-                              SizedBox(height:30),
+                          child: Text(
+                            "Sign Up with Email",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                fontSize: 20),
+                          ),
+                        ),
+                        SizedBox(height: 30),
                         Container(
                           padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: TextFormField(
@@ -130,8 +146,8 @@ class _SignUPState extends State<SignUP> {
                               contentPadding: EdgeInsets.all(10),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                      BorderSide(color: Colors.black, width: 10)),
+                                  borderSide: BorderSide(
+                                      color: Colors.black, width: 10)),
                               hintText: "xyz@email.com",
                               fillColor: Colors.white,
                               focusColor: Colors.white,
@@ -152,8 +168,8 @@ class _SignUPState extends State<SignUP> {
                               contentPadding: EdgeInsets.all(10),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                      BorderSide(color: Colors.black, width: 10)),
+                                  borderSide: BorderSide(
+                                      color: Colors.black, width: 10)),
                               hintText: "Password",
                               fillColor: Colors.white,
                               focusColor: Colors.white,
@@ -181,7 +197,7 @@ class _SignUPState extends State<SignUP> {
                             ),
                           ),
                         ),
-                        /* Container(
+                        Container(
                           padding: EdgeInsets.only(top: 20, bottom: 20),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(30),
@@ -212,7 +228,7 @@ class _SignUPState extends State<SignUP> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                           onPressed: () {},
-                        ), */
+                        ),
                       ],
                     ),
                   ],
