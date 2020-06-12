@@ -59,6 +59,7 @@ class _DescriptionState extends State<Description> {
                 child: Stack(
                   children: <Widget>[
                     Container(
+                      color: Colors.white,
                       padding: EdgeInsets.only(bottom: 10),
                       height: 275.0,
                       child: InkWell(

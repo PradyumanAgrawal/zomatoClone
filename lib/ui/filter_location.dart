@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
@@ -78,7 +79,8 @@ class _FireMapState extends State<FireMap> {
         icon: shopMarker,
         draggable: false,
         position: LatLng(pos.latitude, pos.longitude),
-        infoWindow: InfoWindow(title: document['name'],snippet: document['address']),
+        infoWindow:
+            InfoWindow(title: document['name'], snippet: document['address']),
       );
       setState(() {
         markers.add(tempMarker);
@@ -106,6 +108,10 @@ class _FireMapState extends State<FireMap> {
       markers.add(m);
     });
     markerPosition = widget.location;
+    Fluttertoast.showToast(
+      toastLength: Toast.LENGTH_LONG,
+      msg: "Move the map to reveal more shops around and tap to set the marker",
+    );
     super.initState();
   }
 
@@ -199,8 +205,10 @@ class _FireMapState extends State<FireMap> {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
-            onPressed: () async{
-              await LocalData().saveLocation(latitude:markerPosition.latitude, longitude: markerPosition.longitude);
+            onPressed: () async {
+              await LocalData().saveLocation(
+                  latitude: markerPosition.latitude,
+                  longitude: markerPosition.longitude);
               Navigator.pop(context, markerPosition);
             },
           ),
