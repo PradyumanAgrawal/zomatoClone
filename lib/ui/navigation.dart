@@ -76,6 +76,8 @@ class NavigationState extends State<Navigation> {
           bottomNavigationBar: CurvedNavigationBar(
             height: 50,
             backgroundColor: Colors.white,
+            animationDuration: Duration(milliseconds: 200),
+            animationCurve: Curves.bounceIn,
             color: Colors.deepPurple[800],
             //elevation: 7.0,
             //backgroundColor: Colors.white70,
@@ -94,7 +96,7 @@ class NavigationState extends State<Navigation> {
               ),
               Icon(
                 Icons.share,
-                color:Colors.white,
+                color: Colors.white,
               ),
             ],
             // items: const <BottomNavigationBarItem>[

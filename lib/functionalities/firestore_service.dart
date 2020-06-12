@@ -67,7 +67,8 @@ class FirestoreService {
     return db.collection('categories').snapshots();
   }
 
-  Future<bool> inWishlist(String productId) {
+  Future<bool> inWishlist
+  (String productId) {
     LocalData().getUid().then((uId) {
       db
           .collection('users')
