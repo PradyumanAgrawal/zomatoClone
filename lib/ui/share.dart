@@ -14,7 +14,7 @@ class Share extends StatelessWidget {
       appBar: AppBar(backgroundColor: Colors.deepPurple[800],title:Text('Share')),
 
       body: Center(
-        child: Column(
+        child: ListView(
           children: [
             Padding(
               padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*.1),

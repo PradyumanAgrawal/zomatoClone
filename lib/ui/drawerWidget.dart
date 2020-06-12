@@ -137,7 +137,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ListTile(
             leading: Icon(Icons.info),
             title: Text('About'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(widget.navContext)
+                          .pushNamed('/about');
+            },
           ),
         ],
       ),

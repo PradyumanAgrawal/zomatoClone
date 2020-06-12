@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_flutter_app/ui/about.dart';
 import 'package:my_flutter_app/ui/forgot_password.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
@@ -108,6 +109,10 @@ class RouteGenerator {
       case '/feedback':
         return MaterialPageRoute(
           builder: (_) => FeedbackPage(),
+        );
+        case '/about':
+        return MaterialPageRoute(
+          builder: (_) => About(),
         );
       // If args is not of the correct type, return an error page.
       default:
