@@ -97,7 +97,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   end: Alignment.bottomCenter,
                   colors: [Colors.pink,Colors.deepPurple])),
           ),
-          ListTile(
+          /* ListTile(
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
@@ -106,7 +106,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               //               builder: (context) => Navigation()),
               //           (Route<dynamic> route) => false);
             },
-          ),
+          ), */
           ListTile(
             leading: Icon(Icons.favorite),
             title: Text('Wishlist'),
