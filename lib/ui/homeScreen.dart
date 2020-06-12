@@ -530,7 +530,6 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _awaitReturnValueFromFilter(String add, BuildContext context) async {}
 
   Widget itemCard(
       String name,
@@ -848,11 +847,11 @@ class HomeScreenState extends State<HomeScreen> {
         Navigator.of(navContext).pushNamed('/description', arguments: document);
       },
       child: Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: const EdgeInsets.all(3.0),
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.46,
+          width: MediaQuery.of(context).size.width * 0.45,
           child: Material(
-            elevation: 0,
+            elevation: 2,
             //color: Colors.grey,
             borderRadius: BorderRadius.circular(25),
             shadowColor: Colors.purple,
@@ -866,7 +865,7 @@ class HomeScreenState extends State<HomeScreen> {
                     image: DecorationImage(
                       image: NetworkImage(document['catalogue']
                           [0]), //AssetImage("assets/images/LOGO2.png"),
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(25),
                   ),
