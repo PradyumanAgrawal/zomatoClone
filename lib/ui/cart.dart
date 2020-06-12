@@ -394,6 +394,7 @@ class _CartState extends State<Cart> {
                             style:
                                 TextStyle(fontSize: 15, color: Colors.black)),
                         IconButton(
+                          enableFeedback: true,
                             icon: (quantity > 1)
                                 ? Icon(Icons.remove, color: Colors.red)
                                 : Icon(
@@ -416,15 +417,14 @@ class _CartState extends State<Cart> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         IconButton(
-                            icon: Icon(Icons.add, color: Colors.green),
-                            onPressed: () {
-                              int newQuantity = quantity + 1;
-                              FirestoreService().addToCart(
-                                  productDoc.documentID,
-                                  newQuantity,
-                                  variant,
-                                  true);
-                            }),
+                          enableFeedback: true,
+                          icon: Icon(Icons.add, color: Colors.green),
+                          onPressed: () {
+                            int newQuantity = quantity + 1;
+                            FirestoreService().addToCart(productDoc.documentID,
+                                newQuantity, variant, true);
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -450,6 +450,7 @@ class _CartState extends State<Cart> {
               width: MediaQuery.of(context).size.height / 15,
               child: Center(
                 child: IconButton(
+                  enableFeedback: true,
                   onPressed: () {
                     FirestoreService()
                         .addToCart(productDoc.documentID, 0, variant, true)

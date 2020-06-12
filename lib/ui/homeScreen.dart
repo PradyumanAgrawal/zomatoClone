@@ -884,6 +884,7 @@ class HomeScreenState extends State<HomeScreen> {
                     //     shape: RoundedRectangleBorder(
                     //         borderRadius: BorderRadius.circular(30.0))),
                     IconButton(
+                      enableFeedback: true,
                       icon: inWishlist
                           ? Icon(
                               Icons.favorite,
