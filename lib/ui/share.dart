@@ -11,16 +11,24 @@ class Share extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: DrawerWidget(navContext: navContext),
-      appBar: AppBar(backgroundColor: Colors.deepPurple[800],title:Text('Share')),
-
+      appBar:
+          AppBar(backgroundColor: Colors.deepPurple[800], title: Text('Share')),
       body: Center(
         child: ListView(
           children: [
             Padding(
-              padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*.1),
-              child: Text('Coming Soon!', style: TextStyle(fontSize:30),),
+              padding:
+                  EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
+              child: Center(
+                child: Text(
+                  'Coming Soon!',
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
             ),
-
             Image.asset('assets/a.jpg'),
           ],
         ),

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './homeScreen.dart';
 import './discover1.dart';
 import './share.dart';
-import 'package:my_flutter_app/functionalities/location_service.dart';
 import 'orders.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class Navigation extends StatefulWidget {
   Navigation({
@@ -24,10 +23,8 @@ class NavigationState extends State<Navigation> {
     });
   }
 
-
   @override
   void initState() {
-    
     super.initState();
   }
 
@@ -71,44 +68,67 @@ class NavigationState extends State<Navigation> {
                 navContext: context,
               ),
               //Description(navContext: context,),
-              Share(navContext: context,),
+              Share(
+                navContext: context,
+              ),
             ],
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            elevation: 7.0,
-            backgroundColor: Colors.white70,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                  color: Color(value),
-                ),
-                title: Text('Home'),
+          bottomNavigationBar: CurvedNavigationBar(
+            height: 50,
+            backgroundColor: Colors.white,
+            color: Colors.deepPurple[800],
+            //elevation: 7.0,
+            //backgroundColor: Colors.white70,
+            items: <Widget>[
+              Icon(
+                Icons.home,
+                color: Colors.white,
               ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.favorite,
-                  color: Color(value),
-                ),
-                title: Text('Discover'),
+              Icon(
+                Icons.favorite,
+                color: Colors.white,
               ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.shopping_basket,
-                  color: Color(value),
-                ),
-                title: Text('Orders'),
+              Icon(
+                Icons.shopping_basket,
+                color: Colors.white,
               ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.share,
-                  color: Color(value),
-                ),
-                title: Text('Share'),
+              Icon(
+                Icons.share,
+                color:Colors.white,
               ),
             ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.black,
+            // items: const <BottomNavigationBarItem>[
+            //   BottomNavigationBarItem(
+            //     icon: Icon(
+            //       Icons.home,
+            //       color: Color(value),
+            //     ),
+            //     title: Text('Home'),
+            //   ),
+            //   BottomNavigationBarItem(
+            //     icon: Icon(
+            //       Icons.favorite,
+            //       color: Color(value),
+            //     ),
+            //     title: Text('Discover'),
+            //   ),
+            //   BottomNavigationBarItem(
+            //     icon: Icon(
+            //       Icons.shopping_basket,
+            //       color: Color(value),
+            //     ),
+            //     title: Text('Orders'),
+            //   ),
+            //   BottomNavigationBarItem(
+            //     icon: Icon(
+            //       Icons.share,
+            //       color: Color(value),
+            //     ),
+            //     title: Text('Share'),
+            //   ),
+            // ],
+            index: _selectedIndex,
+            //selectedItemColor: Colors.black,
             onTap: _onItemTapped,
           ),
         ),
