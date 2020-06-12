@@ -90,7 +90,8 @@ class _SignUPState extends State<SignUP> {
     gs = await auth.googleSignIn();
     Navigator.of(context).pop();
     if (gs == true) {
-      Navigator.of(context).pushNamed('/navigation');
+      Navigator.of(context).pushNamedAndRemoveUntil(
+            '/navigation', (Route<dynamic> route) => false);
     } else {
       _showAlertDialog(context);
     }
@@ -222,13 +223,13 @@ class _SignUPState extends State<SignUP> {
                             gsignIn(context);
                           },
                         ),
-                        SignInButton(
+                        /* SignInButton(
                           Buttons.Facebook,
                           text: "Sign in with Facebook",
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                           onPressed: () {},
-                        ),
+                        ), */
                       ],
                     ),
                   ],

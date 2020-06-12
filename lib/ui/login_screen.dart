@@ -47,7 +47,8 @@ class _LoginState extends State<Login> {
     gs = await auth.googleSignIn();
     Navigator.of(context).pop();
     if (gs == true) {
-      Navigator.of(context).pushNamed('/navigation');
+      Navigator.of(context).pushNamedAndRemoveUntil(
+            '/navigation', (Route<dynamic> route) => false);
     } else {
       _showAlertDialog(context);
     }
