@@ -9,15 +9,15 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-Future<bool> wait() async{
+Future<bool> wait() async {
   try {
-  final result = await InternetAddress.lookup('google.com');
-  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-    return true;
+    final result = await InternetAddress.lookup('google.com');
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      return true;
+    }
+  } on SocketException catch (_) {
+    return false;
   }
-} on SocketException catch (_) {
-  return false;
-}
   //return Future.delayed(Duration(seconds: 3)).then((value) => true);
 }
 

@@ -66,7 +66,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         children: <Widget>[
           DrawerHeader(
             child: InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.of(widget.navContext).pushNamed('/profile');
               },
               child: Column(
@@ -74,28 +74,34 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.person, color: Colors.black),
+                    child: Hero(
+                      tag: userEmail,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.person, color: Colors.black),
+                      ),
                     ),
                   ),
-                  SizedBox(height:10),
+                  SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Text(userEmail == null ? '' : userEmail, style: TextStyle(color:Colors.white),),
+                    child: Text(
+                      userEmail == null ? '' : userEmail,
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(15),
-                bottomRight: Radius.circular(15),
-              ),
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.pink,Colors.deepPurple])),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(15),
+                ),
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.pink, Colors.deepPurple])),
           ),
           /* ListTile(
             leading: Icon(Icons.home),
@@ -108,7 +114,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             },
           ), */
           ListTile(
-            leading: Icon(Icons.favorite),
+            leading: Hero(tag: 'wishlist',child: Icon(Icons.favorite)),
             title: Text('Wishlist'),
             onTap: () {
               Navigator.of(widget.navContext).pushNamed('/wishlist');
@@ -120,11 +126,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             onTap: () {},
           ), */
           ListTile(
-            leading: Icon(Icons.feedback),
+            leading: Hero(tag:'feedback',child: Icon(Icons.feedback)),
             title: Text('Feedback'),
             onTap: () {
-               Navigator.of(widget.navContext)
-                          .pushNamed('/feedback', arguments: widget.navContext);
+              Navigator.of(widget.navContext)
+                  .pushNamed('/feedback', arguments: widget.navContext);
             },
           ),
           ListTile(
@@ -135,11 +141,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.info),
+            leading: Hero(tag:'about',child: Icon(Icons.info)),
             title: Text('About'),
             onTap: () {
-              Navigator.of(widget.navContext)
-                          .pushNamed('/about');
+              Navigator.of(widget.navContext).pushNamed('/about');
             },
           ),
         ],

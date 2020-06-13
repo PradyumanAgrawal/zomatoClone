@@ -48,7 +48,7 @@ class _LoginState extends State<Login> {
     Navigator.of(context).pop();
     if (gs == true) {
       Navigator.of(context).pushNamedAndRemoveUntil(
-            '/navigation', (Route<dynamic> route) => false);
+          '/navigation', (Route<dynamic> route) => false);
     } else {
       _showAlertDialog(context);
     }
@@ -86,7 +86,7 @@ class _LoginState extends State<Login> {
                             child: Text(
                               "Sign In",
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.bold,
                                   color: Color.fromARGB(255, 255, 255, 255),
                                   fontSize: 25),
                             ),
@@ -96,7 +96,7 @@ class _LoginState extends State<Login> {
                 ),
                 Container(
                   height: 60,
-                  width: MediaQuery.of(context).size.width*.99,
+                  width: MediaQuery.of(context).size.width * .99,
                   padding: EdgeInsets.only(
                       top: bottonPadding,
                       bottom: bottonPadding,
@@ -194,13 +194,12 @@ class _LoginState extends State<Login> {
                           children: [
                             Text(
                               "Register with email",
-                              style: TextStyle(
-                                  color: Colors.black),
+                              style: TextStyle(color: Colors.black),
                             ),
                             Icon(
-                                Icons.email,
-                                color: Colors.deepPurple[900],
-                              ),
+                              Icons.email,
+                              color: Colors.deepPurple[900],
+                            ),
                           ],
                         ),
                       ),

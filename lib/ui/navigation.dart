@@ -76,11 +76,9 @@ class NavigationState extends State<Navigation> {
           bottomNavigationBar: CurvedNavigationBar(
             height: 50,
             backgroundColor: Colors.white,
-            animationDuration: Duration(milliseconds: 200),
-            animationCurve: Curves.bounceIn,
+            animationDuration: Duration(milliseconds: 250),
+            //animationCurve: Curves.elasticOut,
             color: Colors.deepPurple[800],
-            //elevation: 7.0,
-            //backgroundColor: Colors.white70,
             items: <Widget>[
               Icon(
                 Icons.home,
@@ -99,38 +97,8 @@ class NavigationState extends State<Navigation> {
                 color: Colors.white,
               ),
             ],
-            // items: const <BottomNavigationBarItem>[
-            //   BottomNavigationBarItem(
-            //     icon: Icon(
-            //       Icons.home,
-            //       color: Color(value),
-            //     ),
-            //     title: Text('Home'),
-            //   ),
-            //   BottomNavigationBarItem(
-            //     icon: Icon(
-            //       Icons.favorite,
-            //       color: Color(value),
-            //     ),
-            //     title: Text('Discover'),
-            //   ),
-            //   BottomNavigationBarItem(
-            //     icon: Icon(
-            //       Icons.shopping_basket,
-            //       color: Color(value),
-            //     ),
-            //     title: Text('Orders'),
-            //   ),
-            //   BottomNavigationBarItem(
-            //     icon: Icon(
-            //       Icons.share,
-            //       color: Color(value),
-            //     ),
-            //     title: Text('Share'),
-            //   ),
-            // ],
+
             index: _selectedIndex,
-            //selectedItemColor: Colors.black,
             onTap: _onItemTapped,
           ),
         ),

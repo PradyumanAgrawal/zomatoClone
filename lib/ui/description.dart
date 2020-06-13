@@ -72,14 +72,17 @@ class _DescriptionState extends State<Description> {
                             onImageTap: null,
                             boxFit: BoxFit.cover,
                             images: List.generate(photos.length, (index) {
-                              return CachedNetworkImage(
-                                imageUrl: photos[index],
-                                placeholder: (context, url) =>
-                                    SpinKitChasingDots(
-                                  color: Colors.purple,
+                              return Hero(
+                                tag: document['catalogue'][index],
+                                child: CachedNetworkImage(
+                                  imageUrl: photos[index],
+                                  placeholder: (context, url) =>
+                                      SpinKitChasingDots(
+                                    color: Colors.purple,
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
                               );
                             }),
                             autoplay: false,
@@ -549,7 +552,9 @@ class _DescriptionState extends State<Description> {
               flex: 60,
               child: Container(
                 decoration: BoxDecoration(
-                    color: (document['sizes'].toList().length==0 ? document['inStock'] : a)
+                    color: (document['sizes'].toList().length == 0
+                            ? document['inStock']
+                            : a)
                         ? Colors.deepPurple[700]
                         : Colors.grey,
                     borderRadius: BorderRadius.only(
@@ -561,7 +566,9 @@ class _DescriptionState extends State<Description> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
-                  visible: document['sizes'].toList().length==0 ? document['inStock'] : a,
+                  visible: document['sizes'].toList().length == 0
+                      ? document['inStock']
+                      : a,
                   child: Center(
                     child: FlatButton(
                       onPressed: () async {

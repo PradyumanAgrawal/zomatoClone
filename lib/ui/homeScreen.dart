@@ -19,8 +19,7 @@ class HomeScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  HomeScreenState createState() =>
-      HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
 class HomeScreenState extends State<HomeScreen> {
@@ -530,7 +529,6 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   Widget itemCard(
       String name,
       String imgPath,
@@ -563,13 +561,16 @@ class HomeScreenState extends State<HomeScreen> {
                       Navigator.of(context)
                           .pushNamed('/description', arguments: document);
                     },
-                    child: Container(
-                      height: 150.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: NetworkImage(imgPath),
-                          fit: BoxFit.contain,
+                    child: Hero(
+                      tag: imgPath,
+                      child: Container(
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: NetworkImage(imgPath),
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                     ),
@@ -858,16 +859,19 @@ class HomeScreenState extends State<HomeScreen> {
             child: Stack(
               alignment: Alignment.topRight,
               children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.46,
-                  height: MediaQuery.of(context).size.width * 0.46,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(document['catalogue']
-                          [0]), //AssetImage("assets/images/LOGO2.png"),
-                      fit: BoxFit.cover,
+                Hero(
+                  tag: document['catalogue'][0],
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.46,
+                    height: MediaQuery.of(context).size.width * 0.46,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(document['catalogue']
+                            [0]), //AssetImage("assets/images/LOGO2.png"),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(25),
                     ),
-                    borderRadius: BorderRadius.circular(25),
                   ),
                 ),
                 Row(

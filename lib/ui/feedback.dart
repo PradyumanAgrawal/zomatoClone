@@ -47,8 +47,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   children: [
                     SizedBox(height: 10),
                     Image(
-                      height:200,
-                      width:200,
+                      height: 200,
+                      width: 200,
                       image: AssetImage('assets/images/feedback.png'),
                     ),
                     // SpinKitPumpingHeart(
@@ -59,39 +59,42 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 20, right: 20, bottom: 10),
-                      child: TextFormField(
-                        style: TextStyle(color: Colors.white70),
-                        minLines: null,
-                        validator: validatefeedback,
-                        decoration: InputDecoration(
-                          filled: true,
-                          focusColor: Colors.white,
-                          //fillColor: Colors.white,
-                          enabled: true,
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.white,
+                      child: Hero(
+                        tag: 'feedback',
+                        child: TextFormField(
+                          style: TextStyle(color: Colors.white70),
+                          minLines: null,
+                          validator: validatefeedback,
+                          decoration: InputDecoration(
+                            filled: true,
+                            focusColor: Colors.white,
+                            //fillColor: Colors.white,
+                            enabled: true,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.white,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
-                              color: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
                             ),
+                            hintText: "I am loving this....",
+                            hintStyle: TextStyle(color: Colors.white38),
                           ),
-                          hintText: "I am loving this....",
-                          hintStyle: TextStyle(color: Colors.white38),
+                          onChanged: (input) {
+                            _feedback = input;
+                          },
                         ),
-                        onChanged: (input) {
-                          _feedback = input;
-                        },
                       ),
                     ),
                     Padding(
@@ -142,8 +145,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         children: [
                           Text(
                             'Porsio ',
-                            style:
-                                TextStyle(letterSpacing: 2, color: Colors.white),
+                            style: TextStyle(
+                                letterSpacing: 2, color: Colors.white),
                           ),
                           SpinKitPumpingHeart(
                             size: 16,

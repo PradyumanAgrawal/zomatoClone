@@ -94,26 +94,29 @@ class _ProfileState extends State<Profile> {
                             Center(
                               child: Stack(
                                 children: <Widget>[
-                                  Container(
-                                    height: 100,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        image: (profilePic != null)
-                                            ? FileImage(profilePic)
-                                            : NetworkImage(
-                                                userDoc['displayPic'],
-                                              ),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black,
-                                          offset: Offset(0.0, 1.0), //(x,y)
-                                          blurRadius: 6.0,
+                                  Hero(
+                                    tag:email,
+                                    child: Container(
+                                      height: 100,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: (profilePic != null)
+                                              ? FileImage(profilePic)
+                                              : NetworkImage(
+                                                  userDoc['displayPic'],
+                                                ),
+                                          fit: BoxFit.cover,
                                         ),
-                                      ],
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black,
+                                            offset: Offset(0.0, 1.0), //(x,y)
+                                            blurRadius: 6.0,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Positioned(
@@ -132,7 +135,8 @@ class _ProfileState extends State<Profile> {
                                         onPressed: () async {
                                           final tempImage =
                                               await picker.getImage(
-                                                  source: ImageSource.gallery,imageQuality: 50);
+                                                  source: ImageSource.gallery,
+                                                  imageQuality: 50);
                                           setState(() {
                                             profilePic = File(tempImage.path);
                                           });
@@ -330,31 +334,34 @@ class _ProfileState extends State<Profile> {
                                         top:
                                             -MediaQuery.of(context).size.width /
                                                 6,
-                                        child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                              image: NetworkImage(
-                                                userDoc['displayPic'],
+                                        child: Hero(
+                                          tag: userDoc['email'],
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                  userDoc['displayPic'],
+                                                ),
+                                                fit: BoxFit.cover,
                                               ),
-                                              fit: BoxFit.cover,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black,
+                                                  offset:
+                                                      Offset(0.0, 1.0), //(x,y)
+                                                  blurRadius: 6.0,
+                                                ),
+                                              ],
                                             ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black,
-                                                offset:
-                                                    Offset(0.0, 1.0), //(x,y)
-                                                blurRadius: 6.0,
-                                              ),
-                                            ],
                                           ),
                                         ),
                                       ),
