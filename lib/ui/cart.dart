@@ -277,13 +277,17 @@ class _CartState extends State<Cart> {
                               Navigator.of(context).pushNamed('/description',
                                   arguments: productDoc);
                             },
-                            child: Container(
-                                decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(productDoc['catalogue'][0]),
-                                fit: BoxFit.contain,
-                              ),
-                            )),
+                            child: Hero(
+                              tag: productDoc['catalogue'][0],
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image:
+                                      NetworkImage(productDoc['catalogue'][0]),
+                                  fit: BoxFit.contain,
+                                ),
+                              )),
+                            ),
                           ),
                         ),
                         Flexible(
@@ -394,7 +398,7 @@ class _CartState extends State<Cart> {
                             style:
                                 TextStyle(fontSize: 15, color: Colors.black)),
                         IconButton(
-                          enableFeedback: true,
+                            enableFeedback: true,
                             icon: (quantity > 1)
                                 ? Icon(Icons.remove, color: Colors.red)
                                 : Icon(
