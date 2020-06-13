@@ -150,13 +150,16 @@ Widget itemCard(
                     Navigator.of(context)
                         .pushNamed('/description', arguments: document);
                   },
-                  child: Container(
-                    height: 150.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                        image: NetworkImage(document['catalogue'][0]),
-                        fit: BoxFit.contain,
+                  child: Hero(
+                    tag: document['catalogue'][0],
+                    child: Container(
+                      height: 150.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: NetworkImage(document['catalogue'][0]),
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ),
