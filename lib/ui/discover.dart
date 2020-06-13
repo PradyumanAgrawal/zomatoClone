@@ -324,27 +324,26 @@ class _DiscoverState extends State<Discover>
       BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 2),
-      child: Material(
-        elevation: 2,
-        borderRadius: BorderRadius.circular(10),
-        shadowColor: Colors.purple,
-        child: Padding(
-          padding: EdgeInsets.only(left: 5, right: 5, top: 15, bottom: 10),
-          child: Container(
-            //card
-            height: 180,
-            width: double.infinity,
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Flexible(
-                  flex: 12,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed('/description', arguments: document);
-                    },
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pushNamed('/description', arguments: document);
+        },
+        child: Material(
+          elevation: 2,
+          borderRadius: BorderRadius.circular(10),
+          shadowColor: Colors.purple,
+          child: Padding(
+            padding: EdgeInsets.only(left: 5, right: 5, top: 15, bottom: 10),
+            child: Container(
+              //card
+              height: 180,
+              width: double.infinity,
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Flexible(
+                    flex: 12,
                     child: Hero(
                       tag: document['catalogue'][0],
                       child: Container(
@@ -359,28 +358,21 @@ class _DiscoverState extends State<Discover>
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 4.0),
-                Flexible(
-                  flex: 20,
-                  child: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Flexible(
-                          child: Row(
-                            children: <Widget>[
-                              Flexible(
-                                flex: 7,
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        '/description',
-                                        arguments: document);
-                                  },
+                  SizedBox(width: 4.0),
+                  Flexible(
+                    flex: 20,
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Flexible(
+                            child: Row(
+                              children: <Widget>[
+                                Flexible(
+                                  flex: 7,
                                   child: Container(
                                     width: MediaQuery.of(context).size.width *
                                             (2 / 3) *
@@ -394,212 +386,217 @@ class _DiscoverState extends State<Discover>
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              // Flexible(
-                              //   flex: 1,
-                              //   child: SizedBox(),
-                              // ),
-                              Flexible(
-                                flex: 2,
-                                child: Container(
-                                  child: Material(
-                                    elevation: inWishlist ? 2 : 0,
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.width *
-                                              (1 / 3) *
-                                              (1 / 4),
-                                      width: MediaQuery.of(context).size.width *
-                                          (1 / 3) *
-                                          (1 / 4),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                // Flexible(
+                                //   flex: 1,
+                                //   child: SizedBox(),
+                                // ),
+                                Flexible(
+                                  flex: 2,
+                                  child: Container(
+                                    child: Material(
+                                      elevation: inWishlist ? 2 : 0,
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Container(
+                                        height:
                                             MediaQuery.of(context).size.width *
                                                 (1 / 3) *
-                                                (1 / 8)),
-                                        color: inWishlist
-                                            ? Colors.white
-                                            : Colors.grey.withOpacity(0.2),
-                                      ),
-                                      child: Center(
-                                        child: IconButton(
-                                          icon: inWishlist
-                                              ? Icon(
-                                                  Icons.favorite,
-                                                  color: Colors.red,
-                                                )
-                                              : Icon(Icons.favorite_border),
-                                          iconSize: MediaQuery.of(context)
+                                                (1 / 4),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                (1 / 3) *
+                                                (1 / 4),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              MediaQuery.of(context)
                                                       .size
                                                       .width *
                                                   (1 / 3) *
-                                                  (1 / 8) -
-                                              1,
-                                          onPressed: () {
-                                            FirestoreService().addToWishlist(
-                                                document.documentID);
-                                          },
+                                                  (1 / 8)),
+                                          color: inWishlist
+                                              ? Colors.white
+                                              : Colors.grey.withOpacity(0.2),
+                                        ),
+                                        child: Center(
+                                          child: IconButton(
+                                            icon: inWishlist
+                                                ? Icon(
+                                                    Icons.favorite,
+                                                    color: Colors.red,
+                                                  )
+                                                : Icon(Icons.favorite_border),
+                                            iconSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    (1 / 3) *
+                                                    (1 / 8) -
+                                                1,
+                                            onPressed: () {
+                                              FirestoreService().addToWishlist(
+                                                  document.documentID);
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Flexible(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 2 / 3,
-                            child: Text(
-                              document['description'],
-                              textAlign: TextAlign.left,
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 12),
+                              ],
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Flexible(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Flexible(flex: 5, child: Container()),
-                              Flexible(
-                                flex: 20,
-                                child: Material(
-                                  elevation: 7,
-                                  borderRadius: BorderRadius.circular(10),
-                                  shadowColor: Colors.purple,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (document['inStock'])
-                                          ? Colors.purple
-                                          : Colors.grey,
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          bottomLeft: Radius.circular(10)),
-                                    ),
-                                    height: 40,
-                                    // width: MediaQuery.of(context).size.width *
-                                    //     (1 / 3) *
-                                    //     (1.7 / 3),
-                                    child: Center(
-                                      child: discount != '0'
-                                          ? Text(
-                                              "  " +
-                                                  '\u{20B9} ' +
-                                                  '${(int.parse(price) * (1 - int.parse(discount) / 100)).round()}',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                            )
-                                          : Text(
-                                              '\u{20B9} ' + price,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                            ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Flexible(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 2 / 3,
+                              child: Text(
+                                document['description'],
+                                textAlign: TextAlign.left,
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Flexible(flex: 5, child: Container()),
+                                Flexible(
+                                  flex: 20,
+                                  child: Material(
+                                    elevation: 7,
+                                    borderRadius: BorderRadius.circular(10),
+                                    shadowColor: Colors.purple,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: (document['inStock'])
+                                            ? Colors.purple
+                                            : Colors.grey,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)),
+                                      ),
+                                      height: 40,
+                                      // width: MediaQuery.of(context).size.width *
+                                      //     (1 / 3) *
+                                      //     (1.7 / 3),
+                                      child: Center(
+                                        child: discount != '0'
+                                            ? Text(
+                                                "  " +
+                                                    '\u{20B9} ' +
+                                                    '${(int.parse(price) * (1 - int.parse(discount) / 100)).round()}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12),
+                                              )
+                                            : Text(
+                                                '\u{20B9} ' + price,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12),
+                                              ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Flexible(
-                                flex: 40,
-                                child: Material(
-                                  elevation: 7,
-                                  borderRadius: BorderRadius.circular(10),
-                                  shadowColor: Colors.purple,
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        color: (document['inStock'])
-                                            ? Colors.purple[300]
-                                            : Colors.grey[300],
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(10),
-                                            bottomRight: Radius.circular(10)),
-                                      ),
-                                      height: 40,
-                                      width: MediaQuery.of(context).size.width *
-                                          (1 / 3) *
-                                          (2.7 / 3),
-                                      child: Center(
-                                        child: Visibility(
-                                          visible: document['inStock'],
-                                          replacement: Center(
-                                            child: Text(
-                                              'Out of stock!!',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
+                                Flexible(
+                                  flex: 40,
+                                  child: Material(
+                                    elevation: 7,
+                                    borderRadius: BorderRadius.circular(10),
+                                    shadowColor: Colors.purple,
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          color: (document['inStock'])
+                                              ? Colors.purple[300]
+                                              : Colors.grey[300],
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                        ),
+                                        height: 40,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                (1 / 3) *
+                                                (2.7 / 3),
+                                        child: Center(
+                                          child: Visibility(
+                                            visible: document['inStock'],
+                                            replacement: Center(
+                                              child: Text(
+                                                'Out of stock!!',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            child: FlatButton(
+                                              onPressed: () async {
+                                                if (document['sizes'].length ==
+                                                    0) {
+                                                  int status =
+                                                      await FirestoreService()
+                                                          .addToCart(
+                                                              document
+                                                                  .documentID,
+                                                              1,
+                                                              '',
+                                                              false);
+                                                  if (status == 2) {
+                                                    Fluttertoast.showToast(
+                                                      msg:
+                                                          "Product added to the cart!",
+                                                    );
+                                                  } else if (status == 1) {
+                                                    Fluttertoast.showToast(
+                                                      msg:
+                                                          "This product is already in the cart",
+                                                    );
+                                                  } else if (status == 0) {
+                                                    Fluttertoast.showToast(
+                                                      msg:
+                                                          "Something went wrong!!!",
+                                                    );
+                                                  }
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        "Please open and select a size",
+                                                  );
+                                                }
+                                              },
+                                              child: Text(
+                                                'Add To Cart',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12),
                                               ),
                                             ),
                                           ),
-                                          child: FlatButton(
-                                            onPressed: () async {
-                                              if (document['sizes'].length ==
-                                                  0) {
-                                                int status =
-                                                    await FirestoreService()
-                                                        .addToCart(
-                                                            document.documentID,
-                                                            1,
-                                                            '',
-                                                            false);
-                                                if (status == 2) {
-                                                  Fluttertoast.showToast(
-                                                    msg:
-                                                        "Product added to the cart!",
-                                                  );
-                                                } else if (status == 1) {
-                                                  Fluttertoast.showToast(
-                                                    msg:
-                                                        "This product is already in the cart",
-                                                  );
-                                                } else if (status == 0) {
-                                                  Fluttertoast.showToast(
-                                                    msg:
-                                                        "Something went wrong!!!",
-                                                  );
-                                                }
-                                              } else {
-                                                Fluttertoast.showToast(
-                                                  msg:
-                                                      "Please open and select a size",
-                                                );
-                                              }
-                                            },
-                                            child: Text(
-                                              'Add To Cart',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
-                                        ),
-                                      )),
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
+                                        )),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
