@@ -94,29 +94,26 @@ class _ProfileState extends State<Profile> {
                             Center(
                               child: Stack(
                                 children: <Widget>[
-                                  Hero(
-                                    tag:email,
-                                    child: Container(
-                                      height: 100,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: (profilePic != null)
-                                              ? FileImage(profilePic)
-                                              : NetworkImage(
-                                                  userDoc['displayPic'],
-                                                ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black,
-                                            offset: Offset(0.0, 1.0), //(x,y)
-                                            blurRadius: 6.0,
-                                          ),
-                                        ],
+                                  Container(
+                                    height: 100,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        image: (profilePic != null)
+                                            ? FileImage(profilePic)
+                                            : NetworkImage(
+                                                userDoc['displayPic'],
+                                              ),
+                                        fit: BoxFit.cover,
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black,
+                                          offset: Offset(0.0, 1.0), //(x,y)
+                                          blurRadius: 6.0,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Positioned(
