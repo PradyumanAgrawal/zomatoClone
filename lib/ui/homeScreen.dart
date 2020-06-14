@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -168,11 +169,11 @@ class HomeScreenState extends State<HomeScreen> {
             actions: <Widget>[
               add == ''
                   ? Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Icon(Icons.location_off),
                     )
                   : Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: IconButton(
                         icon: Icon(
                           Icons.location_on,
@@ -183,22 +184,43 @@ class HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     ),
-              /* IconButton(
-                icon: Icon(
-                  Icons.notifications,
-                  color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                child: Badge(
+                  child: InkWell(
+                      child: Icon(
+                        Icons.shopping_cart,
+                        color: Colors.white,
+                      ),
+                      onTap: () {
+                        Navigator.of(widget.navContext)
+                            .pushNamed('/cart', arguments: widget.navContext);
+                      }),
+                  badgeContent: FutureBuilder(
+                    future: LocalData().getUid(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      }
+                      String uid = snapshot.data;
+                      return StreamBuilder(
+                        stream: FirestoreService().getUser(uid),
+                        builder: (BuildContext context, AsyncSnapshot snap) {
+                          if (!snap.hasData) {
+                            return Container();
+                          }
+                          var len = snap.data['cart'].keys.toList().length;
+                          return len > 0
+                              ? Text(
+                                  len.toString(),
+                                  style: TextStyle(color: Colors.white),
+                                )
+                              : Container();
+                        },
+                      );
+                    },
+                  ),
                 ),
-                onPressed: () {},
-              ), */
-              IconButton(
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.of(widget.navContext)
-                      .pushNamed('/cart', arguments: widget.navContext);
-                },
               ),
             ],
             shape: RoundedRectangleBorder(

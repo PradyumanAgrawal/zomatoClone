@@ -1,6 +1,8 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'drawerWidget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
@@ -53,15 +55,45 @@ class _Discover1State extends State<Discover1> {
                     ),
                     onPressed: () {},
                   ), */
-                  IconButton(
-                    icon: Icon(
-                      Icons.shopping_cart,
-                      color: Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                    child: Badge(
+                      child: InkWell(
+                          child: Icon(
+                            Icons.shopping_cart,
+                            color: Colors.white,
+                          ),
+                          onTap: () {
+                            Navigator.of(widget.navContext).pushNamed('/cart',
+                                arguments: widget.navContext);
+                          }),
+                      badgeContent: FutureBuilder(
+                        future: LocalData().getUid(),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container();
+                          }
+                          String uid = snapshot.data;
+                          return StreamBuilder(
+                            stream: FirestoreService().getUser(uid),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snap) {
+                              if (!snap.hasData) {
+                                return Container();
+                              }
+                              var len = snap.data['cart'].keys.toList().length;
+                              return len > 0
+                                  ? Text(
+                                      len.toString(),
+                                      style: TextStyle(color: Colors.white),
+                                    )
+                                  : Container();
+                            },
+                          );
+                        },
+                      ),
                     ),
-                    onPressed: () {
-                      Navigator.of(widget.navContext)
-                          .pushNamed('/cart', arguments: widget.navContext);
-                    },
                   ),
                 ],
                 shape: RoundedRectangleBorder(
