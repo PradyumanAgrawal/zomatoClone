@@ -228,11 +228,24 @@ class _Discover1State extends State<Discover1> {
                             child: Container(
                               margin: EdgeInsets.all(0),
                               padding: EdgeInsets.all(15),
-                              child: Text(
-                                document['name'],
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    width:
+                                        30,
+                                    height:
+                                        30,
+                                    child: Image.asset(
+                                        'assets/typeIcons/$type.png'),
+                                  ),
+                                  SizedBox(width: 30),
+                                  Text(
+                                    document['name'],
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

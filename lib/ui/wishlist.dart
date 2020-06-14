@@ -29,84 +29,81 @@ class _WishlistState extends State<Wishlist> {
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
-                Hero(
-                  tag: 'wishlist',
-                  child: Container(
-                    child: FutureBuilder(
-                      future: LocalData().getUid(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (!snapshot.hasData)
-                          return Center(
-                              child:
-                                  SpinKitChasingDots(color: Colors.deepPurple));
-                        String userId = snapshot.data;
-                        return StreamBuilder(
-                          stream: FirestoreService().getUser(userId),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData)
-                              return Center(
-                                  child: SpinKitChasingDots(
-                                      color: Colors.deepPurple));
+                Container(
+                  child: FutureBuilder(
+                    future: LocalData().getUid(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData)
+                        return Center(
+                            child:
+                                SpinKitChasingDots(color: Colors.deepPurple));
+                      String userId = snapshot.data;
+                      return StreamBuilder(
+                        stream: FirestoreService().getUser(userId),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData)
+                            return Center(
+                                child: SpinKitChasingDots(
+                                    color: Colors.deepPurple));
 
-                            DocumentSnapshot document = snapshot.data;
-                            List wishlist = document['wishlist'];
-                            if (wishlist.isEmpty) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(height: 70),
-                                  Image.asset(
-                                      'assets/images/emptyWishlist.png'),
-                                  Text(
-                                    'No products in wishlist!',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                          DocumentSnapshot document = snapshot.data;
+                          List wishlist = document['wishlist'];
+                          if (wishlist.isEmpty) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(height: 70),
+                                Image.asset(
+                                    'assets/images/emptyWishlist.png'),
+                                Text(
+                                  'No products in wishlist!',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ],
-                              );
-                            }
+                                ),
+                              ],
+                            );
+                          }
 
-                            return StreamBuilder(
-                              stream: FirestoreService()
-                                  .getWishlistProducts(wishlist),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData)
-                                  return Center(
-                                    child: SpinKitChasingDots(
-                                      color: Colors.purple,
-                                    ),
-                                  );
-                                return Padding(
-                                  padding: const EdgeInsets.all(0),
-                                  child: Column(
-                                    children: List.generate(
-                                        snapshot.data.documents.length,
-                                        (index) {
-                                      DocumentSnapshot document =
-                                          snapshot.data.documents[index];
-                                      return itemCard(
-                                          document['name'],
-                                          document['catalogue'][0],
-                                          document['description'],
-                                          wishlist
-                                              .contains(document.documentID),
-                                          document['price'],
-                                          document['discount'] != null
-                                              ? document['discount']
-                                              : '0',
-                                          document,
-                                          context);
-                                    }),
+                          return StreamBuilder(
+                            stream: FirestoreService()
+                                .getWishlistProducts(wishlist),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Center(
+                                  child: SpinKitChasingDots(
+                                    color: Colors.purple,
                                   ),
                                 );
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
+                              return Padding(
+                                padding: const EdgeInsets.all(0),
+                                child: Column(
+                                  children: List.generate(
+                                      snapshot.data.documents.length,
+                                      (index) {
+                                    DocumentSnapshot document =
+                                        snapshot.data.documents[index];
+                                    return itemCard(
+                                        document['name'],
+                                        document['catalogue'][0],
+                                        document['description'],
+                                        wishlist
+                                            .contains(document.documentID),
+                                        document['price'],
+                                        document['discount'] != null
+                                            ? document['discount']
+                                            : '0',
+                                        document,
+                                        context);
+                                  }),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
