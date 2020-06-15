@@ -228,10 +228,8 @@ class _Discover1State extends State<Discover1> {
                               child: Row(
                                 children: <Widget>[
                                   Container(
-                                    width:
-                                        30,
-                                    height:
-                                        30,
+                                    width: 30,
+                                    height: 30,
                                     child: Image.asset(
                                         'assets/typeIcons/$type.png'),
                                   ),

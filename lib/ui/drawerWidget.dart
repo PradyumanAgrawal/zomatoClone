@@ -103,16 +103,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     end: Alignment.bottomCenter,
                     colors: [Colors.pink, Colors.deepPurple])),
           ),
-          /* ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Home'),
-            onTap: () {
-              // Navigator.of(context).pushAndRemoveUntil(
-              //           MaterialPageRoute(
-              //               builder: (context) => Navigation()),
-              //           (Route<dynamic> route) => false);
-            },
-          ), */
+          // ListTile(
+          //   leading: Icon(Icons.home),
+          //   title: Text('Home'),
+          //   onTap: () {
+          //     Navigator.of(widget.navContext).pushNamedAndRemoveUntil(
+          //                 '/navigation', (Route<dynamic> route) => false);
+          //   },
+          // ), 
           ListTile(
             leading: Hero(tag: 'wishlist',child: Icon(Icons.favorite)),
             title: Text('Wishlist'),
