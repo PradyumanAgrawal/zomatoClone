@@ -1,4 +1,4 @@
-const PAYMENT_URL = "http://10.0.2.2:5000/porsio-3829b/us-central1/customFunctions/payment";
+const PAYMENT_URL = "https://us-central1-porsio-3829b.cloudfunctions.net/customFunctions/payment";
 
 
 const STATUS_LOADING = "PAYMENT_LOADING";
