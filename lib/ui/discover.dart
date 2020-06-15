@@ -139,6 +139,8 @@ class _DiscoverState extends State<Discover>
               Padding(
                 padding: const EdgeInsets.only(right: 10.0, top: 10.0),
                 child: Badge(
+                  toAnimate: true,
+                  animationType: BadgeAnimationType.slide,
                   child: InkWell(
                       child: Icon(
                         Icons.shopping_cart,
