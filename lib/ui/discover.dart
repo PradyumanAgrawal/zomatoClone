@@ -138,40 +138,39 @@ class _DiscoverState extends State<Discover>
             actions: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                child: Badge(
-                  child: InkWell(
-                      child: Icon(
-                        Icons.shopping_cart,
-                        color: Colors.white,
-                      ),
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed('/cart', arguments: context);
-                      }),
-                  badgeContent: FutureBuilder(
-                    future: LocalData().getUid(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container();
-                      }
-                      String uid = snapshot.data;
-                      return StreamBuilder(
-                        stream: FirestoreService().getUser(uid),
-                        builder: (BuildContext context, AsyncSnapshot snap) {
-                          if (!snap.hasData) {
-                            return Container();
-                          }
-                          var len = snap.data['cart'].keys.toList().length;
-                          return len > 0
-                              ? Text(
-                                  len.toString(),
-                                  style: TextStyle(color: Colors.white),
-                                )
-                              : Container();
-                        },
-                      );
-                    },
-                  ),
+                child: FutureBuilder(
+                  future: LocalData().getUid(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container();
+                    }
+                    String uid = snapshot.data;
+                    return StreamBuilder(
+                      stream: FirestoreService().getUser(uid),
+                      builder: (BuildContext context, AsyncSnapshot snap) {
+                        if (!snap.hasData) {
+                          return Container();
+                        }
+                        var len =
+                            snap.data['cart'].keys.toList().length.toString();
+                        return Badge(
+                          child: InkWell(
+                              child: Icon(
+                                Icons.shopping_cart,
+                                color: Colors.white,
+                              ),
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                    '/cart',
+                                    arguments: context);
+                              }),
+                          badgeContent: Text(len,style: TextStyle(color:Colors.white),),
+                          animationType: BadgeAnimationType.slide,
+                          showBadge: len != '0',
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ],

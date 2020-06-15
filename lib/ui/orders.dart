@@ -23,43 +23,42 @@ class _OrdersState extends State<Orders> {
       drawer: DrawerWidget(navContext: widget.navContext),
       appBar: AppBar(actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-          child: Badge(
-            child: InkWell(
-                child: Icon(
-                  Icons.shopping_cart,
-                  color: Colors.white,
-                ),
-                onTap: () {
-                  Navigator.of(widget.navContext)
-                      .pushNamed('/cart', arguments: widget.navContext);
-                }),
-            badgeContent: FutureBuilder(
-              future: LocalData().getUid(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
-                  return Container();
-                }
-                String uid = snapshot.data;
-                return StreamBuilder(
-                  stream: FirestoreService().getUser(uid),
-                  builder: (BuildContext context, AsyncSnapshot snap) {
-                    if (!snap.hasData) {
+                padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                child: FutureBuilder(
+                  future: LocalData().getUid(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (!snapshot.hasData) {
                       return Container();
                     }
-                    var len = snap.data['cart'].keys.toList().length;
-                    return len > 0
-                        ? Text(
-                            len.toString(),
-                            style: TextStyle(color: Colors.white),
-                          )
-                        : Container();
+                    String uid = snapshot.data;
+                    return StreamBuilder(
+                      stream: FirestoreService().getUser(uid),
+                      builder: (BuildContext context, AsyncSnapshot snap) {
+                        if (!snap.hasData) {
+                          return Container();
+                        }
+                        var len =
+                            snap.data['cart'].keys.toList().length.toString();
+                        return Badge(
+                          child: InkWell(
+                              child: Icon(
+                                Icons.shopping_cart,
+                                color: Colors.white,
+                              ),
+                              onTap: () {
+                                Navigator.of(widget.navContext).pushNamed(
+                                    '/cart',
+                                    arguments: widget.navContext);
+                              }),
+                          badgeContent: Text(len,style: TextStyle(color:Colors.white),),
+                          animationType: BadgeAnimationType.slide,
+                          showBadge: len != '0',
+                        );
+                      },
+                    );
                   },
-                );
-              },
-            ),
-          ),
-        ),
+                ),
+              ),
       ], backgroundColor: Colors.deepPurple[800], title: Text('Orders')),
       body: FutureBuilder(
         future: LocalData().getUid(),
@@ -234,7 +233,7 @@ class _OrdersState extends State<Orders> {
                                                       color: Colors.grey)),
                                               Text(
                                                 ' \u{20B9} ' +
-                                                    orderList[index]['amount']
+                                                    orderList[index]['amount'].round()
                                                         .toString(),
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,

@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -52,6 +53,62 @@ class _DescriptionState extends State<Description> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Container(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    color: Colors.black,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15.0, top: 8.0),
+                    child: FutureBuilder(
+                      future: LocalData().getUid(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                          return Container();
+                        }
+                        String uid = snapshot.data;
+                        return StreamBuilder(
+                          stream: FirestoreService().getUser(uid),
+                          builder: (BuildContext context, AsyncSnapshot snap) {
+                            if (!snap.hasData) {
+                              return Container();
+                            }
+                            var len = snap.data['cart'].keys
+                                .toList()
+                                .length
+                                .toString();
+                            return Badge(
+                              child: InkWell(
+                                  child: Icon(
+                                    Icons.shopping_cart,
+                                    color: Colors.black,
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                        '/cart',
+                                        arguments: context);
+                                  }),
+                              badgeContent: Text(
+                                len,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              animationType: BadgeAnimationType.slide,
+                              showBadge: len != '0',
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ]),
+              ),
               Material(
                 color: Colors.white,
                 elevation: 5,
@@ -98,17 +155,17 @@ class _DescriptionState extends State<Description> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(right: 15.0),
+                      padding: EdgeInsets.only(top: 8, right: 8.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          IconButton(
+                          /* IconButton(
                             icon: Icon(Icons.arrow_back),
                             color: Colors.black,
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                          ),
+                          ), */
                           Container(
                             height: 40.0,
                             width: 40.0,
@@ -280,26 +337,32 @@ class _DescriptionState extends State<Description> {
                       )
                     ],
                   )),
-              Divider(
-                color: Colors.purple.withOpacity(0.5),
-                height: 30,
-                indent: 50,
-                endIndent: 50,
+              Visibility(
+                visible: document['sizes'].length!=0,
+                              child: Divider(
+                  color: Colors.purple.withOpacity(0.5),
+                  height: 30,
+                  indent: 50,
+                  endIndent: 50,
+                ),
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 15.0),
-                child: Text(
-                  'Variants',
-                  style: TextStyle(
-                      letterSpacing: 1.5,
-                      fontSize: 22.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
+              Visibility(
+                visible: document['sizes'].length!=0,
+                              child: Padding(
+                  padding: EdgeInsets.only(left: 15.0),
+                  child: Text(
+                    'Variants',
+                    style: TextStyle(
+                        letterSpacing: 1.5,
+                        fontSize: 22.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               SizedBox(height: 20.0),
               Visibility(
-                visible: document['sizes'] != [],
+                visible: document['sizes'].length!=0,
                 child: Padding(
                   padding: EdgeInsets.only(left: 15.0),
                   child: Wrap(
