@@ -31,6 +31,20 @@ class FirestoreService {
     return geoRef;
   }
 
+  Future<void> saveToken(String token, String userId) async {
+    DocumentSnapshot user = await db.collection('users').document(userId).get();
+    List tokens = user['tokens'];
+    tokens.add(token);
+    user.reference.updateData({'tokens': tokens});
+  }
+
+  Future<void> deleteToken(String token, String userId) async {
+    DocumentSnapshot user = await db.collection('users').document(userId).get();
+    List tokens = user['tokens'];
+    tokens.remove(token);
+    user.reference.updateData({'tokens': tokens});
+  }
+
   Stream getProducts() {
     Stream<QuerySnapshot> prods = db.collection('products').snapshots();
     return prods;
@@ -41,7 +55,8 @@ class FirestoreService {
   }
 
   Stream getHomeProducts() {
-    Stream<QuerySnapshot> prods = db.collection('products').where('onHome',isEqualTo: true).snapshots();
+    Stream<QuerySnapshot> prods =
+        db.collection('products').where('onHome', isEqualTo: true).snapshots();
     return prods;
   }
 
@@ -67,8 +82,7 @@ class FirestoreService {
     return db.collection('categories').snapshots();
   }
 
-  Future<bool> inWishlist
-  (String productId) {
+  Future<bool> inWishlist(String productId) {
     LocalData().getUid().then((uId) {
       db
           .collection('users')
@@ -118,7 +132,9 @@ class FirestoreService {
 
   Stream getOfferProducts() {
     return db
-        .collection('products').orderBy('discount',descending: true).snapshots();
+        .collection('products')
+        .orderBy('discount', descending: true)
+        .snapshots();
   }
 
   Stream getWishlistProducts(List wishlist) {
@@ -170,7 +186,8 @@ class FirestoreService {
         .snapshots();
   }
 
-  Future<int> addToCart(String productId, int quantity,String variant, bool updating) async {
+  Future<int> addToCart(
+      String productId, int quantity, String variant, bool updating) async {
     int status;
     await LocalData().getUserEmail().then((userEmail) async {
       await db
@@ -185,15 +202,20 @@ class FirestoreService {
             if (quantity == 0)
               cart.remove(productId);
             else
-              cart['$productId'] =
-                  {'quantity': quantity, 'variant': variant}; // updating the quantity of the product in the cart
+              cart['$productId'] = {
+                'quantity': quantity,
+                'variant': variant
+              }; // updating the quantity of the product in the cart
             db.collection('users').document(userId).updateData({'cart': cart});
             status = 3; // cart updated
           } else {
             if (cart.containsKey(productId))
               status = 1; //product is already in the cart
             else {
-              cart['$productId'] = {'quantity': quantity, 'variant': variant}; // adding a new entry in the map
+              cart['$productId'] = {
+                'quantity': quantity,
+                'variant': variant
+              }; // adding a new entry in the map
               db
                   .collection('users')
                   .document(userId)
@@ -278,11 +300,18 @@ class FirestoreService {
       temp['price'] = prodList[i]['price'];
       temp['quantity'] = user.data['cart'][prodList[i].documentID]['quantity'];
       temp['image'] = prodList[i]['catalogue'][0];
-      temp['discount'] = prodList[i]['discount']==null?'0':prodList[i]['discount'];
+      temp['discount'] =
+          prodList[i]['discount'] == null ? '0' : prodList[i]['discount'];
       temp['variant'] = user.data['cart'][prodList[i].documentID]['variant'];
       products.add(temp);
       print(int.parse(prodList[i].data['price']));
-      total += int.parse(prodList[i].data['price']) * (1-int.parse(prodList[i].data['discount']==null?'0':prodList[i].data['discount'])/100) * user.data['cart'][prodList[i].documentID]['quantity'];
+      total += int.parse(prodList[i].data['price']) *
+          (1 -
+              int.parse(prodList[i].data['discount'] == null
+                      ? '0'
+                      : prodList[i].data['discount']) /
+                  100) *
+          user.data['cart'][prodList[i].documentID]['quantity'];
       //print(quantity[i]);
       quant += user.data['cart'][prodList[i].documentID]['quantity'];
     }
@@ -316,15 +345,16 @@ class FirestoreService {
         .document(uid)
         .updateData({'mobileNo': newNumber});
   }
-  Future<void> addFeedback(String Feedback)async{
+
+  Future<void> addFeedback(String Feedback) async {
     var uid = await LocalData().getUid();
-    await db.collection('feedback').document()
-    .setData({
-      "Feedback":Feedback,
-      "userId" : uid
-    });
+    await db
+        .collection('feedback')
+        .document()
+        .setData({"Feedback": Feedback, "userId": uid});
   }
-  Future<void> addAddress(Map newAdd)async{
+
+  Future<void> addAddress(Map newAdd) async {
     var uid = await LocalData().getUid();
     var userDoc = await db.collection('users').document(uid).get();
     List<dynamic> address = userDoc['address'];

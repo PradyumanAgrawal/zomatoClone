@@ -15,12 +15,13 @@ class LocalData {
   }
 
   Future<void> saveData(
-      {userEmail: '', password: '', loggedIn: '', uid: ''}) async {
+      {userEmail: '', password: '', loggedIn: '', uid: '', token: '',}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("userEmail", userEmail);
     prefs.setString("loggedIn", loggedIn);
     prefs.setString("password", password);
     prefs.setString("uid", uid);
+    prefs.setString("token", token);
   }
 
   Future<void> saveLocation({latitude: 0, longitude: 0}) async {
@@ -56,5 +57,10 @@ class LocalData {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String uid = prefs.getString("uid");
     return uid;
+  }
+  Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    return token;
   }
 }

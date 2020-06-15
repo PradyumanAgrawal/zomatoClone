@@ -43,10 +43,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               FlatButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    auth.logout();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => MyApp()),
-                        (Route<dynamic> route) => false);
+                    auth.logout(widget.navContext);
+                    Navigator.of(context).pushNamed('/loading');
                   },
                   child: Text('Yes', style: TextStyle(fontSize: 18.0))),
               FlatButton(
@@ -110,9 +108,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           //     Navigator.of(widget.navContext).pushNamedAndRemoveUntil(
           //                 '/navigation', (Route<dynamic> route) => false);
           //   },
-          // ), 
+          // ),
           ListTile(
-            leading: Hero(tag: 'wishlist',child: Icon(Icons.favorite)),
+            leading: Hero(tag: 'wishlist', child: Icon(Icons.favorite)),
             title: Text('Wishlist'),
             onTap: () {
               Navigator.of(widget.navContext).pushNamed('/wishlist');
@@ -124,7 +122,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             onTap: () {},
           ), */
           ListTile(
-            leading: Hero(tag:'feedback',child: Icon(Icons.feedback)),
+            leading: Hero(tag: 'feedback', child: Icon(Icons.feedback)),
             title: Text('Feedback'),
             onTap: () {
               Navigator.of(widget.navContext)
@@ -139,7 +137,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             },
           ),
           ListTile(
-            leading: Hero(tag:'about',child: Icon(Icons.info)),
+            leading: Hero(tag: 'about', child: Icon(Icons.info)),
             title: Text('About'),
             onTap: () {
               Navigator.of(widget.navContext).pushNamed('/about');

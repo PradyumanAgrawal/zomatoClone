@@ -1,13 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:my_flutter_app/ui/myApp.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthService {
   LocalData localData = new LocalData();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseMessaging _messaging = FirebaseMessaging();
+  String _token;
+  String _userId;
   //final Firestore _db = Firestore.instance;
 
   Future<bool> signInWithEmail({email: '', password: ''}) async {
@@ -16,11 +23,16 @@ class AuthService {
               email: email, password: password))
           .user;
       if (user != null) {
+        String token = await _messaging.getToken();
+        _token = token;
+        _userId = user.uid;
         localData.saveData(
             userEmail: email,
             password: password,
             loggedIn: "yes",
-            uid: user.uid);
+            uid: user.uid,
+            token: token);
+        FirestoreService().saveToken(token, user.uid);
         return true;
       }
       return false;
@@ -39,11 +51,16 @@ class AuthService {
           .user;
       //updateUserData(user);
       if (user != null) {
+        String token = await _messaging.getToken();
+        _token = token;
+        _userId = user.uid;
         localData.saveData(
             userEmail: email,
             password: password,
             loggedIn: "yes",
-            uid: user.uid);
+            uid: user.uid,
+            token: token);
+        FirestoreService().saveToken(token, user.uid);
         return true;
       }
       return false;
@@ -54,29 +71,35 @@ class AuthService {
   }
 
   Future<bool> resetPassword(String email) async {
-    try{
+    try {
       await _auth.sendPasswordResetEmail(email: email);
       return true;
-    }
-    catch(e){
+    } catch (e) {
       print(e);
       return false;
     }
-    
-}
+  }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    String userId = prefs.getString("uid");
     prefs.setString("loggedIn", "no");
     prefs.setString("userEmail", null);
     prefs.setString("password", null);
     prefs.setString('uid', null);
+    prefs.setString("token", null);
+    await FirestoreService().deleteToken(token, userId);
+
     try {
       await _auth.signOut();
       await _googleSignIn.signOut();
     } catch (e) {
       print(e);
     }
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => MyApp()),
+        (Route<dynamic> route) => false);
   }
 
   Future<bool> googleSignIn() async {
@@ -91,8 +114,16 @@ class AuthService {
       );
 
       FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+      String token = await _messaging.getToken();
+      _token = token;
+      _userId = user.uid;
       localData.saveData(
-          userEmail: user.email, password: '', loggedIn: "yes", uid: user.uid);
+          userEmail: user.email,
+          password: '',
+          loggedIn: "yes",
+          uid: user.uid,
+          token: token);
+      FirestoreService().saveToken(token, user.uid);
       print("user name: ${user.displayName}");
       print(user.displayName);
       print(user.photoUrl);
