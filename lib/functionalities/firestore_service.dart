@@ -132,7 +132,7 @@ class FirestoreService {
     return db.collection('users').document(userId).snapshots();
   }
 
-  Future<void> placeOrder(Map address, String mobileNo) async {
+  Future<void> placeOrder(Map address, String mobileNo, String txnID) async {
     var uid = await LocalData().getUid();
     db.collection('users').document(uid).get().then((DocumentSnapshot doc) {
       doc['cart'].forEach((k, v) {
@@ -150,6 +150,7 @@ class FirestoreService {
             'status': "pending",
             'timeStamp': FieldValue.serverTimestamp(),
             'image': value['catalogue'][0],
+            'txnID': txnID,
           });
           List orders = doc['orderHistory'];
           orders.add(docRef.documentID);

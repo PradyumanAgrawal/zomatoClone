@@ -19,6 +19,7 @@ import 'package:my_flutter_app/ui/share.dart';
 import 'package:my_flutter_app/ui/discover1.dart';
 import 'package:my_flutter_app/ui/wishlist.dart';
 import 'package:my_flutter_app/ui/feedback.dart';
+import 'package:my_flutter_app/ui/successScreen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -113,6 +114,10 @@ class RouteGenerator {
         case '/about':
         return MaterialPageRoute(
           builder: (_) => About(),
+        );
+        case '/successScreen':
+        return MaterialPageRoute(
+          builder: (_) => SuccessScreen(),
         );
       // If args is not of the correct type, return an error page.
       default:

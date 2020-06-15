@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:my_flutter_app/functionalities/paytmPay.dart';
 
 class ReviewCart extends StatefulWidget {
-  BuildContext navContext;
+  final BuildContext navContext;
   ReviewCart({Key key, this.navContext}) : super(key: key);
   @override
   _ReviewCartState createState() => _ReviewCartState();
@@ -12,6 +13,10 @@ class ReviewCart extends StatefulWidget {
 
 class _ReviewCartState extends State<ReviewCart> {
   int selectedAdd = 0;
+  int selectedRadioPayment = 0;
+  int addressListLength;
+  String totalAmount;
+  String userId;
 
   Future<void> detailsIncomplete(context) {
     return showDialog(
@@ -106,6 +111,8 @@ class _ReviewCartState extends State<ReviewCart> {
             if (snapshot.data == 'empty') {
               return Center(child: Text("Empty Cart"));
             }
+            totalAmount = (snapshot.data['total']).roundToDouble().toString();
+            userId = snapshot.data['userId'];
             return ListView(
               children: [
                 SizedBox(height: 10),
@@ -260,6 +267,8 @@ class _ReviewCartState extends State<ReviewCart> {
                                 color: Colors.purple,
                               ),
                             );
+                          //DocumentSnapshot document =
+                          //DocumentSnapshot userDoc = snapshot.data;
                           return Column(
                             children: <Widget>[
                               snapshot.data['mobileNo'] == ''
@@ -529,16 +538,52 @@ class _ReviewCartState extends State<ReviewCart> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Text(
-                          '- Cash On Delivery',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
+                      RadioListTile(
+                        activeColor: Colors.deepPurple,
+                        title: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text(
+                            'Cash On Delivery',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      )
+                        value: 0,
+                        groupValue: selectedRadioPayment,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRadioPayment = value;
+                          });
+                        },
+                      ),
+                      RadioListTile(
+                        activeColor: Colors.deepPurple,
+                        title: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child:Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/images/paytm.png'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        value: 1,
+                        groupValue: selectedRadioPayment,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRadioPayment = value;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -558,25 +603,39 @@ class _ReviewCartState extends State<ReviewCart> {
                               snapshot.data['mobileNo'] == '') {
                             return detailsIncomplete(context);
                           } else {
-                            FirestoreService()
-                                .placeOrder(
-                                    snapshot.data['address'][selectedAdd],
-                                    snapshot.data['mobileNo'])
-                                .then((value) {
-                              Fluttertoast.showToast(
-                                toastLength: Toast.LENGTH_LONG,
-                                msg:
-                                    "Order Placed, waiting for the seller to accept the order",
-                              );
-                              Navigator.of(widget.navContext).pop();
-                              Navigator.of(context).pop();
-                            }).catchError(() {
-                              Fluttertoast.showToast(
-                                msg: "Something went wrong!!!",
-                              );
-                              Navigator.of(widget.navContext).pop();
-                              Navigator.of(context).pop();
-                            });
+                            if (selectedRadioPayment == 0) {
+                              FirestoreService()
+                                  .placeOrder(
+                                      snapshot.data['address'][selectedAdd],
+                                      snapshot.data['mobileNo'],
+                                      '')
+                                  .then((value) {
+                                Fluttertoast.showToast(
+                                  toastLength: Toast.LENGTH_LONG,
+                                  msg:
+                                      "Order Placed, waiting for the seller to accept the order",
+                                );
+                                Navigator.of(context).pushNamed('/successScreen');
+                                // Navigator.of(widget.navContext).pop();
+                                // Navigator.of(context).pop();
+                              }).catchError(() {
+                                Fluttertoast.showToast(
+                                  msg: "Something went wrong!!!",
+                                );
+                                Navigator.of(widget.navContext).pop();
+                                Navigator.of(context).pop();
+                              });
+                            } else if (selectedRadioPayment == 1) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PaymentScreen(
+                                        amount: totalAmount,
+                                        selectedAddress: snapshot
+                                            .data['address'][selectedAdd],
+                                        mobileNo: snapshot.data['mobileNo'],
+                                        userID: userId,
+                                        email: snapshot.data['email'],
+                                      )));
+                            }
                           }
                         },
                         child: Row(
