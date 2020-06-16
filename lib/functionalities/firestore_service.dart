@@ -34,8 +34,10 @@ class FirestoreService {
   Future<void> saveToken(String token, String userId) async {
     DocumentSnapshot user = await db.collection('users').document(userId).get();
     List tokens = user['tokens'];
-    tokens.add(token);
-    user.reference.updateData({'tokens': tokens});
+    if (!tokens.contains(token)) {
+      tokens.add(token);
+      user.reference.updateData({'tokens': tokens});
+    }
   }
 
   Future<void> deleteToken(String token, String userId) async {
@@ -162,7 +164,9 @@ class FirestoreService {
             'shop': value['shop'],
             'quantity': v['quantity'],
             'discount': value['discount'],
-            'amount': int.parse(value['price']) *(1-int.parse(value['discount'])/100)* v['quantity'],
+            'amount': int.parse(value['price']) *
+                (1 - int.parse(value['discount']) / 100) *
+                v['quantity'],
             'variant': v['variant'],
             'status': "pending",
             'timeStamp': FieldValue.serverTimestamp(),

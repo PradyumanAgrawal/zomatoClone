@@ -13,8 +13,6 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseMessaging _messaging = FirebaseMessaging();
-  String _token;
-  String _userId;
   //final Firestore _db = Firestore.instance;
 
   Future<bool> signInWithEmail({email: '', password: ''}) async {
@@ -24,8 +22,6 @@ class AuthService {
           .user;
       if (user != null) {
         String token = await _messaging.getToken();
-        _token = token;
-        _userId = user.uid;
         localData.saveData(
             userEmail: email,
             password: password,
@@ -52,8 +48,6 @@ class AuthService {
       //updateUserData(user);
       if (user != null) {
         String token = await _messaging.getToken();
-        _token = token;
-        _userId = user.uid;
         localData.saveData(
             userEmail: email,
             password: password,
@@ -112,15 +106,13 @@ class AuthService {
 
       FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
       String token = await _messaging.getToken();
-      _token = token;
-      _userId = user.uid;
       localData.saveData(
           userEmail: user.email,
           password: '',
           loggedIn: "yes",
           uid: user.uid,
           token: token);
-      FirestoreService().saveToken(token, user.uid);
+      await FirestoreService().saveToken(token, user.uid);
       print("user name: ${user.displayName}");
       print(user.displayName);
       print(user.photoUrl);
