@@ -36,7 +36,8 @@ class FirestoreService {
     List tokens = user['tokens'];
     if (!tokens.contains(token)) {
       tokens.add(token);
-      user.reference.updateData({'tokens': tokens});
+      await user.reference.updateData({'tokens': tokens});
+      print(token);
     }
   }
 
@@ -44,7 +45,7 @@ class FirestoreService {
     DocumentSnapshot user = await db.collection('users').document(userId).get();
     List tokens = user['tokens'];
     tokens.remove(token);
-    user.reference.updateData({'tokens': tokens});
+    await user.reference.updateData({'tokens': tokens});
   }
 
   Stream getProducts() {
