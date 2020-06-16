@@ -156,15 +156,12 @@ class HomeScreenState extends State<HomeScreen> {
             pinned: false,
             snap: true,
             backgroundColor: Colors.deepPurple[800],
-            title: Hero(
-              tag: 'porsio',
-              child: Text(
-                "Porsio",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.bold),
-              ),
+            title: Text(
+              "Porsio",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold),
             ),
             actions: <Widget>[
               add == ''

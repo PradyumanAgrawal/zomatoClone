@@ -97,9 +97,6 @@ class AuthService {
     } catch (e) {
       print(e);
     }
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => MyApp()),
-        (Route<dynamic> route) => false);
   }
 
   Future<bool> googleSignIn() async {

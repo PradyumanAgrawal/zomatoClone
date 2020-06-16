@@ -41,10 +41,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             ),
             actions: <Widget>[
               FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    auth.logout(widget.navContext);
-                    Navigator.of(context).pushNamed('/loading');
+                  onPressed: () async {
+                    //Navigator.of(context).pop();
+                    await auth.logout(widget.navContext);
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => MyApp()),
+                        (Route<dynamic> route) => false);
+                    //Navigator.of(context).pushNamed('/loading');
                   },
                   child: Text('Yes', style: TextStyle(fontSize: 18.0))),
               FlatButton(
@@ -73,7 +76,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Hero(
-                      tag: userEmail,
+                      tag: 'profile',
                       child: CircleAvatar(
                         backgroundColor: Colors.white,
                         child: Icon(Icons.person, color: Colors.black),

@@ -332,7 +332,7 @@ class _ProfileState extends State<Profile> {
                                             -MediaQuery.of(context).size.width /
                                                 6,
                                         child: Hero(
-                                          tag: userDoc['email'],
+                                          tag: 'profile',
                                           child: Container(
                                             width: MediaQuery.of(context)
                                                     .size
