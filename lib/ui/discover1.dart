@@ -7,10 +7,8 @@ import 'drawerWidget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class Discover1 extends StatefulWidget {
-  BuildContext navContext;
-  Discover1({BuildContext navContext}) {
-    this.navContext = navContext;
-  }
+  final BuildContext navContext;
+  Discover1({this.navContext}) ;
   @override
   _Discover1State createState() => _Discover1State();
 }

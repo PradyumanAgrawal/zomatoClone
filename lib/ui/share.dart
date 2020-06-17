@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/ui/drawerWidget.dart';
 
 class Share extends StatelessWidget {
-  BuildContext navContext;
+  final BuildContext navContext;
 
   Share({this.navContext});
 

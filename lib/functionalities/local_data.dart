@@ -42,6 +42,12 @@ class LocalData {
     return add;
   }
 
+  Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    return token;
+  }
+
   Future<LatLng> getLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return LatLng(prefs.getDouble("latitude"), prefs.getDouble('longitude'));
@@ -57,10 +63,5 @@ class LocalData {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String uid = prefs.getString("uid");
     return uid;
-  }
-  Future<String> getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
-    return token;
   }
 }

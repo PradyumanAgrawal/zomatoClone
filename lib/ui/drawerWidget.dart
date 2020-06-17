@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'myApp.dart';
-import 'navigation.dart';
 
 class DrawerWidget extends StatefulWidget {
   BuildContext navContext;

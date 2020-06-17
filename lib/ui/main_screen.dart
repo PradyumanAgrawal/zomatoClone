@@ -18,6 +18,7 @@ Future<bool> wait() async {
   } on SocketException catch (_) {
     return false;
   }
+  return true;
   //return Future.delayed(Duration(seconds: 3)).then((value) => true);
 }
 

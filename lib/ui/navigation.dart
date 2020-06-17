@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import './homeScreen.dart';
 import './discover1.dart';
 import './share.dart';
@@ -50,7 +49,6 @@ class NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
-    const value = 0xFF4A148C;
     return new WillPopScope(
       onWillPop: () async => false,
       child: MaterialApp(

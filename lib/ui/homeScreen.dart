@@ -13,9 +13,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'filter_location.dart';
 
 class HomeScreen extends StatefulWidget {
-  BuildContext navContext;
-  String add;
-  LatLng location;
+  final BuildContext navContext;
+  final String add;
+  final LatLng location;
   HomeScreen({Key key, this.navContext, this.add, this.location})
       : super(key: key);
 
@@ -142,6 +142,11 @@ class HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  void checkToken(String uid) async {
+    String token = await LocalData().getToken();
+    await FirestoreService().saveToken(token, uid);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -196,6 +201,7 @@ class HomeScreenState extends State<HomeScreen> {
                         if (!snap.hasData) {
                           return Container();
                         }
+                        checkToken(uid);
                         var len =
                             snap.data['cart'].keys.toList().length.toString();
                         return Badge(
@@ -209,7 +215,10 @@ class HomeScreenState extends State<HomeScreen> {
                                     '/cart',
                                     arguments: widget.navContext);
                               }),
-                          badgeContent: Text(len,style: TextStyle(color:Colors.white),),
+                          badgeContent: Text(
+                            len,
+                            style: TextStyle(color: Colors.white),
+                          ),
                           animationType: BadgeAnimationType.slide,
                           showBadge: len != '0',
                         );

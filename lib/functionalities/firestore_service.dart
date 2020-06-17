@@ -34,7 +34,7 @@ class FirestoreService {
   Future<void> saveToken(String token, String userId) async {
     DocumentSnapshot user = await db.collection('users').document(userId).get();
     List tokens = user['tokens'];
-    if (!tokens.contains(token)) {
+    if (!tokens.contains(token) && token!=null) {
       tokens.add(token);
       await user.reference.updateData({'tokens': tokens});
       print(token);

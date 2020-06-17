@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:my_flutter_app/ui/myApp.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 

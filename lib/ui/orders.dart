@@ -1,17 +1,13 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
-
 import '../functionalities/firestore_service.dart';
 import '../functionalities/local_data.dart';
 import 'drawerWidget.dart';
 
 class Orders extends StatefulWidget {
-  BuildContext navContext;
-  Orders({BuildContext navContext}) {
-    this.navContext = navContext;
-  }
+  final BuildContext navContext;
+  Orders({this.navContext});
   @override
   _OrdersState createState() => _OrdersState();
 }
