@@ -1,8 +1,31 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
 class SuccessScreen extends StatelessWidget {
+
+  Map details;
+  SuccessScreen({this.details});
+
+  static FirebaseAnalytics analytics = new FirebaseAnalytics();
+  static FirebaseAnalyticsObserver observer =
+      new FirebaseAnalyticsObserver(analytics: analytics);
+
+  logPurchase() async {
+    await analytics.logEvent(
+      name: details['paymentMethod']+'_purchase',
+      parameters: <String, dynamic>{
+        'amount': details['amount'],
+        'userID': details['userId'],
+        'email': details['email'],
+        'method': details['paymentMethod'],
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    logPurchase();
     return Scaffold(
       body: ListView(
         children: [

@@ -643,10 +643,10 @@ class _DescriptionState extends State<Description> {
                               document.documentID,
                               1,
                               document['sizes'][selectedVariant],
-                              false);
+                              false, document);
                         } else if (document['sizes'].length == 0) {
                           status = await FirestoreService()
-                              .addToCart(document.documentID, 1, '', false);
+                              .addToCart(document.documentID, 1, '', false, document);
                         } else {
                           final snackbar = SnackBar(
                               content: Text('Please select a variant'));

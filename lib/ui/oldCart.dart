@@ -357,7 +357,7 @@ class _CartState extends State<Cart> {
                                     productDoc.documentID,
                                     newQuantity,
                                     variant,
-                                    true);
+                                    true,productDoc);
                               }
                             }),
                         Text(
@@ -372,7 +372,7 @@ class _CartState extends State<Cart> {
                                   productDoc.documentID,
                                   newQuantity,
                                   variant,
-                                  true);
+                                  true,productDoc);
                             }),
                       ],
                     ),
@@ -401,7 +401,7 @@ class _CartState extends State<Cart> {
                 child: IconButton(
                   onPressed: () {
                     FirestoreService()
-                        .addToCart(productDoc.documentID, 0, variant, true);
+                        .addToCart(productDoc.documentID, 0, variant, true, productDoc);
                   },
                   icon: Icon(Icons.delete),
                   color: Colors.red,

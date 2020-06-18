@@ -413,7 +413,7 @@ class _CartState extends State<Cart> {
                                     productDoc.documentID,
                                     newQuantity,
                                     variant,
-                                    true);
+                                    true, productDoc);
                               }
                             }),
                         Text(
@@ -426,7 +426,7 @@ class _CartState extends State<Cart> {
                           onPressed: () {
                             int newQuantity = quantity + 1;
                             FirestoreService().addToCart(productDoc.documentID,
-                                newQuantity, variant, true);
+                                newQuantity, variant, true, productDoc);
                           },
                         ),
                       ],
@@ -457,7 +457,7 @@ class _CartState extends State<Cart> {
                   enableFeedback: true,
                   onPressed: () {
                     FirestoreService()
-                        .addToCart(productDoc.documentID, 0, variant, true)
+                        .addToCart(productDoc.documentID, 0, variant, true, productDoc)
                         .then((value) {});
                   },
                   icon: Icon(Icons.delete),

@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -63,7 +65,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget getResponseScreen() {
     switch (_responseStatus) {
       case STATUS_SUCCESSFUL:
-        return PaymentSuccessfulScreen();
+        return PaymentSuccessfulScreen(
+            userID: widget.userID, amount: widget.amount, email: widget.email);
       case STATUS_CHECKSUM_FAILED:
         return CheckSumFailedScreen();
       case STATUS_FAILED:
@@ -128,8 +131,33 @@ class _PaymentScreenState extends State<PaymentScreen> {
 }
 
 class PaymentSuccessfulScreen extends StatelessWidget {
+  final String amount;
+  final String userID;
+  final String email;
+  PaymentSuccessfulScreen({this.amount, this.email, this.userID});
+  static FirebaseAnalytics analytics = new FirebaseAnalytics();
+  static FirebaseAnalyticsObserver observer =
+      new FirebaseAnalyticsObserver(analytics: analytics);
+
+  logPurchase() async {
+    await analytics.logEcommercePurchase(
+      currency: "INR",
+      value: double.parse(amount),
+      transactionId: email,
+    );
+    await analytics.logEvent(
+      name: 'paytm_purchase',
+      parameters: <String, dynamic>{
+        'amount': amount,
+        'userID': userID,
+        'email': email,
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    logPurchase();
     return Container(
       color: Colors.white,
       height: MediaQuery.of(context).size.height,

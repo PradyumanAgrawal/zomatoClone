@@ -46,7 +46,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(builder: (context) => MyApp()),
                         (Route<dynamic> route) => false);
-                    //Navigator.of(context).pushNamed('/loading');
                   },
                   child: Text('Yes', style: TextStyle(fontSize: 18.0))),
               FlatButton(

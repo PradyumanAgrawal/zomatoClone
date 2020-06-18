@@ -117,7 +117,7 @@ class RouteGenerator {
         );
         case '/successScreen':
         return MaterialPageRoute(
-          builder: (_) => SuccessScreen(),
+          builder: (_) => SuccessScreen(details: args,),
         );
       // If args is not of the correct type, return an error page.
       default:

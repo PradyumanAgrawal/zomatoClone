@@ -615,7 +615,13 @@ class _ReviewCartState extends State<ReviewCart> {
                                   msg:
                                       "Order Placed, waiting for the seller to accept the order",
                                 );
-                                Navigator.of(context).pushNamed('/successScreen');
+                                Map details = {
+                                  'amount': totalAmount,
+                                  'userId': userId,
+                                  'email': snapshot.data['email'],
+                                  'paymentMethod': "COD",
+                                };
+                                Navigator.of(context).pushNamed('/successScreen', arguments: details);
                                 // Navigator.of(widget.navContext).pop();
                                 // Navigator.of(context).pop();
                               }).catchError(() {
