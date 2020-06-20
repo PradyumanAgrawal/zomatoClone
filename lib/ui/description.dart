@@ -402,7 +402,9 @@ class _DescriptionState extends State<Description> {
                                   ]),
                               child: Center(
                                 child: Text(
+                                  
                                   document['sizes'][index],
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,

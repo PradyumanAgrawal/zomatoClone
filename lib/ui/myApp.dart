@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:my_flutter_app/functionalities/analytics.dart';
 import 'package:my_flutter_app/functionalities/route_generator.dart';
 
 class MyApp extends StatefulWidget {
@@ -18,6 +19,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Porsio",
+      navigatorObservers: [AnalyticsService().getObserver()],
       theme: ThemeData(
           primaryColor: Colors.deepPurple,
           primaryColorDark: Colors.deepPurple[900],

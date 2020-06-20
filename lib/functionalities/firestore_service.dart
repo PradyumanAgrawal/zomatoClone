@@ -84,7 +84,7 @@ class FirestoreService {
   }
 
   Stream getCategories() {
-    return db.collection('categories').snapshots();
+    return db.collection('categories').orderBy('index').snapshots();
   }
 
   Future<bool> inWishlist(String productId) {

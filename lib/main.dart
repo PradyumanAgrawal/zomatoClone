@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/functionalities/analytics.dart';
 import 'package:my_flutter_app/ui/myApp.dart';
 /* 
 Future<void> main() async {
@@ -16,9 +15,6 @@ Future<void> main() async {
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
-    MaterialApp(
-      navigatorObservers: [AnalyticsService().getObserver()],
-      home: MyApp(),
-    ),
+    MyApp(),
   );
 }

@@ -15,17 +15,28 @@ class Discover1 extends StatefulWidget {
 
 class _Discover1State extends State<Discover1> {
   Map iconMap = {
-    'tshirts': LineAwesomeIcons.tshirt,
+    "men's wear": LineAwesomeIcons.tshirt,
     'shirt': LineAwesomeIcons.user_tie,
-    'caps': LineAwesomeIcons.hat_cowboy,
-    'pant': LineAwesomeIcons.shirtsinbulk,
+    "men's accessories": LineAwesomeIcons.glasses,
     'shoes': LineAwesomeIcons.shoe_prints,
     'utilities': LineAwesomeIcons.toilet_paper,
     'fitness': LineAwesomeIcons.dumbbell,
     'books': LineAwesomeIcons.book_open,
     'household': LineAwesomeIcons.home,
-    'beauty,health': LineAwesomeIcons.heart,
+    'beauty and health': LineAwesomeIcons.heart,
+    'others': LineAwesomeIcons.atom,
+    "women's accessories": LineAwesomeIcons.dice_d20,
+    "women's wear": LineAwesomeIcons.female,
   };
+
+  String f(String name){
+    List<String> n = name.split(' ');
+    for(int i=0; i<n.length; i++){
+      n[i] = n[i].substring(0,1).toUpperCase()+n[i].substring(1).toLowerCase();
+    }
+    String nam = n.join(' ');
+    return nam;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +244,7 @@ class _Discover1State extends State<Discover1> {
                                   ),
                                   SizedBox(width: 30),
                                   Text(
-                                    document['name'],
+                                    f(document['name']),
                                     style: TextStyle(
                                       fontSize: 20,
                                     ),
