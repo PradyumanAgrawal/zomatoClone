@@ -906,6 +906,9 @@ class _AddSheetState extends State<AddSheet> {
                   if (value.isEmpty || value.length != 6) {
                     return 'Please Enter valid Pincode';
                   }
+                  if (value!='431604' && value!='431601'&& value!='431602'&& value!='431603'){
+                    return 'Porsio coming soon to your location';
+                  }
                 },
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
