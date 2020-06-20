@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class About extends StatelessWidget {
-  BuildContext navContext;
-  About({BuildContext navContext}) {
-    this.navContext = navContext;
-  }
+  final BuildContext navContext;
+  About({this.navContext});
 
   @override
   Widget build(BuildContext context) {

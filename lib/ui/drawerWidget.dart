@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'myApp.dart';
 
 class DrawerWidget extends StatefulWidget {
-  BuildContext navContext;
+  final BuildContext navContext;
   DrawerWidget({this.navContext});
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();

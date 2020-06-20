@@ -12,7 +12,6 @@ class FirestoreService {
       FirestoreService._internal();
   Firestore db = Firestore.instance;
 
-
   FirestoreService._internal();
 
   factory FirestoreService() {
@@ -36,7 +35,7 @@ class FirestoreService {
   Future<void> saveToken(String token, String userId) async {
     DocumentSnapshot user = await db.collection('users').document(userId).get();
     List tokens = user['tokens'];
-    if (!tokens.contains(token) && token!=null) {
+    if (!tokens.contains(token) && token != null) {
       tokens.add(token);
       await user.reference.updateData({'tokens': tokens});
       print(token);
@@ -87,15 +86,15 @@ class FirestoreService {
     return db.collection('categories').orderBy('index').snapshots();
   }
 
-  Future<bool> inWishlist(String productId) {
-    LocalData().getUid().then((uId) {
-      db
-          .collection('users')
-          .document(uId)
-          .get()
-          .then((DocumentSnapshot userDoc) {});
-    });
-  }
+  // Future<bool> inWishlist(String productId) {
+  //   LocalData().getUid().then((uId) {
+  //     db
+  //         .collection('users')
+  //         .document(uId)
+  //         .get()
+  //         .then((DocumentSnapshot userDoc) {});
+  //   });
+  // }
 
   void addToWishlist(String productId) {
     String userId;
@@ -153,7 +152,8 @@ class FirestoreService {
     return db.collection('users').document(userId).snapshots();
   }
 
-  Future<void> placeOrder(Map address, String mobileNo,String paymentMethod, String txnID) async {
+  Future<void> placeOrder(
+      Map address, String mobileNo, String paymentMethod, String txnID) async {
     var uid = await LocalData().getUid();
     db.collection('users').document(uid).get().then((DocumentSnapshot doc) {
       doc['cart'].forEach((k, v) {
@@ -167,13 +167,14 @@ class FirestoreService {
             'shop': value['shop'],
             'quantity': v['quantity'],
             'discount': value['discount'],
-            'paymentMethod':paymentMethod,
+            'paymentMethod': paymentMethod,
             'amount': int.parse(value['price']) *
                 (1 - int.parse(value['discount']) / 100) *
                 v['quantity'],
             'amountWithCharge': int.parse(value['price']) *
                 (1 - int.parse(value['discount']) / 100) *
-                v['quantity']*1.0236,
+                v['quantity'] *
+                1.0236,
             'variant': v['variant'],
             'status': "pending",
             'timeStamp': FieldValue.serverTimestamp(),
@@ -198,8 +199,8 @@ class FirestoreService {
         .snapshots();
   }
 
-  Future<int> addToCart(
-      String productId, int quantity, String variant, bool updating, DocumentSnapshot prodDocument) async {
+  Future<int> addToCart(String productId, int quantity, String variant,
+      bool updating, DocumentSnapshot prodDocument) async {
     int status;
     await LocalData().getUserEmail().then((userEmail) async {
       await db
@@ -232,7 +233,8 @@ class FirestoreService {
                   .collection('users')
                   .document(userId)
                   .updateData({'cart': cart});
-              await AnalyticsService().logAddToCart(productId, prodDocument['name'],prodDocument['category'],'1');
+              await AnalyticsService().logAddToCart(productId,
+                  prodDocument['name'], prodDocument['category'], '1');
               status = 2; //added a new product in the cart
             }
           }
@@ -339,10 +341,10 @@ class FirestoreService {
     return a;
   }
 
-  Future<bool> removeAddress(int index, DocumentSnapshot userDoc) {
+  Future<void> removeAddress(int index, DocumentSnapshot userDoc) {
     List address = userDoc['address'];
     address.removeAt(index);
-    userDoc.reference.updateData({'address': address});
+    return userDoc.reference.updateData({'address': address});
   }
 
   void newAddress(Map newAddress, DocumentSnapshot userDoc) {
@@ -359,12 +361,12 @@ class FirestoreService {
         .updateData({'mobileNo': newNumber});
   }
 
-  Future<void> addFeedback(String Feedback) async {
+  Future<void> addFeedback(String feedback) async {
     var uid = await LocalData().getUid();
     await db
         .collection('feedback')
         .document()
-        .setData({"Feedback": Feedback, "userId": uid});
+        .setData({"Feedback": feedback, "userId": uid});
   }
 
   Future<void> addAddress(Map newAdd) async {

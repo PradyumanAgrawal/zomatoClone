@@ -559,20 +559,17 @@ class _ProfileState extends State<Profile> {
                                           ),
                                           child: InkWell(
                                             onTap: () {
-                                              var sheetController =
-                                                  showBottomSheet(
-                                                      elevation: 10,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          15)),
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          AddSheet(
-                                                            userDoc: userDoc,
-                                                          ));
+                                              showBottomSheet(
+                                                  elevation: 10,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15)),
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AddSheet(
+                                                        userDoc: userDoc,
+                                                      ));
                                             },
                                             child: Container(
                                               width: 100,
@@ -906,7 +903,10 @@ class _AddSheetState extends State<AddSheet> {
                   if (value.isEmpty || value.length != 6) {
                     return 'Please Enter valid Pincode';
                   }
-                  if (value!='431604' && value!='431601'&& value!='431602'&& value!='431603'){
+                  if (value != '431604' &&
+                      value != '431601' &&
+                      value != '431602' &&
+                      value != '431603') {
                     return 'Porsio coming soon to your location';
                   }
                 },

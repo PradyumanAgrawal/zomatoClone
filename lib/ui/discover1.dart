@@ -165,8 +165,6 @@ class _Discover1State extends State<Discover1> {
                     itemBuilder: (context, index) {
                       DocumentSnapshot document =
                           snapshot.data.documents[index];
-                      List productReferences = document['products'];
-
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[

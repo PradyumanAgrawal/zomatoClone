@@ -936,7 +936,7 @@ class HomeScreenState extends State<HomeScreen> {
 }
 
 class Store extends StatefulWidget {
-  BuildContext navContext;
+  final BuildContext navContext;
   Store({this.navContext});
   @override
   _StoreState createState() => _StoreState();
