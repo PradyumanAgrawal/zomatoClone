@@ -50,7 +50,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           _responseStatus = STATUS_SUCCESSFUL;
           String txnID = paytmResponse["TXNID"];
           FirestoreService()
-              .placeOrder(widget.selectedAddress, widget.mobileNo, txnID);
+              .placeOrder(widget.selectedAddress, widget.mobileNo,'PAYTM', txnID);
         } else {
           _responseStatus = STATUS_CHECKSUM_FAILED;
         }

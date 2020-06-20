@@ -245,7 +245,7 @@ class _ReviewCartState extends State<ReviewCart> {
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
                                 '\u{20B9} ' +
-                                    (snapshot.data['total']*0.0234)
+                                    (snapshot.data['total']*0.0236)
                                         .roundToDouble()
                                         .toString(),
                                 style: TextStyle(fontSize: 15)),
@@ -267,7 +267,7 @@ class _ReviewCartState extends State<ReviewCart> {
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
                                 '\u{20B9} ' +
-                                    (snapshot.data['total']*1.0234)
+                                    (snapshot.data['total']*1.0236)
                                         .roundToDouble()
                                         .toString(),
                                 style: TextStyle(fontSize: 15)),
@@ -652,7 +652,7 @@ class _ReviewCartState extends State<ReviewCart> {
                               FirestoreService()
                                   .placeOrder(
                                       snapshot.data['address'][selectedAdd],
-                                      snapshot.data['mobileNo'],
+                                      snapshot.data['mobileNo'],'COD',
                                       '')
                                   .then((value) {
                                 Fluttertoast.showToast(
@@ -661,7 +661,7 @@ class _ReviewCartState extends State<ReviewCart> {
                                       "Order Placed, waiting for the seller to accept the order",
                                 );
                                 Map details = {
-                                  'amount': (int.parse(totalAmount)*1.0234).round().toString(),
+                                  'amount': (int.parse(totalAmount)*1.0236).round().toString(),
                                   'userId': userId,
                                   'email': snapshot.data['email'],
                                   'paymentMethod': "COD",
@@ -679,7 +679,7 @@ class _ReviewCartState extends State<ReviewCart> {
                             } else if (selectedRadioPayment == 1) {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => PaymentScreen(
-                                        amount:(double.parse(totalAmount)*1.0234).round().toString(),
+                                        amount:(double.parse(totalAmount)*1.0236).round().toString(),
                                         selectedAddress: snapshot
                                             .data['address'][selectedAdd],
                                         mobileNo: snapshot.data['mobileNo'],

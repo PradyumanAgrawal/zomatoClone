@@ -153,7 +153,7 @@ class FirestoreService {
     return db.collection('users').document(userId).snapshots();
   }
 
-  Future<void> placeOrder(Map address, String mobileNo, String txnID) async {
+  Future<void> placeOrder(Map address, String mobileNo,String paymentMethod, String txnID) async {
     var uid = await LocalData().getUid();
     db.collection('users').document(uid).get().then((DocumentSnapshot doc) {
       doc['cart'].forEach((k, v) {
@@ -167,12 +167,13 @@ class FirestoreService {
             'shop': value['shop'],
             'quantity': v['quantity'],
             'discount': value['discount'],
+            'paymentMethod':paymentMethod,
             'amount': int.parse(value['price']) *
                 (1 - int.parse(value['discount']) / 100) *
                 v['quantity'],
             'amountWithCharge': int.parse(value['price']) *
                 (1 - int.parse(value['discount']) / 100) *
-                v['quantity']*1.0234,
+                v['quantity']*1.0236,
             'variant': v['variant'],
             'status': "pending",
             'timeStamp': FieldValue.serverTimestamp(),
