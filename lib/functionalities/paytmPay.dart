@@ -1,6 +1,5 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/analytics.dart';
 import 'package:my_flutter_app/functionalities/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -135,29 +134,10 @@ class PaymentSuccessfulScreen extends StatelessWidget {
   final String userID;
   final String email;
   PaymentSuccessfulScreen({this.amount, this.email, this.userID});
-  static FirebaseAnalytics analytics = new FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer =
-      new FirebaseAnalyticsObserver(analytics: analytics);
-
-  logPurchase() async {
-    await analytics.logEcommercePurchase(
-      currency: "INR",
-      value: double.parse(amount),
-      transactionId: email,
-    );
-    await analytics.logEvent(
-      name: 'paytm_purchase',
-      parameters: <String, dynamic>{
-        'amount': amount,
-        'userID': userID,
-        'email': email,
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    logPurchase();
+    AnalyticsService().logPaytmPurchase(amount, userID,email);
     return Container(
       color: Colors.white,
       height: MediaQuery.of(context).size.height,

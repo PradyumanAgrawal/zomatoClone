@@ -1,9 +1,8 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_flutter_app/functionalities/analytics.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
@@ -12,12 +11,7 @@ class FirestoreService {
   static final FirestoreService _firestoreService =
       FirestoreService._internal();
   Firestore db = Firestore.instance;
-  static FirebaseAnalytics analytics = new FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer = new FirebaseAnalyticsObserver(analytics:analytics);
 
-  Future<void> _logAddToCart(String id, String name, String category, String quantity) async {
-    analytics.logAddToCart(itemId: id, itemName: name, itemCategory: category, quantity: null);
-  }
 
   FirestoreService._internal();
 
@@ -237,7 +231,7 @@ class FirestoreService {
                   .collection('users')
                   .document(userId)
                   .updateData({'cart': cart});
-              await _logAddToCart(productId, prodDocument['name'],prodDocument['category'],'1');
+              await AnalyticsService().logAddToCart(productId, prodDocument['name'],prodDocument['category'],'1');
               status = 2; //added a new product in the cart
             }
           }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/analytics.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -26,7 +27,8 @@ class AuthService {
             loggedIn: "yes",
             uid: user.uid,
             token: token);
-        FirestoreService().saveToken(token, user.uid);
+        await FirestoreService().saveToken(token, user.uid);
+        await AnalyticsService().logLogIn('email');
         return true;
       }
       return false;
@@ -52,7 +54,8 @@ class AuthService {
             loggedIn: "yes",
             uid: user.uid,
             token: token);
-        FirestoreService().saveToken(token, user.uid);
+        await FirestoreService().saveToken(token, user.uid);
+        await AnalyticsService().logSignUp('email');
         return true;
       }
       return false;
@@ -111,6 +114,7 @@ class AuthService {
           uid: user.uid,
           token: token);
       await FirestoreService().saveToken(token, user.uid);
+      await AnalyticsService().logLogIn('google');
       print("user name: ${user.displayName}");
       print(user.displayName);
       print(user.photoUrl);
