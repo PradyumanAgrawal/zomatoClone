@@ -176,6 +176,9 @@ class FirestoreService {
             'amount': int.parse(value['price']) *
                 (1 - int.parse(value['discount']) / 100) *
                 v['quantity'],
+            'amountWithCharge': int.parse(value['price']) *
+                (1 - int.parse(value['discount']) / 100) *
+                v['quantity']*1.0234,
             'variant': v['variant'],
             'status': "pending",
             'timeStamp': FieldValue.serverTimestamp(),

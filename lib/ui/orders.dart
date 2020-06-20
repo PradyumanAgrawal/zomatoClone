@@ -229,7 +229,7 @@ class _OrdersState extends State<Orders> {
                                                       color: Colors.grey)),
                                               Text(
                                                 ' \u{20B9} ' +
-                                                    orderList[index]['amount'].round()
+                                                    orderList[index]['amountWithCharge'].roundToDouble()
                                                         .toString(),
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,

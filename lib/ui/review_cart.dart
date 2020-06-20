@@ -187,13 +187,34 @@ class _ReviewCartState extends State<ReviewCart> {
                         }),
                       ),
                       Divider(),
+                      
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
-                              'Total Price',
+                              'Total Items',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(snapshot.data['itemCount'].toString(),
+                                style: TextStyle(fontSize: 15)),
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              'Price',
                               style:
                                   TextStyle(fontSize: 15, color: Colors.grey),
                             ),
@@ -215,16 +236,40 @@ class _ReviewCartState extends State<ReviewCart> {
                           Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
-                              'Total Items',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey,
-                              ),
+                              'Other Charges',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.grey),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(15.0),
-                            child: Text(snapshot.data['itemCount'].toString(),
+                            child: Text(
+                                '\u{20B9} ' +
+                                    (snapshot.data['total']*0.0234)
+                                        .roundToDouble()
+                                        .toString(),
+                                style: TextStyle(fontSize: 15)),
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              'Total',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.grey),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                                '\u{20B9} ' +
+                                    (snapshot.data['total']*1.0234)
+                                        .roundToDouble()
+                                        .toString(),
                                 style: TextStyle(fontSize: 15)),
                           )
                         ],
@@ -616,7 +661,7 @@ class _ReviewCartState extends State<ReviewCart> {
                                       "Order Placed, waiting for the seller to accept the order",
                                 );
                                 Map details = {
-                                  'amount': totalAmount,
+                                  'amount': (int.parse(totalAmount)*1.0234).round().toString(),
                                   'userId': userId,
                                   'email': snapshot.data['email'],
                                   'paymentMethod': "COD",
@@ -634,7 +679,7 @@ class _ReviewCartState extends State<ReviewCart> {
                             } else if (selectedRadioPayment == 1) {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => PaymentScreen(
-                                        amount: totalAmount,
+                                        amount:(double.parse(totalAmount)*1.0234).round().toString(),
                                         selectedAddress: snapshot
                                             .data['address'][selectedAdd],
                                         mobileNo: snapshot.data['mobileNo'],
