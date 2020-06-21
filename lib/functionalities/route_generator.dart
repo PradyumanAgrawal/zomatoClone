@@ -37,15 +37,7 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => Description(document: args),
         );
-      case '/discover_category':
-        return MaterialPageRoute(
-          builder: (_) => Discover(args: args),
-        );
-      case '/discover_shop':
-        return MaterialPageRoute(
-          builder: (_) => Discover(args: args),
-        );
-      case '/discover_other':
+      case '/discover':
         return MaterialPageRoute(
           builder: (_) => Discover(args: args),
         );

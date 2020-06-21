@@ -167,9 +167,11 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     user = Provider.of<DocumentSnapshot>(context);
-    nearByShopsSnapshots =
-        List.from(Provider.of<List<DocumentSnapshot>>(context));
-    getShopIdList(nearByShopsSnapshots);
+    if (Provider.of<List<DocumentSnapshot>>(context) != null) {
+      nearByShopsSnapshots =
+          List.from(Provider.of<List<DocumentSnapshot>>(context));
+      getShopIdList(nearByShopsSnapshots);
+    }
     locationPreference = Provider.of<LocationPreferences>(context);
     if (location != null)
       locationPreference.location.setValue(
@@ -411,7 +413,7 @@ class HomeScreenState extends State<HomeScreen> {
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(widget.navContext)
-                                    .pushNamed('/discover_other', arguments: {
+                                    .pushNamed('/discover', arguments: {
                                   'stream': 'offer',
                                   'context': context
                                 });
@@ -489,7 +491,7 @@ class HomeScreenState extends State<HomeScreen> {
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(widget.navContext)
-                                    .pushNamed('/discover_other', arguments: {
+                                    .pushNamed('/discover', arguments: {
                                   'stream': 'allProducts',
                                   'context': context
                                 });
@@ -531,7 +533,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   return Center(
                                     child: Column(
                                       //mainAxisAlignment:
-                                          //MainAxisAlignment.center,
+                                      //MainAxisAlignment.center,
                                       children: <Widget>[
                                         Image.asset(
                                             'assets/images/comingSoon.png'),
@@ -1052,7 +1054,7 @@ class _StoreState extends State<Store> {
                           return InkWell(
                             onTap: () {
                               Navigator.of(widget.navContext)
-                                  .pushNamed('/discover_shop', arguments: {
+                                  .pushNamed('/discover', arguments: {
                                 'stream': 'shop',
                                 'shopId': document.documentID,
                                 'context': context

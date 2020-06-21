@@ -183,7 +183,7 @@ class _Discover1State extends State<Discover1> {
                           InkWell(
                             onTap: () {
                               Navigator.of(widget.navContext)
-                                  .pushNamed('/discover_category', arguments: {
+                                  .pushNamed('/discover', arguments: {
                                 'category': document.documentID,
                                 'stream': 'category',
                                 'context': context
@@ -266,7 +266,7 @@ class _Discover1State extends State<Discover1> {
                                 InkWell(
                                   onTap: () {
                                     Navigator.of(widget.navContext).pushNamed(
-                                        '/discover_shop',
+                                        '/discover',
                                         arguments: {
                                           'stream': 'shop',
                                           'shopId': document.documentID,

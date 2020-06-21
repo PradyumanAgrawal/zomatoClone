@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
@@ -76,6 +77,11 @@ class NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+    if (locationPreference == null)
+      return Center(
+          child: SpinKitChasingDots(
+        color: Colors.purple,
+      ));
     return PreferenceBuilder(
         preference: locationPreference.location,
         builder: (context, location) {
