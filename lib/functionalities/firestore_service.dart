@@ -49,8 +49,8 @@ class FirestoreService {
     await user.reference.updateData({'tokens': tokens});
   }
 
-  Stream getProducts() {
-    Stream<QuerySnapshot> prods = db.collection('products').snapshots();
+  Stream getProducts(List<DocumentReference> nearByShopsReferences) {
+    Stream<QuerySnapshot> prods = db.collection('products').where('shop', whereIn:nearByShopsReferences).snapshots();
     return prods;
   }
 
@@ -120,10 +120,11 @@ class FirestoreService {
     });
   }
 
-  Stream getProductsFromCategory(String category) {
+  Stream getProductsFromCategory(String category,List<DocumentReference> nearByShopsReferences) {
     return db
         .collection('products')
         .where('category', isEqualTo: category)
+        .where('shop', whereIn:nearByShopsReferences)
         .snapshots();
   }
 
@@ -134,10 +135,11 @@ class FirestoreService {
         .snapshots();
   }
 
-  Stream getOfferProducts() {
+  Stream getOfferProducts(List<DocumentReference> nearByShopsReferences) {
     return db
         .collection('products')
         .orderBy('discount', descending: true)
+        .where('shop', whereIn:nearByShopsReferences)
         .snapshots();
   }
 

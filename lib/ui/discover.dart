@@ -8,14 +8,16 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class Discover extends StatefulWidget {
-  //BuildContext navContext;
-  //List productReferences;
+  final BuildContext navContext;
   final String category;
   final String shopID;
   final String other;
-  Discover({BuildContext navContext, this.category, this.shopID, this.other});
+  final Map args;
+  Discover(
+      {this.navContext, this.category, this.shopID, this.other, this.args});
   @override
   _DiscoverState createState() => _DiscoverState();
 }
@@ -23,6 +25,8 @@ class Discover extends StatefulWidget {
 class _DiscoverState extends State<Discover>
     with SingleTickerProviderStateMixin {
   List wishlist;
+  List<DocumentSnapshot> nearByShopsSnapshots;
+  List<DocumentReference> nearByShopsReferences;
   bool isTyping = false;
   bool isSearching = false;
   TextEditingController _controller = TextEditingController();
@@ -80,24 +84,72 @@ class _DiscoverState extends State<Discover>
     }
   }
 
+  void getShopIdList(List<DocumentSnapshot> documentSnapshots) {
+    nearByShopsReferences = [];
+    for (int i = 0; i < documentSnapshots.length; i++) {
+      nearByShopsReferences.add(documentSnapshots[i].reference);
+    }
+    // print("nearByShopsId ------->");
+    // print(nearByShopsReferences);
+  }
+
   //var productList = new List<Product>();
   Stream<dynamic> stream;
 
   @override
   void initState() {
-    if (widget.category != null)
-      stream = FirestoreService().getProductsFromCategory(widget.category);
-    else if (widget.shopID != null)
-      stream = FirestoreService().getShopProducts(widget.shopID);
-    else if (widget.other == 'offer')
-      stream = FirestoreService().getOfferProducts();
-    else if (widget.other == 'allProducts')
-      stream = FirestoreService().getProducts();
+    // if (widget.category != null)
+    //   stream = FirestoreService().getProductsFromCategory(widget.category);
+    // else if (widget.shopID != null)
+    //   stream = FirestoreService().getShopProducts(widget.shopID);
+    // else if (widget.other == 'offer')
+    //   stream = FirestoreService().getOfferProducts();
+    // else if (widget.other == 'allProducts')
+    //   stream = FirestoreService().getProducts();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    nearByShopsSnapshots =
+        List.from(Provider.of<List<DocumentSnapshot>>(widget.args['context']));
+    getShopIdList(nearByShopsSnapshots);
+    if (nearByShopsReferences.isEmpty)
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.deepPurple[800],
+            title: Text(
+              "Porsio",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset('assets/images/question.png'),
+                Text(
+                  'No products found!',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ));
+    if (widget.args['stream'] == 'category')
+      stream = FirestoreService().getProductsFromCategory(
+          widget.args['category'], nearByShopsReferences);
+    else if (widget.args['stream'] == 'shop')
+      stream = FirestoreService().getShopProducts(widget.args['shopId']);
+    else if (widget.args['stream'] == 'offer')
+      stream = FirestoreService().getOfferProducts(nearByShopsReferences);
+    else if (widget.args['stream'] == 'allProducts')
+      stream = FirestoreService().getProducts(nearByShopsReferences);
     return Scaffold(
       //drawer: DrawerWidget(),
       floatingActionButton: SpeedDial(
@@ -160,11 +212,13 @@ class _DiscoverState extends State<Discover>
                                 color: Colors.white,
                               ),
                               onTap: () {
-                                Navigator.of(context).pushNamed(
-                                    '/cart',
-                                    arguments: context);
+                                Navigator.of(context)
+                                    .pushNamed('/cart', arguments: context);
                               }),
-                          badgeContent: Text(len,style: TextStyle(color:Colors.white),),
+                          badgeContent: Text(
+                            len,
+                            style: TextStyle(color: Colors.white),
+                          ),
                           animationType: BadgeAnimationType.slide,
                           showBadge: len != '0',
                         );
@@ -297,7 +351,8 @@ class _DiscoverState extends State<Discover>
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: <Widget>[
-                                            SizedBox(height: 100),
+                                            SizedBox(height: 50),
+                                            Image.asset('assets/images/noProducts.png'),
                                             Text('No Products Yet!!',
                                                 style: TextStyle(
                                                     color: Colors.grey,
@@ -581,7 +636,8 @@ class _DiscoverState extends State<Discover>
                                                                   .documentID,
                                                               1,
                                                               '',
-                                                              false, document);
+                                                              false,
+                                                              document);
                                                   if (status == 2) {
                                                     Fluttertoast.showToast(
                                                       msg:

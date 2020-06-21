@@ -160,8 +160,8 @@ class HomeScreenState extends State<HomeScreen> {
     for (int i = 0; i < documentSnapshots.length; i++) {
       nearByShopsReferences.add(documentSnapshots[i].reference);
     }
-    print("nearByShopsId ------->");
-    print(nearByShopsReferences);
+    // print("nearByShopsId ------->");
+    // print(nearByShopsReferences);
   }
 
   @override
@@ -410,9 +410,11 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             OutlineButton(
                               onPressed: () {
-                                Navigator.of(widget.navContext).pushNamed(
-                                    '/discover_other',
-                                    arguments: 'offer');
+                                Navigator.of(widget.navContext)
+                                    .pushNamed('/discover_other', arguments: {
+                                  'stream': 'offer',
+                                  'context': context
+                                });
                               },
                               child: Text(
                                 "View All",
@@ -486,9 +488,11 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             OutlineButton(
                               onPressed: () {
-                                Navigator.of(widget.navContext).pushNamed(
-                                    '/discover_other',
-                                    arguments: 'allProducts');
+                                Navigator.of(widget.navContext)
+                                    .pushNamed('/discover_other', arguments: {
+                                  'stream': 'allProducts',
+                                  'context': context
+                                });
                               },
                               shape: StadiumBorder(),
                               splashColor: Colors.purple,
@@ -523,8 +527,24 @@ class HomeScreenState extends State<HomeScreen> {
                                   ));
                                 DocumentSnapshot document = snapshot.data;
                                 wishlist = document['wishlist'];
-                                if(nearByShopsReferences.isEmpty)
-                                  return Center(child: Text('NO Products'));
+                                if (nearByShopsReferences.isEmpty)
+                                  return Center(
+                                    child: Column(
+                                      //mainAxisAlignment:
+                                          //MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset(
+                                            'assets/images/comingSoon.png'),
+                                        Text(
+                                          'Coming to your place soon!',
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 return StreamBuilder(
                                   stream: FirestoreService()
                                       .getHomeProducts(nearByShopsReferences),
@@ -537,8 +557,8 @@ class HomeScreenState extends State<HomeScreen> {
                                       );
                                     if (snapshot.data.documents.length == 0)
                                       return Center(
-                                        child: Text('Go to explore products')
-                                      );
+                                          child:
+                                              Text('Go to explore products'));
                                     return Center(
                                       child: Wrap(
                                         runSpacing: 2,
@@ -1031,9 +1051,12 @@ class _StoreState extends State<Store> {
                           String type = document['type'];
                           return InkWell(
                             onTap: () {
-                              Navigator.of(widget.navContext).pushNamed(
-                                  '/discover_shop',
-                                  arguments: document.documentID);
+                              Navigator.of(widget.navContext)
+                                  .pushNamed('/discover_shop', arguments: {
+                                'stream': 'shop',
+                                'shopId': document.documentID,
+                                'context': context
+                              });
                             },
                             child: Container(
                               padding: EdgeInsets.only(left: 4, right: 4),

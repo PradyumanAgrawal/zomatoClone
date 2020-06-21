@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
@@ -167,7 +168,9 @@ class _Discover1State extends State<Discover1> {
               StreamBuilder(
                 stream: FirestoreService().getCategories(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return const Text('Loading...');
+                  if (!snapshot.hasData)
+                    return Center(
+                        child: SpinKitChasingDots(color: Colors.deepPurple));
                   return ListView.builder(
                     scrollDirection: Axis.vertical,
                     itemCount: snapshot.data.documents.length,
@@ -179,9 +182,12 @@ class _Discover1State extends State<Discover1> {
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              Navigator.of(widget.navContext).pushNamed(
-                                  '/discover_category',
-                                  arguments: document.documentID);
+                              Navigator.of(widget.navContext)
+                                  .pushNamed('/discover_category', arguments: {
+                                'category': document.documentID,
+                                'stream': 'category',
+                                'context': context
+                              });
                             },
                             child: Container(
                               margin: EdgeInsets.all(0),
@@ -227,13 +233,32 @@ class _Discover1State extends State<Discover1> {
                         ),
                       ),
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData) return const Text('Loading...');
+                        if (!snapshot.hasData)
+                          return Center(
+                              child:
+                                  SpinKitChasingDots(color: Colors.deepPurple));
+                        if (snapshot.data.length == 0)
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: <Widget>[
+                                Image.asset('assets/images/noStore4.png'),
+                                Text(
+                                  'No stores found around you',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         return ListView.builder(
                           scrollDirection: Axis.vertical,
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
-                            DocumentSnapshot document =
-                                snapshot.data[index];
+                            DocumentSnapshot document = snapshot.data[index];
                             String type = document['type'];
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -242,7 +267,11 @@ class _Discover1State extends State<Discover1> {
                                   onTap: () {
                                     Navigator.of(widget.navContext).pushNamed(
                                         '/discover_shop',
-                                        arguments: document.documentID);
+                                        arguments: {
+                                          'stream': 'shop',
+                                          'shopId': document.documentID,
+                                          'context': context
+                                        });
                                     print(index);
                                   },
                                   child: Container(
