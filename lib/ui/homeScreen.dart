@@ -523,6 +523,8 @@ class HomeScreenState extends State<HomeScreen> {
                                   ));
                                 DocumentSnapshot document = snapshot.data;
                                 wishlist = document['wishlist'];
+                                if(nearByShopsReferences.isEmpty)
+                                  return Center(child: Text('NO Products'));
                                 return StreamBuilder(
                                   stream: FirestoreService()
                                       .getHomeProducts(nearByShopsReferences),
@@ -535,7 +537,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       );
                                     if (snapshot.data.documents.length == 0)
                                       return Center(
-                                        child: Text('No products')
+                                        child: Text('Go to explore products')
                                       );
                                     return Center(
                                       child: Wrap(
