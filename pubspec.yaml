@@ -49,6 +49,7 @@ dependencies:
   badges: ^1.1.1
   flutter_signin_button: ^1.0.0
   curved_navigation_bar: ^0.3.2
+  streaming_shared_preferences: ^1.0.1
   line_awesome_icons: 
     git:
       url: git://github.com/mateotomasgomez/line_awesome_icons_flutter.git

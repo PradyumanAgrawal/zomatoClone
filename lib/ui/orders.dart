@@ -227,10 +227,10 @@ class _OrdersState extends State<Orders> {
                                               Text('Total Amount:',
                                                   style: TextStyle(
                                                       color: Colors.grey)),
-                                              Text(
+                                              Text( (orderList[index]['amountWithCharge']!= null)?
                                                 ' \u{20B9} ' +
                                                     orderList[index]['amountWithCharge'].roundToDouble()
-                                                        .toString(),
+                                                        .toString():'',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                 ),

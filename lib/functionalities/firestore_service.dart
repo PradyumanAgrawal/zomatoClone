@@ -58,9 +58,9 @@ class FirestoreService {
     return db.collection('offers').document('posters').snapshots();
   }
 
-  Stream getHomeProducts() {
+  Stream getHomeProducts(List<DocumentReference> nearByShopsReferences) {
     Stream<QuerySnapshot> prods =
-        db.collection('products').where('onHome', isEqualTo: true).snapshots();
+        db.collection('products').where('shop', whereIn:nearByShopsReferences).where('onHome',isEqualTo:true).snapshots();
     return prods;
   }
 

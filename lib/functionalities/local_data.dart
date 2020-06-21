@@ -53,6 +53,8 @@ class LocalData {
     return LatLng(prefs.getDouble("latitude"), prefs.getDouble('longitude'));
   }
 
+  //Stream<LatLng> locationStream() => getLocation().asStream();
+
   Future<String> getUserEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userEmail = prefs.getString("userEmail");

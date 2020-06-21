@@ -1,4 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:my_flutter_app/functionalities/location_service.dart';
+import 'package:my_flutter_app/functionalities/streaming_shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import './homeScreen.dart';
 import './discover1.dart';
 import './share.dart';
@@ -15,7 +23,9 @@ class Navigation extends StatefulWidget {
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
-
+  String userId;
+  StreamingSharedPreferences preferences;
+  LocationPreferences locationPreference;
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -23,7 +33,24 @@ class NavigationState extends State<Navigation> {
   }
 
   @override
-  void initState() {
+  initState() {
+    StreamingSharedPreferences.instance.then((value) {
+      setState(() {
+        preferences = value;
+        locationPreference = LocationPreferences(preferences);
+        LocationService().getLocation().then((value) {
+          setState(() {
+            locationPreference.location.setValue(
+                [value.latitude.toString(), value.longitude.toString()]);
+          });
+        });
+      });
+    });
+    LocalData().getUid().then((value) {
+      setState(() {
+        userId = value;
+      });
+    });
     super.initState();
   }
 
@@ -49,59 +76,80 @@ class NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
-    return new WillPopScope(
-      onWillPop: () async => false,
-      child: MaterialApp(
-        home: Scaffold(
-          body: IndexedStack(
-            index: _selectedIndex,
-            children: <Widget>[
-              HomeScreen(
-                navContext: context,
+    return PreferenceBuilder(
+        preference: locationPreference.location,
+        builder: (context, location) {
+          return MultiProvider(
+            providers: [
+              StreamProvider<DocumentSnapshot>.value(
+                value: FirestoreService().getUser(userId),
               ),
-              Discover1(
-                navContext: context,
-              ),
-              Orders(
-                navContext: context,
-              ),
-              //Description(navContext: context,),
-              Share(
-                navContext: context,
-              ),
+              Provider<LocationPreferences>.value(value: locationPreference),
+              Provider<List<String>>.value(value: location),
+              StreamProvider<List<DocumentSnapshot>>.value(
+                value: FirestoreService().getNearbyStores(
+                  LatLng(
+                    double.parse(location[0]),
+                    double.parse(location[1]),
+                  ),
+                ),
+              )
             ],
-          ),
-          bottomNavigationBar: CurvedNavigationBar(
-            height: 50,
-            backgroundColor: Colors.white,
-            animationDuration: Duration(milliseconds: 250),
-            //animationCurve: Curves.elasticOut,
-            color: Colors.deepPurple[800],
-            items: <Widget>[
-              Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-              Icon(
-                Icons.favorite,
-                color: Colors.white,
-              ),
-              Icon(
-                Icons.shopping_basket,
-                color: Colors.white,
-              ),
-              Icon(
-                Icons.share,
-                color: Colors.white,
-              ),
-            ],
+            child: new WillPopScope(
+              onWillPop: () async => false,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: IndexedStack(
+                    index: _selectedIndex,
+                    children: <Widget>[
+                      HomeScreen(
+                        navContext: context,
+                      ),
+                      Discover1(
+                        navContext: context,
+                      ),
+                      Orders(
+                        navContext: context,
+                      ),
+                      //Description(navContext: context,),
+                      Share(
+                        navContext: context,
+                      ),
+                    ],
+                  ),
+                  bottomNavigationBar: CurvedNavigationBar(
+                    height: 50,
+                    backgroundColor: Colors.white,
+                    animationDuration: Duration(milliseconds: 250),
+                    //animationCurve: Curves.elasticOut,
+                    color: Colors.deepPurple[800],
+                    items: <Widget>[
+                      Icon(
+                        Icons.home,
+                        color: Colors.white,
+                      ),
+                      Icon(
+                        Icons.favorite,
+                        color: Colors.white,
+                      ),
+                      Icon(
+                        Icons.shopping_basket,
+                        color: Colors.white,
+                      ),
+                      Icon(
+                        Icons.share,
+                        color: Colors.white,
+                      ),
+                    ],
 
-            index: _selectedIndex,
-            onTap: _onItemTapped,
-          ),
-        ),
-        debugShowCheckedModeBanner: false,
-      ),
-    );
+                    index: _selectedIndex,
+                    onTap: _onItemTapped,
+                  ),
+                ),
+                debugShowCheckedModeBanner: false,
+              ),
+            ),
+          );
+        });
   }
 }

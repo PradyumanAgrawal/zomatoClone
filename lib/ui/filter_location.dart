@@ -206,9 +206,9 @@ class _FireMapState extends State<FireMap> {
               ),
             ),
             onPressed: () async {
-              await LocalData().saveLocation(
-                  latitude: markerPosition.latitude,
-                  longitude: markerPosition.longitude);
+              // await LocalData().saveLocation(
+              //     latitude: markerPosition.latitude,
+              //     longitude: markerPosition.longitude);
               Navigator.pop(context, markerPosition);
             },
           ),

@@ -7,6 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
+import 'package:my_flutter_app/functionalities/streaming_shared_preferences.dart';
+import 'package:provider/provider.dart';
 import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,6 +32,11 @@ class HomeScreenState extends State<HomeScreen> {
   bool isTyping = false;
   bool isSearching = false;
   HomeScreenState({this.add, this.location});
+  DocumentSnapshot user;
+  List<DocumentSnapshot> nearByShopsSnapshots;
+  List<DocumentReference> nearByShopsReferences;
+  LocationPreferences locationPreference;
+  List<String> locationList;
   TextEditingController _controller = TextEditingController();
   checkTyping(value) {
     if (value.length > 0) {
@@ -128,6 +135,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    //user = Provider.of<DocumentSnapshot>(context);
     LocationService().getLocation().then((value) {
       setState(() {
         location = value;
@@ -147,8 +155,26 @@ class HomeScreenState extends State<HomeScreen> {
     await FirestoreService().saveToken(token, uid);
   }
 
+  void getShopIdList(List<DocumentSnapshot> documentSnapshots) {
+    nearByShopsReferences = [];
+    for (int i = 0; i < documentSnapshots.length; i++) {
+      nearByShopsReferences.add(documentSnapshots[i].reference);
+    }
+    print("nearByShopsId ------->");
+    print(nearByShopsReferences);
+  }
+
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<DocumentSnapshot>(context);
+    nearByShopsSnapshots =
+        List.from(Provider.of<List<DocumentSnapshot>>(context));
+    getShopIdList(nearByShopsSnapshots);
+    locationPreference = Provider.of<LocationPreferences>(context);
+    if (location != null)
+      locationPreference.location.setValue(
+          [location.latitude.toString(), location.longitude.toString()]);
+    locationList = Provider.of<List<String>>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: DrawerWidget(
@@ -324,13 +350,17 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             OutlineButton(
                               onPressed: () async {
-                                final result = await Navigator.push(
+                                final LatLng result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => FilterLocation(),
                                   ),
                                 );
                                 if (result != null) {
+                                  locationPreference.location.setValue([
+                                    result.latitude.toString(),
+                                    result.longitude.toString()
+                                  ]);
                                   LocationService()
                                       .getAddress(result)
                                       .then((value) {
@@ -362,7 +392,11 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Store(navContext: widget.navContext),
+                      Store(
+                        navContext: widget.navContext,
+                        locationPreference: locationPreference,
+                        locationList: locationList,
+                      ),
                       Padding(
                         padding: EdgeInsets.all(10.0),
                         child: Row(
@@ -490,13 +524,18 @@ class HomeScreenState extends State<HomeScreen> {
                                 DocumentSnapshot document = snapshot.data;
                                 wishlist = document['wishlist'];
                                 return StreamBuilder(
-                                  stream: FirestoreService().getHomeProducts(),
+                                  stream: FirestoreService()
+                                      .getHomeProducts(nearByShopsReferences),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData)
                                       return Center(
                                         child: SpinKitChasingDots(
                                           color: Colors.deepPurple,
                                         ),
+                                      );
+                                    if (snapshot.data.documents.length == 0)
+                                      return Center(
+                                        child: Text('No products')
                                       );
                                     return Center(
                                       child: Wrap(
@@ -814,7 +853,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                                   .documentID,
                                                               1,
                                                               '',
-                                                              false, document);
+                                                              false,
+                                                              document);
                                                   if (status == 2) {
                                                     Fluttertoast.showToast(
                                                       msg:
@@ -937,7 +977,14 @@ class HomeScreenState extends State<HomeScreen> {
 
 class Store extends StatefulWidget {
   final BuildContext navContext;
-  Store({this.navContext});
+  final LocationPreferences locationPreference;
+  final List<String> locationList;
+  final List<DocumentSnapshot> nearByShopsSnapshots;
+  Store(
+      {this.navContext,
+      this.locationPreference,
+      this.locationList,
+      this.nearByShopsSnapshots});
   @override
   _StoreState createState() => _StoreState();
 }
@@ -945,93 +992,78 @@ class Store extends StatefulWidget {
 class _StoreState extends State<Store> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: LocalData().getLocation(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.12,
-            child: (snapshot.data == null)
-                ? Center(child: Text('Location not Found'))
-                : StreamBuilder(
-                    stream: //FirestoreService().getStores():
-                        FirestoreService().getNearbyStores(snapshot.data),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData)
-                        return Center(
-                            child:
-                                SpinKitChasingDots(color: Colors.deepPurple));
-                      return snapshot.data.length == 0
-                          ? Center(
-                              child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Shops coming soon ',
-                                  style: TextStyle(
-                                      letterSpacing: 2, color: Colors.grey),
-                                ),
-                                SpinKitPumpingHeart(
-                                  size: 16,
-                                  color: Colors.grey,
-                                )
-                              ],
-                            ))
-                          : ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (context, index) {
-                                DocumentSnapshot document =
-                                    snapshot.data[index];
-                                String type = document['type'];
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.of(widget.navContext).pushNamed(
-                                        '/discover_shop',
-                                        arguments: document.documentID);
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 4, right: 4),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.pink[200],
-                                          ),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              13,
-                                          padding: EdgeInsets.all(5.0),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Image.asset(
-                                                'assets/typeIcons/$type.png'),
-                                          ),
-                                        ),
-                                        Text(document['name'],
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                            )),
-                                      ],
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.12,
+      child: (widget.locationList == ['', ''])
+          ? Center(child: Text('Location not Found'))
+          : StreamBuilder(
+              stream: //FirestoreService().getStores():
+                  FirestoreService().getNearbyStores(LatLng(
+                      double.parse(widget.locationList[0]),
+                      double.parse(widget.locationList[1]))),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData)
+                  return Center(
+                      child: SpinKitChasingDots(color: Colors.deepPurple));
+                return snapshot.data.length == 0
+                    ? Center(
+                        child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Shops coming soon ',
+                            style:
+                                TextStyle(letterSpacing: 2, color: Colors.grey),
+                          ),
+                          SpinKitPumpingHeart(
+                            size: 16,
+                            color: Colors.grey,
+                          )
+                        ],
+                      ))
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot document = snapshot.data[index];
+                          String type = document['type'];
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(widget.navContext).pushNamed(
+                                  '/discover_shop',
+                                  arguments: document.documentID);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(left: 4, right: 4),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.pink[200],
+                                    ),
+                                    width:
+                                        MediaQuery.of(context).size.height / 13,
+                                    padding: EdgeInsets.all(5.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Image.asset(
+                                          'assets/typeIcons/$type.png'),
                                     ),
                                   ),
-                                );
-                              },
-                            );
-                    }),
-          );
-        } else {
-          return SpinKitChasingDots(
-            color: Colors.deepPurple,
-          );
-        }
-      },
+                                  Text(document['name'],
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      )),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+              }),
     );
   }
 }
