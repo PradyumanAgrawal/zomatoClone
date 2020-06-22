@@ -11,11 +11,11 @@ import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Description extends StatefulWidget {
-  final DocumentSnapshot document;
-  Description({this.document});
+  final Map args;
+  Description({this.args});
 
   @override
-  _DescriptionState createState() => _DescriptionState(document);
+  _DescriptionState createState() => _DescriptionState(args['document']);
 }
 
 class _DescriptionState extends State<Description> {
@@ -93,7 +93,7 @@ class _DescriptionState extends State<Description> {
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
                                         '/cart',
-                                        arguments: context);
+                                        arguments: widget.args['providerContext']);
                                   }),
                               badgeContent: Text(
                                 len,

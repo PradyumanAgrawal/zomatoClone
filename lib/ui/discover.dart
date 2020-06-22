@@ -213,7 +213,7 @@ class _DiscoverState extends State<Discover>
                               ),
                               onTap: () {
                                 Navigator.of(context)
-                                    .pushNamed('/cart', arguments: context);
+                                    .pushNamed('/cart', arguments: widget.args['context']);
                               }),
                           badgeContent: Text(
                             len,
@@ -410,7 +410,7 @@ class _DiscoverState extends State<Discover>
       padding: const EdgeInsets.only(top: 2, bottom: 2),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed('/description', arguments: document);
+          Navigator.of(context).pushNamed('/description', arguments: {'document':document,'providerContext':widget.args['context']});
         },
         child: Material(
           elevation: 2,

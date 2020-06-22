@@ -86,16 +86,6 @@ class FirestoreService {
     return db.collection('categories').orderBy('index').snapshots();
   }
 
-  // Future<bool> inWishlist(String productId) {
-  //   LocalData().getUid().then((uId) {
-  //     db
-  //         .collection('users')
-  //         .document(uId)
-  //         .get()
-  //         .then((DocumentSnapshot userDoc) {});
-  //   });
-  // }
-
   void addToWishlist(String productId) {
     String userId;
     LocalData().getUserEmail().then((userEmail) {

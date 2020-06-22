@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'myApp.dart';
 
@@ -13,13 +15,7 @@ class DrawerWidget extends StatefulWidget {
 class _DrawerWidgetState extends State<DrawerWidget> {
   AuthService auth = new AuthService();
   String userEmail;
-
-  Future<void> _readEmail() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userEmail = prefs.getString('userEmail');
-    });
-  }
+  DocumentSnapshot userProvider;
 
   Future<void> _logout(context) async {
     showDialog(
@@ -58,7 +54,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _readEmail();
+    userProvider = Provider.of<DocumentSnapshot>(context);
+    userEmail = userProvider['name'];
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -114,7 +111,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             leading: Hero(tag: 'wishlist', child: Icon(Icons.favorite)),
             title: Text('Wishlist'),
             onTap: () {
-              Navigator.of(widget.navContext).pushNamed('/wishlist');
+              Navigator.of(widget.navContext).pushNamed('/wishlist',arguments:context);
             },
           ),
           /* ListTile(

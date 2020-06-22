@@ -1,8 +1,9 @@
 import 'package:badges/badges.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import '../functionalities/firestore_service.dart';
-import '../functionalities/local_data.dart';
 import 'drawerWidget.dart';
 
 class Orders extends StatefulWidget {
@@ -13,56 +14,53 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
+  DocumentSnapshot userProvider;
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<DocumentSnapshot>(context);
     return Scaffold(
       drawer: DrawerWidget(navContext: widget.navContext),
       appBar: AppBar(actions: [
         Padding(
-                padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                child: FutureBuilder(
-                  future: LocalData().getUid(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container();
-                    }
-                    String uid = snapshot.data;
-                    return StreamBuilder(
-                      stream: FirestoreService().getUser(uid),
-                      builder: (BuildContext context, AsyncSnapshot snap) {
-                        if (!snap.hasData) {
-                          return Container();
-                        }
-                        var len =
-                            snap.data['cart'].keys.toList().length.toString();
-                        return Badge(
-                          child: InkWell(
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: Colors.white,
-                              ),
-                              onTap: () {
-                                Navigator.of(widget.navContext).pushNamed(
-                                    '/cart',
-                                    arguments: widget.navContext);
-                              }),
-                          badgeContent: Text(len,style: TextStyle(color:Colors.white),),
-                          animationType: BadgeAnimationType.slide,
-                          showBadge: len != '0',
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
+            padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+            child: (userProvider == null)
+                ? Center(
+                    child: SpinKitChasingDots(color: Colors.deepPurple),
+                  )
+                : StreamBuilder(
+                    stream: FirestoreService().getUser(userProvider.documentID),
+                    builder: (BuildContext context, AsyncSnapshot snap) {
+                      if (!snap.hasData) {
+                        return Container();
+                      }
+                      var len =
+                          snap.data['cart'].keys.toList().length.toString();
+                      return Badge(
+                        child: InkWell(
+                            child: Icon(
+                              Icons.shopping_cart,
+                              color: Colors.white,
+                            ),
+                            onTap: () {
+                              Navigator.of(widget.navContext).pushNamed('/cart',
+                                  arguments: context);
+                            }),
+                        badgeContent: Text(
+                          len,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        animationType: BadgeAnimationType.slide,
+                        showBadge: len != '0',
+                      );
+                    },
+                  )),
       ], backgroundColor: Colors.deepPurple[800], title: Text('Orders')),
-      body: FutureBuilder(
-        future: LocalData().getUid(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            var uid = snapshot.data;
-            return StreamBuilder(
-              stream: FirestoreService().getOrders(uid),
+      body: (userProvider == null)
+          ? Center(
+              child: SpinKitChasingDots(color: Colors.deepPurple),
+            )
+          : StreamBuilder(
+              stream: FirestoreService().getOrders(userProvider.documentID),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data == {}) {
@@ -227,10 +225,16 @@ class _OrdersState extends State<Orders> {
                                               Text('Total Amount:',
                                                   style: TextStyle(
                                                       color: Colors.grey)),
-                                              Text( (orderList[index]['amountWithCharge']!= null)?
-                                                ' \u{20B9} ' +
-                                                    orderList[index]['amountWithCharge'].roundToDouble()
-                                                        .toString():'',
+                                              Text(
+                                                (orderList[index][
+                                                            'amountWithCharge'] !=
+                                                        null)
+                                                    ? ' \u{20B9} ' +
+                                                        orderList[index][
+                                                                'amountWithCharge']
+                                                            .roundToDouble()
+                                                            .toString()
+                                                    : '',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -287,14 +291,7 @@ class _OrdersState extends State<Orders> {
                   );
                 }
               },
-            );
-          } else {
-            return Center(
-              child: SpinKitChasingDots(color: Colors.deepPurple[900]),
-            );
-          }
-        },
-      ),
+            ),
     );
   }
 }

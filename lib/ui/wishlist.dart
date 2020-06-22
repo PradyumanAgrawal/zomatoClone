@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
-import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:provider/provider.dart';
 
 class Wishlist extends StatefulWidget {
+  final BuildContext providerContext;
+  const Wishlist({Key key, this.providerContext}) : super(key: key);
   @override
   _WishlistState createState() => _WishlistState();
 }
 
 class _WishlistState extends State<Wishlist> {
+  DocumentSnapshot userProvider;
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<DocumentSnapshot>(widget.providerContext);
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -28,23 +32,19 @@ class _WishlistState extends State<Wishlist> {
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
-                Container(
-                  child: FutureBuilder(
-                    future: LocalData().getUid(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (!snapshot.hasData)
-                        return Center(
-                            child:
-                                SpinKitChasingDots(color: Colors.deepPurple));
-                      String userId = snapshot.data;
-                      return StreamBuilder(
-                        stream: FirestoreService().getUser(userId),
+                (userProvider == null)
+                    ? Center(
+                        child: SpinKitChasingDots(color: Colors.deepPurple),
+                      )
+                    : Container(
+                        child: StreamBuilder(
+                        stream:
+                            FirestoreService().getUser(userProvider.documentID),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return Center(
                                 child: SpinKitChasingDots(
                                     color: Colors.deepPurple));
-
                           DocumentSnapshot document = snapshot.data;
                           List wishlist = document['wishlist'];
                           if (wishlist.isEmpty) {
@@ -52,8 +52,7 @@ class _WishlistState extends State<Wishlist> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 SizedBox(height: 70),
-                                Image.asset(
-                                    'assets/images/emptyWishlist.png'),
+                                Image.asset('assets/images/emptyWishlist.png'),
                                 Text(
                                   'No products in wishlist!',
                                   style: TextStyle(
@@ -79,32 +78,31 @@ class _WishlistState extends State<Wishlist> {
                                 padding: const EdgeInsets.all(0),
                                 child: Column(
                                   children: List.generate(
-                                      snapshot.data.documents.length,
-                                      (index) {
-                                    DocumentSnapshot document =
-                                        snapshot.data.documents[index];
-                                    return itemCard(
-                                        document['name'],
-                                        document['catalogue'][0],
-                                        document['description'],
-                                        wishlist
-                                            .contains(document.documentID),
-                                        document['price'],
-                                        document['discount'] != null
-                                            ? document['discount']
-                                            : '0',
-                                        document,
-                                        context);
-                                  }),
+                                    snapshot.data.documents.length,
+                                    (index) {
+                                      DocumentSnapshot document =
+                                          snapshot.data.documents[index];
+                                      return itemCard(
+                                          document['name'],
+                                          document['catalogue'][0],
+                                          document['description'],
+                                          wishlist
+                                              .contains(document.documentID),
+                                          document['price'],
+                                          document['discount'] != null
+                                              ? document['discount']
+                                              : '0',
+                                          document,
+                                          context,
+                                          widget.providerContext);
+                                    },
+                                  ),
                                 ),
                               );
                             },
                           );
                         },
-                      );
-                    },
-                  ),
-                ),
+                      )),
               ],
             ),
           ),
@@ -122,7 +120,8 @@ Widget itemCard(
     String price,
     String discount,
     DocumentSnapshot document,
-    BuildContext context) {
+    BuildContext context,
+    BuildContext providerContext) {
   return Padding(
     padding: const EdgeInsets.only(top: 2, bottom: 2),
     child: Material(
@@ -143,8 +142,13 @@ Widget itemCard(
                 flex: 12,
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context)
-                        .pushNamed('/description', arguments: document);
+                    Navigator.of(context).pushNamed(
+                      '/description',
+                      arguments: {
+                        'document': document,
+                        'providerContext': providerContext
+                      },
+                    );
                   },
                   child: Hero(
                     tag: document['catalogue'][0],
@@ -179,8 +183,12 @@ Widget itemCard(
                               child: InkWell(
                                 onTap: () {
                                   Navigator.of(context).pushNamed(
-                                      '/description',
-                                      arguments: document);
+                                    '/description',
+                                    arguments: {
+                                      'document': document,
+                                      'providerContext': providerContext
+                                    },
+                                  );
                                 },
                                 child: Container(
                                   width: MediaQuery.of(context).size.width *
@@ -353,7 +361,8 @@ Widget itemCard(
                                                           document.documentID,
                                                           1,
                                                           '',
-                                                          false,document);
+                                                          false,
+                                                          document);
                                               if (status == 2) {
                                                 Fluttertoast.showToast(
                                                   msg:

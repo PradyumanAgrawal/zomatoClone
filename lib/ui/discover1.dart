@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
-import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:provider/provider.dart';
 import 'drawerWidget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -32,6 +31,7 @@ class _Discover1State extends State<Discover1> {
     "women's wear": LineAwesomeIcons.female,
   };
   List<String> locationList;
+  DocumentSnapshot userProvider;
   String f(String name) {
     List<String> n = name.split(' ');
     for (int i = 0; i < n.length; i++) {
@@ -45,6 +45,7 @@ class _Discover1State extends State<Discover1> {
   @override
   Widget build(BuildContext context) {
     locationList = Provider.of<List<String>>(context);
+    userProvider = Provider.of<DocumentSnapshot>(context);
     return Scaffold(
       drawer: DrawerWidget(navContext: widget.navContext),
       body: DefaultTabController(
@@ -70,47 +71,41 @@ class _Discover1State extends State<Discover1> {
                     onPressed: () {},
                   ), */
                   Padding(
-                    padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                    child: FutureBuilder(
-                      future: LocalData().getUid(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (!snapshot.hasData) {
-                          return Container();
-                        }
-                        String uid = snapshot.data;
-                        return StreamBuilder(
-                          stream: FirestoreService().getUser(uid),
-                          builder: (BuildContext context, AsyncSnapshot snap) {
-                            if (!snap.hasData) {
-                              return Container();
-                            }
-                            var len = snap.data['cart'].keys
-                                .toList()
-                                .length
-                                .toString();
-                            return Badge(
-                              child: InkWell(
-                                  child: Icon(
-                                    Icons.shopping_cart,
-                                    color: Colors.white,
+                      padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                      child: (userProvider == null)
+                          ? Container()
+                          : StreamBuilder(
+                              stream: FirestoreService()
+                                  .getUser(userProvider.documentID),
+                              builder:
+                                  (BuildContext context, AsyncSnapshot snap) {
+                                if (!snap.hasData) {
+                                  return Container();
+                                }
+                                var len = snap.data['cart'].keys
+                                    .toList()
+                                    .length
+                                    .toString();
+                                return Badge(
+                                  child: InkWell(
+                                      child: Icon(
+                                        Icons.shopping_cart,
+                                        color: Colors.white,
+                                      ),
+                                      onTap: () {
+                                        Navigator.of(widget.navContext)
+                                            .pushNamed('/cart',
+                                                arguments: context);
+                                      }),
+                                  badgeContent: Text(
+                                    len,
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                  onTap: () {
-                                    Navigator.of(widget.navContext).pushNamed(
-                                        '/cart',
-                                        arguments: widget.navContext);
-                                  }),
-                              badgeContent: Text(
-                                len,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              animationType: BadgeAnimationType.slide,
-                              showBadge: len != '0',
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                                  animationType: BadgeAnimationType.slide,
+                                  showBadge: len != '0',
+                                );
+                              },
+                            )),
                 ],
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -235,13 +230,12 @@ class _Discover1State extends State<Discover1> {
                       builder: (context, snapshot) {
                         if (!snapshot.hasData)
                           return Center(
-                              child:
-                                  SpinKitChasingDots(color: Colors.deepPurple));
+                            child: SpinKitChasingDots(color: Colors.deepPurple),
+                          );
                         if (snapshot.data.length == 0)
                           return Center(
                             child: Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Image.asset('assets/images/noStore4.png'),
                                 Text(
@@ -265,13 +259,12 @@ class _Discover1State extends State<Discover1> {
                               children: <Widget>[
                                 InkWell(
                                   onTap: () {
-                                    Navigator.of(widget.navContext).pushNamed(
-                                        '/discover',
-                                        arguments: {
-                                          'stream': 'shop',
-                                          'shopId': document.documentID,
-                                          'context': context
-                                        });
+                                    Navigator.of(widget.navContext)
+                                        .pushNamed('/discover', arguments: {
+                                      'stream': 'shop',
+                                      'shopId': document.documentID,
+                                      'context': context
+                                    });
                                     print(index);
                                   },
                                   child: Container(

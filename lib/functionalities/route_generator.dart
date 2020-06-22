@@ -35,7 +35,7 @@ class RouteGenerator {
         );
       case '/description':
         return MaterialPageRoute(
-          builder: (_) => Description(document: args),
+          builder: (_) => Description(args: args),
         );
       case '/discover':
         return MaterialPageRoute(
@@ -71,7 +71,7 @@ class RouteGenerator {
         );
       case '/cart':
         return MaterialPageRoute(
-          builder: (_) => Cart(navContext: args),
+          builder: (_) => Cart(providerContext: args),
         );
       case '/share':
         return MaterialPageRoute(
@@ -83,7 +83,7 @@ class RouteGenerator {
         );
       case '/wishlist':
         return MaterialPageRoute(
-          builder: (_) => Wishlist(),
+          builder: (_) => Wishlist(providerContext: args,),
         );
       case '/profile':
         return MaterialPageRoute(

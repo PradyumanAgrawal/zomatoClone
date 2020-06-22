@@ -32,9 +32,9 @@ class HomeScreenState extends State<HomeScreen> {
   bool isTyping = false;
   bool isSearching = false;
   HomeScreenState({this.add, this.location});
-  DocumentSnapshot user;
+  DocumentSnapshot userProvider;
   List<DocumentSnapshot> nearByShopsSnapshots;
-  List<DocumentReference> nearByShopsReferences;
+  List<DocumentReference> nearByShopsReferences = [];
   LocationPreferences locationPreference;
   List<String> locationList;
   TextEditingController _controller = TextEditingController();
@@ -94,43 +94,42 @@ class HomeScreenState extends State<HomeScreen> {
 
   void _showAlertDialog(context) {
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-            backgroundColor: Colors.white,
-            titleTextStyle: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black),
-            content: Container(
-              height: 200,
-              alignment: Alignment.center,
-              child: Text(
-                add,
-                style: TextStyle(
-                    color: Colors.blueGrey[900],
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 15,
-                    height: 1.4),
-                textAlign: TextAlign.center,
-              ),
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          backgroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+              fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),
+          content: Container(
+            height: 200,
+            alignment: Alignment.center,
+            child: Text(
+              add,
+              style: TextStyle(
+                  color: Colors.blueGrey[900],
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                  height: 1.4),
+              textAlign: TextAlign.center,
             ),
-            actions: <Widget>[
-              Material(
-                child: IconButton(
-                    icon:
-                        Icon(Icons.close, color: Colors.deepPurple, size: 30.0),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
-              )
-            ],
-          );
-        });
+          ),
+          actions: <Widget>[
+            Material(
+              child: IconButton(
+                icon: Icon(Icons.close, color: Colors.deepPurple, size: 30.0),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -155,7 +154,7 @@ class HomeScreenState extends State<HomeScreen> {
     await FirestoreService().saveToken(token, uid);
   }
 
-  void getShopIdList(List<DocumentSnapshot> documentSnapshots) {
+  void getShopRefList(List<DocumentSnapshot> documentSnapshots) {
     nearByShopsReferences = [];
     for (int i = 0; i < documentSnapshots.length; i++) {
       nearByShopsReferences.add(documentSnapshots[i].reference);
@@ -166,11 +165,11 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<DocumentSnapshot>(context);
+    userProvider = Provider.of<DocumentSnapshot>(context);
     if (Provider.of<List<DocumentSnapshot>>(context) != null) {
       nearByShopsSnapshots =
           List.from(Provider.of<List<DocumentSnapshot>>(context));
-      getShopIdList(nearByShopsSnapshots);
+      getShopRefList(nearByShopsSnapshots);
     }
     locationPreference = Provider.of<LocationPreferences>(context);
     if (location != null)
@@ -214,47 +213,42 @@ class HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                child: FutureBuilder(
-                  future: LocalData().getUid(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container();
-                    }
-                    String uid = snapshot.data;
-                    return StreamBuilder(
-                      stream: FirestoreService().getUser(uid),
-                      builder: (BuildContext context, AsyncSnapshot snap) {
-                        if (!snap.hasData) {
-                          return Container();
-                        }
-                        checkToken(uid);
-                        var len =
-                            snap.data['cart'].keys.toList().length.toString();
-                        return Badge(
-                          child: InkWell(
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: Colors.white,
-                              ),
-                              onTap: () {
-                                Navigator.of(widget.navContext).pushNamed(
-                                    '/cart',
-                                    arguments: widget.navContext);
-                              }),
-                          badgeContent: Text(
-                            len,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          animationType: BadgeAnimationType.slide,
-                          showBadge: len != '0',
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
+              (userProvider == null)
+                  ? Center(
+                      child: SpinKitChasingDots(color: Colors.deepPurple),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                      child: StreamBuilder(
+                        stream:
+                            FirestoreService().getUser(userProvider.documentID),
+                        builder: (BuildContext context, AsyncSnapshot snap) {
+                          if (!snap.hasData) {
+                            return Container();
+                          }
+                          checkToken(userProvider.documentID);
+                          var len =
+                              snap.data['cart'].keys.toList().length.toString();
+                          return Badge(
+                            child: InkWell(
+                                child: Icon(
+                                  Icons.shopping_cart,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {
+                                  Navigator.of(widget.navContext)
+                                      .pushNamed('/cart', arguments: context);
+                                }),
+                            badgeContent: Text(
+                              len,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            animationType: BadgeAnimationType.slide,
+                            showBadge: len != '0',
+                          );
+                        },
+                      ),
+                    ),
             ],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -509,26 +503,14 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       SizedBox(height: 10.0),
-                      Container(
-                        child: FutureBuilder(
-                          future: LocalData().getUid(),
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (!snapshot.hasData)
-                              return Center(
-                                  child: SpinKitChasingDots(
-                                      color: Colors.deepPurple));
-                            String userId = snapshot.data;
-                            return StreamBuilder(
-                              stream: FirestoreService().getUser(userId),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData)
-                                  return Center(
-                                      child: SpinKitChasingDots(
-                                    color: Colors.purple,
-                                  ));
-                                DocumentSnapshot document = snapshot.data;
-                                wishlist = document['wishlist'];
+                      (userProvider == null)
+                          ? Center(
+                              child:
+                                  SpinKitChasingDots(color: Colors.deepPurple),
+                            )
+                          : Builder(
+                              builder: (context) {
+                                wishlist = userProvider['wishlist'];
                                 if (nearByShopsReferences.isEmpty)
                                   return Center(
                                     child: Column(
@@ -584,10 +566,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   },
                                 );
                               },
-                            );
-                          },
-                        ),
-                      ),
+                            ),
                       Divider(
                         color: Colors.purple.withOpacity(0.5),
                         height: 80,
@@ -627,12 +606,13 @@ class HomeScreenState extends State<HomeScreen> {
       String price,
       String discount,
       DocumentSnapshot document,
-      BuildContext context) {
+      BuildContext navContext) {
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 2),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed('/description', arguments: document);
+          Navigator.of(navContext).pushNamed('/description',
+              arguments: {'document': document, 'providerContext': context});
         },
         child: Material(
           elevation: 2,
@@ -934,7 +914,8 @@ class HomeScreenState extends State<HomeScreen> {
       bool inWishlist) {
     return InkWell(
       onTap: () {
-        Navigator.of(navContext).pushNamed('/description', arguments: document);
+        Navigator.of(navContext).pushNamed('/description',
+            arguments: {'document': document, 'providerContext': context});
       },
       child: Padding(
         padding: const EdgeInsets.all(3.0),

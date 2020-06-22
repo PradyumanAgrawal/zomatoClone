@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:provider/provider.dart';
 
 class Cart extends StatefulWidget {
-  final BuildContext navContext;
-  Cart({Key key, this.navContext}) : super(key: key);
+  final BuildContext providerContext;
+  Cart({Key key, this.providerContext}) : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -14,29 +14,41 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   double totalPrice = 0;
-  String userId;
-  bool buttonVisible = true;
+  bool allProductsAvailable = true;
+  DocumentSnapshot userProvider;
+  List<DocumentSnapshot> nearByShopsSnapshots;
+  List<DocumentReference> nearByShopsReferences = [];
+  void getShopRefList(List<DocumentSnapshot> documentSnapshots) {
+    nearByShopsReferences = [];
+    for (int i = 0; i < documentSnapshots.length; i++) {
+      nearByShopsReferences.add(documentSnapshots[i].reference);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: LocalData().getUid(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          userId = snapshot.data;
+    userProvider = Provider.of<DocumentSnapshot>(widget.providerContext);
+    if (Provider.of<List<DocumentSnapshot>>(widget.providerContext) != null) {
+      nearByShopsSnapshots = List.from(
+          Provider.of<List<DocumentSnapshot>>(widget.providerContext));
+      getShopRefList(nearByShopsSnapshots);
+    }
+    return Builder(
+      builder: (context) {
+        if (userProvider != null) {
           return StreamBuilder(
-            stream: FirestoreService().getUser(userId),
+            stream: FirestoreService().getUser(userProvider.documentID),
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return Scaffold(
                   body: Center(
-                      child: SpinKitChasingDots(
-                    color: Colors.purple,
-                  )),
+                    child: SpinKitChasingDots(
+                      color: Colors.purple,
+                    ),
+                  ),
                 );
               DocumentSnapshot document = snapshot.data;
               if (document['cart'].isEmpty) {
-                buttonVisible = false;
                 return Scaffold(
                   appBar: AppBar(
                     leading: IconButton(
@@ -89,6 +101,7 @@ class _CartState extends State<Cart> {
                       ),
                     );
                   totalPrice = 0;
+                  allProductsAvailable = true;
                   for (int i = 0; i < snapshot.data.documents.length; i++,) {
                     DocumentSnapshot productDoc = snapshot.data.documents[i];
                     if (productList.contains(productDoc.documentID)) {
@@ -100,6 +113,8 @@ class _CartState extends State<Cart> {
                                   100) *
                           document['cart'][productDoc.documentID]['quantity'];
                     }
+                    if (!nearByShopsReferences.contains(productDoc['shop']))
+                      allProductsAvailable = false;
                   }
                   int listLength = snapshot.data.documents.length;
                   return Scaffold(
@@ -107,61 +122,98 @@ class _CartState extends State<Cart> {
                       elevation: 7.0,
                       color: Colors.white70,
                       child: Container(
-                        height: 50.0,
+                        height: (allProductsAvailable) ? 50.0 : 100,
                         width: MediaQuery.of(context).size.width,
                         color: Colors.white,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              //SizedBox(width: 10.0),
-                              Flexible(
-                                flex: 40,
-                                child: Center(
-                                  child: Text(
-                                    '\u{20B9} ' +
-                                        totalPrice.roundToDouble().toString(),
-                                    style: TextStyle(
-                                      color: Colors.deepPurple,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                flex: 60,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.deepPurple[800],
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          bottomLeft: Radius.circular(10))),
-                                  child: Center(
-                                    child: FlatButton(
-                                      onPressed: () async {
-                                        if (userId != null) {
-                                          Navigator.of(context).pushNamed(
-                                              '/review_order',
-                                              arguments: widget.navContext);
-                                        }
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            'Place Order',
+                        child: Column(
+                          children: <Widget>[
+                            (allProductsAvailable)
+                                ? Container()
+                                : Container(
+                                    padding: EdgeInsets.all(10),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Icon(Icons.info, color: Colors.red),
+                                        SizedBox(width: 10),
+                                        Flexible(
+                                          child: Text(
+                                            'Some of the products in the cart are not available in your region!',
                                             style: TextStyle(
-                                                fontSize: 18.0,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
-                                        ],
+                                        ),
+                                      ],
+                                    )),
+                            Expanded(
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    //SizedBox(width: 10.0),
+                                    Flexible(
+                                      flex: 40,
+                                      child: Center(
+                                        child: Text(
+                                          '\u{20B9} ' +
+                                              totalPrice
+                                                  .roundToDouble()
+                                                  .toString(),
+                                          style: TextStyle(
+                                            color: Colors.deepPurple,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ),
-                            ]),
+                                    Flexible(
+                                      flex: 60,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: (allProductsAvailable)
+                                                ? Colors.deepPurple[800]
+                                                : Colors.grey,
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                bottomLeft:
+                                                    Radius.circular(10))),
+                                        child: Center(
+                                          child: FlatButton(
+                                            onPressed: (allProductsAvailable)
+                                                ? () async {
+                                                    if (userProvider != null) {
+                                                      Navigator.of(context)
+                                                          .pushNamed(
+                                                              '/review_order',
+                                                              arguments: widget
+                                                                  .providerContext);
+                                                    }
+                                                  }
+                                                : null,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Place Order',
+                                                  style: TextStyle(
+                                                      fontSize: 18.0,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     body: CustomScrollView(
@@ -199,7 +251,7 @@ class _CartState extends State<Cart> {
                                       snapshot.data.documents[index];
                                   try {
                                     return product(
-                                        widget.navContext,
+                                        context,
                                         index,
                                         productDoc,
                                         document['cart'][productDoc.documentID]
@@ -275,7 +327,10 @@ class _CartState extends State<Cart> {
                           child: InkWell(
                             onTap: () {
                               Navigator.of(context).pushNamed('/description',
-                                  arguments: productDoc);
+                                  arguments: {
+                                    'document': productDoc,
+                                    'providerContext': widget.providerContext
+                                  });
                             },
                             child: Hero(
                               tag: productDoc['catalogue'][0],
@@ -303,7 +358,11 @@ class _CartState extends State<Cart> {
                                       onTap: () {
                                         Navigator.of(context).pushNamed(
                                             '/description',
-                                            arguments: productDoc);
+                                            arguments: {
+                                              'document': productDoc,
+                                              'providerContext':
+                                                  widget.providerContext
+                                            });
                                       },
                                       child: Text(
                                         productDoc['name'],
@@ -413,7 +472,8 @@ class _CartState extends State<Cart> {
                                     productDoc.documentID,
                                     newQuantity,
                                     variant,
-                                    true, productDoc);
+                                    true,
+                                    productDoc);
                               }
                             }),
                         Text(
@@ -457,7 +517,8 @@ class _CartState extends State<Cart> {
                   enableFeedback: true,
                   onPressed: () {
                     FirestoreService()
-                        .addToCart(productDoc.documentID, 0, variant, true, productDoc)
+                        .addToCart(
+                            productDoc.documentID, 0, variant, true, productDoc)
                         .then((value) {});
                   },
                   icon: Icon(Icons.delete),
