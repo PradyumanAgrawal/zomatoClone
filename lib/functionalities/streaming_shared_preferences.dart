@@ -5,7 +5,7 @@ class LocationPreferences {
       : 
       //latitude = preferences.getDouble('latitude', defaultValue: 0),
        // longitude = preferences.getDouble('longitude', defaultValue: 0),
-        location = preferences.getStringList('location', defaultValue: ['','']);
+        location = preferences.getStringList('location', defaultValue: ['0.0 ','0.0']);
 
  // final Preference<double> latitude;
   //final Preference<double> longitude;

@@ -26,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  String add;
+  String add = '';
   LatLng location;
   List wishlist;
   bool isTyping = false;
@@ -197,10 +197,18 @@ class HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold),
             ),
             actions: <Widget>[
-              add == ''
+              add == null
                   ? Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Icon(Icons.location_off),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.location_off,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          
+                        },
+                      ),
                     )
                   : Padding(
                       padding: const EdgeInsets.all(10.0),
