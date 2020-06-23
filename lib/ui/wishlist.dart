@@ -47,7 +47,7 @@ class _WishlistState extends State<Wishlist> {
                                     color: Colors.deepPurple));
                           DocumentSnapshot document = snapshot.data;
                           List wishlist = document['wishlist'];
-                          if (wishlist.isEmpty) {
+                          if (wishlist.length==0) {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
@@ -74,6 +74,22 @@ class _WishlistState extends State<Wishlist> {
                                     color: Colors.purple,
                                   ),
                                 );
+                              if(snapshot.data.documents.length==0){
+                                return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(height: 70),
+                                Image.asset('assets/images/emptyWishlist.png'),
+                                Text(
+                                  'No products in wishlist!',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            );
+                              }
                               return Padding(
                                 padding: const EdgeInsets.all(0),
                                 child: Column(
