@@ -42,8 +42,8 @@ class _OrdersState extends State<Orders> {
                               color: Colors.white,
                             ),
                             onTap: () {
-                              Navigator.of(widget.navContext).pushNamed('/cart',
-                                  arguments: context);
+                              Navigator.of(widget.navContext)
+                                  .pushNamed('/cart', arguments: context);
                             }),
                         badgeContent: Text(
                           len,
@@ -104,6 +104,7 @@ class _OrdersState extends State<Orders> {
                         : ListView.builder(
                             itemCount: orderList.length,
                             itemBuilder: (context, index) {
+                              if (orderList[index] == null) return Container();
                               return Card(
                                 child: Column(
                                   children: [
@@ -201,10 +202,13 @@ class _OrdersState extends State<Orders> {
                                               style: TextStyle(
                                                   color: Colors.grey)),
                                           Text(
-                                            orderList[index]['timeStamp']
-                                                .toDate()
-                                                .toString()
-                                                .substring(0, 10),
+                                            (orderList[index]['timeStamp'] ==
+                                                    null)
+                                                ? ''
+                                                : orderList[index]['timeStamp']
+                                                    .toDate()
+                                                    .toString()
+                                                    .substring(0, 10),
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),

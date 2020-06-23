@@ -166,6 +166,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     userProvider = Provider.of<DocumentSnapshot>(context);
+    if (userProvider != null) checkToken(userProvider.documentID);
     if (Provider.of<List<DocumentSnapshot>>(context) != null) {
       nearByShopsSnapshots =
           List.from(Provider.of<List<DocumentSnapshot>>(context));
@@ -226,7 +227,7 @@ class HomeScreenState extends State<HomeScreen> {
                           if (!snap.hasData) {
                             return Container();
                           }
-                          checkToken(userProvider.documentID);
+
                           var len =
                               snap.data['cart'].keys.toList().length.toString();
                           return Badge(
@@ -376,7 +377,7 @@ class HomeScreenState extends State<HomeScreen> {
                               child: Row(
                                 children: <Widget>[
                                   Text(
-                                    "Filter",
+                                    "Change",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12.0),

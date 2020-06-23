@@ -17,6 +17,7 @@ class _ReviewCartState extends State<ReviewCart> {
   int addressListLength;
   String totalAmount;
   String userId;
+  String email;
 
   Future<void> detailsIncomplete(context) {
     return showDialog(
@@ -303,8 +304,7 @@ class _ReviewCartState extends State<ReviewCart> {
                         ],
                       ),
                       StreamBuilder(
-                        stream:
-                            FirestoreService().getUser(snapshot.data['userId']),
+                        stream:FirestoreService().getUser(snapshot.data['userId']),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return Center(
@@ -314,6 +314,7 @@ class _ReviewCartState extends State<ReviewCart> {
                             );
                           //DocumentSnapshot document =
                           //DocumentSnapshot userDoc = snapshot.data;
+                          email = snapshot.data['email'];
                           return Column(
                             children: <Widget>[
                               snapshot.data['mobileNo'] == ''
@@ -649,6 +650,13 @@ class _ReviewCartState extends State<ReviewCart> {
                             return detailsIncomplete(context);
                           } else {
                             if (selectedRadioPayment == 0) {
+                              // Map details = {
+                              //     'amount': (double.parse(totalAmount)*1.0236).round().toString(),
+                              //     'userId': userId,
+                              //     'email': email,
+                              //     'paymentMethod': "COD",
+                              //   };
+                              // Navigator.of(context).pushNamed('/successScreen', arguments: details);
                               FirestoreService()
                                   .placeOrder(
                                       snapshot.data['address'][selectedAdd],
@@ -661,15 +669,16 @@ class _ReviewCartState extends State<ReviewCart> {
                                       "Order Placed, waiting for the seller to accept the order",
                                 );
                                 Map details = {
-                                  'amount': (int.parse(totalAmount)*1.0236).round().toString(),
+                                  'amount': (double.parse(totalAmount)*1.0236).round().toString(),
                                   'userId': userId,
-                                  'email': snapshot.data['email'],
+                                  'email': email,
                                   'paymentMethod': "COD",
                                 };
                                 Navigator.of(context).pushNamed('/successScreen', arguments: details);
-                                // Navigator.of(widget.navContext).pop();
-                                // Navigator.of(context).pop();
-                              }).catchError(() {
+                               
+                              })
+                              .catchError((error) {
+                                print(error);
                                 Fluttertoast.showToast(
                                   msg: "Something went wrong!!!",
                                 );

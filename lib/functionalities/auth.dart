@@ -27,7 +27,7 @@ class AuthService {
             loggedIn: "yes",
             uid: user.uid,
             token: token);
-        await FirestoreService().saveToken(token, user.uid);
+        //await FirestoreService().saveToken(token, user.uid);
         await AnalyticsService().logLogIn('email');
         return true;
       }
@@ -54,7 +54,7 @@ class AuthService {
             loggedIn: "yes",
             uid: user.uid,
             token: token);
-        await FirestoreService().saveToken(token, user.uid);
+        //await FirestoreService().saveToken(token, user.uid);
         await AnalyticsService().logSignUp('email');
         return true;
       }
@@ -113,7 +113,7 @@ class AuthService {
           loggedIn: "yes",
           uid: user.uid,
           token: token);
-      await FirestoreService().saveToken(token, user.uid);
+      //await FirestoreService().saveToken(token, user.uid);
       await AnalyticsService().logLogIn('google');
       print("user name: ${user.displayName}");
       print(user.displayName);

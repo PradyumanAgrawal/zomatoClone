@@ -79,82 +79,90 @@ class NavigationState extends State<Navigation> {
   Widget build(BuildContext context) {
     if (locationPreference == null)
       return Center(
-          child: SpinKitChasingDots(
-        color: Colors.purple,
-      ));
+        child: SpinKitChasingDots(
+          color: Colors.purple,
+        ),
+      );
     return PreferenceBuilder(
-        preference: locationPreference.location,
-        builder: (context, location) {
-          return MultiProvider(
-            providers: [
-              StreamProvider<DocumentSnapshot>.value(
-                value: FirestoreService().getUser(userId),
-              ),
-              Provider<LocationPreferences>.value(value: locationPreference),
-              Provider<List<String>>.value(value: location),
-              StreamProvider<List<DocumentSnapshot>>.value(
-                value: FirestoreService().getNearbyStores(
-                  LatLng(
-                    double.parse(location[0]),
-                    double.parse(location[1]),
-                  ),
-                ),
-              )
-            ],
-            child: new WillPopScope(
-              onWillPop: () async => false,
-              child: MaterialApp(
-                home: Scaffold(
-                  body: IndexedStack(
-                    index: _selectedIndex,
-                    children: <Widget>[
-                      HomeScreen(
-                        navContext: context,
-                      ),
-                      Discover1(
-                        navContext: context,
-                      ),
-                      Orders(
-                        navContext: context,
-                      ),
-                      Share(
-                        navContext: context,
-                      ),
-                    ],
-                  ),
-                  bottomNavigationBar: CurvedNavigationBar(
-                    height: 50,
-                    backgroundColor: Colors.white,
-                    animationDuration: Duration(milliseconds: 250),
-                    //animationCurve: Curves.elasticOut,
-                    color: Colors.deepPurple[800],
-                    items: <Widget>[
-                      Icon(
-                        Icons.home,
-                        color: Colors.white,
-                      ),
-                      Icon(
-                        Icons.favorite,
-                        color: Colors.white,
-                      ),
-                      Icon(
-                        Icons.shopping_basket,
-                        color: Colors.white,
-                      ),
-                      Icon(
-                        Icons.share,
-                        color: Colors.white,
-                      ),
-                    ],
-
-                    index: _selectedIndex,
-                    onTap: _onItemTapped,
-                  ),
-                ),
-                debugShowCheckedModeBanner: false,
-              ),
+      preference: locationPreference.location,
+      builder: (context, location) {
+        if (location == null)
+          return Center(
+            child: SpinKitChasingDots(
+              color: Colors.purple,
             ),
           );
-        });
+        return MultiProvider(
+          providers: [
+            StreamProvider<DocumentSnapshot>.value(
+              value: FirestoreService().getUser(userId),
+            ),
+            Provider<LocationPreferences>.value(value: locationPreference),
+            Provider<List<String>>.value(value: location),
+            StreamProvider<List<DocumentSnapshot>>.value(
+              value: FirestoreService().getNearbyStores(
+                LatLng(
+                  double.parse(location[0]),
+                  double.parse(location[1]),
+                ),
+              ),
+            )
+          ],
+          child: new WillPopScope(
+            onWillPop: () async => false,
+            child: MaterialApp(
+              home: Scaffold(
+                body: IndexedStack(
+                  index: _selectedIndex,
+                  children: <Widget>[
+                    HomeScreen(
+                      navContext: context,
+                    ),
+                    Discover1(
+                      navContext: context,
+                    ),
+                    Orders(
+                      navContext: context,
+                    ),
+                    Share(
+                      navContext: context,
+                    ),
+                  ],
+                ),
+                bottomNavigationBar: CurvedNavigationBar(
+                  height: 50,
+                  backgroundColor: Colors.white,
+                  animationDuration: Duration(milliseconds: 250),
+                  //animationCurve: Curves.elasticOut,
+                  color: Colors.deepPurple[800],
+                  items: <Widget>[
+                    Icon(
+                      Icons.home,
+                      color: Colors.white,
+                    ),
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.white,
+                    ),
+                    Icon(
+                      Icons.shopping_basket,
+                      color: Colors.white,
+                    ),
+                    Icon(
+                      Icons.share,
+                      color: Colors.white,
+                    ),
+                  ],
+
+                  index: _selectedIndex,
+                  onTap: _onItemTapped,
+                ),
+              ),
+              debugShowCheckedModeBanner: false,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

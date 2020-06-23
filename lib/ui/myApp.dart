@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Porsio",
-      navigatorObservers: [AnalyticsService().getObserver()],
+      //navigatorObservers: [AnalyticsService().getObserver()],
       theme: ThemeData(
           primaryColor: Colors.deepPurple,
           primaryColorDark: Colors.deepPurple[900],
