@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -58,17 +59,18 @@ class NavigationState extends State<Navigation> {
   Future<bool> _onWillPop() async {
     return (await showDialog(
       context: context,
-      builder: (context) => new AlertDialog(
+      builder: (context) => new CupertinoAlertDialog(
         title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
+        content: new Text('Do you want to exit the App'),
         actions: <Widget>[
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('No'),
-          ),
+          
           new FlatButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: new Text('Yes'),
+            child: new Text('Yes', style: TextStyle(color:Colors.deepPurple[900]),),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No', style: TextStyle(color:Colors.pink)),
           ),
         ],
       ),

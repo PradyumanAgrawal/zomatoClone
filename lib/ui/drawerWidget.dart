@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
 import 'package:provider/provider.dart';
@@ -22,9 +23,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
+          return CupertinoAlertDialog(
+            
             content: Text(
               'Logout ?',
               style: TextStyle(
@@ -43,10 +43,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                         MaterialPageRoute(builder: (context) => MyApp()),
                         (Route<dynamic> route) => false);
                   },
-                  child: Text('Yes', style: TextStyle(fontSize: 18.0))),
+                  child: Text('Yes', style: TextStyle(fontSize: 18.0, color: Colors.deepPurple[900]))),
               FlatButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('No', style: TextStyle(fontSize: 18.0)))
+                  child: Text('No', style: TextStyle(fontSize: 18.0, color: Colors.pink)))
             ],
           );
         });

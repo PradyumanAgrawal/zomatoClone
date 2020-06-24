@@ -121,7 +121,7 @@ class _ReviewCartState extends State<ReviewCart> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Products Details',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18, color: Colors.deepPurple[900], fontWeight: FontWeight.w500),
                   ),
                 ),
                 Card(
@@ -283,7 +283,7 @@ class _ReviewCartState extends State<ReviewCart> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Delivery Details',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18, color: Colors.deepPurple[900], fontWeight: FontWeight.w500),
                   ),
                 ),
                 Card(
@@ -577,7 +577,7 @@ class _ReviewCartState extends State<ReviewCart> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Payment Details',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18, color: Colors.deepPurple[900], fontWeight: FontWeight.w500),
                   ),
                 ),
                 Card(
@@ -610,14 +610,19 @@ class _ReviewCartState extends State<ReviewCart> {
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.only(left: 20),
-                              child:Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage('assets/images/paytm.png'),
+                              child:Row(
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage('assets/images/paytm.png'),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Text(" / UPI", style: TextStyle(color: Colors.deepPurple[900], fontWeight: FontWeight.w500),),
+                                ],
                               ),
                             ),
                           ],
@@ -634,7 +639,7 @@ class _ReviewCartState extends State<ReviewCart> {
                   ),
                 ),
                 Container(
-                  height: 50.0,
+                  height: 70.0,
                   width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Padding(
