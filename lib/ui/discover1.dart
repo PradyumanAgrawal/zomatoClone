@@ -71,41 +71,42 @@ class _Discover1State extends State<Discover1> {
                     onPressed: () {},
                   ), */
                   Padding(
-                      padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                      child: (userProvider == null)
-                          ? Container()
-                          : StreamBuilder(
-                              stream: FirestoreService()
-                                  .getUser(userProvider.documentID),
-                              builder:
-                                  (BuildContext context, AsyncSnapshot snap) {
-                                if (!snap.hasData) {
-                                  return Container();
-                                }
-                                var len = snap.data['cart'].keys
-                                    .toList()
-                                    .length
-                                    .toString();
-                                return Badge(
-                                  child: InkWell(
-                                      child: Icon(
-                                        Icons.shopping_cart,
-                                        color: Colors.white,
-                                      ),
-                                      onTap: () {
-                                        Navigator.of(widget.navContext)
-                                            .pushNamed('/cart',
-                                                arguments: context);
-                                      }),
-                                  badgeContent: Text(
-                                    len,
-                                    style: TextStyle(color: Colors.white),
+                    padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                    child: (userProvider == null)
+                        ? Container()
+                        : StreamBuilder(
+                            stream: FirestoreService()
+                                .getUser(userProvider.documentID),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snap) {
+                              if (!snap.hasData) {
+                                return Container();
+                              }
+                              var len = snap.data['cart'].keys
+                                  .toList()
+                                  .length
+                                  .toString();
+                              return Badge(
+                                child: InkWell(
+                                  child: Icon(
+                                    Icons.shopping_cart,
+                                    color: Colors.white,
                                   ),
-                                  animationType: BadgeAnimationType.slide,
-                                  showBadge: len != '0',
-                                );
-                              },
-                            )),
+                                  onTap: () {
+                                    Navigator.of(widget.navContext)
+                                        .pushNamed('/cart', arguments: context);
+                                  },
+                                ),
+                                badgeContent: Text(
+                                  len,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                animationType: BadgeAnimationType.slide,
+                                showBadge: len != '0',
+                              );
+                            },
+                          ),
+                  ),
                 ],
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -118,8 +119,9 @@ class _Discover1State extends State<Discover1> {
                     decoration: BoxDecoration(
                       //color: Colors.deepPurple[800],
                       borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20)),
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
                     ),
                     child: TabBar(
                       labelColor: Colors.deepPurple[900],
@@ -145,9 +147,9 @@ class _Discover1State extends State<Discover1> {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [Icon(Icons.store), Text("Shops")]),
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [Icon(Icons.store), Text("Shops")],
+                            ),
                           ),
                         )
                       ],
@@ -177,12 +179,14 @@ class _Discover1State extends State<Discover1> {
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              Navigator.of(widget.navContext)
-                                  .pushNamed('/discover', arguments: {
-                                'category': document.documentID,
-                                'stream': 'category',
-                                'context': context
-                              });
+                              Navigator.of(widget.navContext).pushNamed(
+                                '/discover',
+                                arguments: {
+                                  'category': document.documentID,
+                                  'stream': 'category',
+                                  'context': context
+                                },
+                              );
                             },
                             child: Container(
                               margin: EdgeInsets.all(0),
@@ -259,12 +263,14 @@ class _Discover1State extends State<Discover1> {
                               children: <Widget>[
                                 InkWell(
                                   onTap: () {
-                                    Navigator.of(widget.navContext)
-                                        .pushNamed('/discover', arguments: {
-                                      'stream': 'shop',
-                                      'shopId': document.documentID,
-                                      'context': context
-                                    });
+                                    Navigator.of(widget.navContext).pushNamed(
+                                      '/discover',
+                                      arguments: {
+                                        'stream': 'shop',
+                                        'shopId': document.documentID,
+                                        'context': context
+                                      },
+                                    );
                                     print(index);
                                   },
                                   child: Container(
