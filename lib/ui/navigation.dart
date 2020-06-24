@@ -55,7 +55,7 @@ class NavigationState extends State<Navigation> {
     super.initState();
   }
 
-  /* Future<bool> _onWillPop() async {
+  Future<bool> _onWillPop() async {
     return (await showDialog(
       context: context,
       builder: (context) => new AlertDialog(
@@ -73,7 +73,7 @@ class NavigationState extends State<Navigation> {
         ],
       ),
     )) ?? false;
-  } */
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +109,7 @@ class NavigationState extends State<Navigation> {
             )
           ],
           child: new WillPopScope(
-            onWillPop: () async => false,
+            onWillPop: _onWillPop,
             child: MaterialApp(
               home: Scaffold(
                 body: IndexedStack(

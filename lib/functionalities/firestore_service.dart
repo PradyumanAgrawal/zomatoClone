@@ -74,11 +74,18 @@ class FirestoreService {
     return db.collection('products').snapshots();
   }
 
-  searchByName(String searchField) {
+  searchByName(String searchField, List<DocumentReference> nearByShopsReferences) {
+    if(nearByShopsReferences.length!=0)
     return db
         .collection('products')
+        .where('shop', whereIn: nearByShopsReferences)
         .where('searchIndex',
             isEqualTo: searchField.substring(0, 1).toUpperCase())
+        .getDocuments();
+    else
+    return db.collection('products')
+    .where('searchIndex',
+            isEqualTo: '^')
         .getDocuments();
   }
 

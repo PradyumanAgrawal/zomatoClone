@@ -53,7 +53,7 @@ class HomeScreenState extends State<HomeScreen> {
   var queryResultSet = [];
   var tempSearchStore = [];
 
-  initiateSearch(value) {
+  initiateSearch(value, nearByShopsReferences) {
     if (value.length == 0) {
       setState(() {
         queryResultSet = [];
@@ -68,7 +68,7 @@ class HomeScreenState extends State<HomeScreen> {
         value.substring(0, 1).toUpperCase() + value.substring(1);
 
     if (queryResultSet.length == 0 && value.length == 1) {
-      FirestoreService().searchByName(value).then((QuerySnapshot docs) {
+      FirestoreService().searchByName(value, nearByShopsReferences).then((QuerySnapshot docs) {
         for (int i = 0; i < docs.documents.length; ++i) {
           setState(() {
             queryResultSet.add(docs.documents[i]);
@@ -274,7 +274,7 @@ class HomeScreenState extends State<HomeScreen> {
                 child: TextFormField(
                   onChanged: (value) {
                     checkTyping(value);
-                    initiateSearch(value);
+                    initiateSearch(value, nearByShopsReferences);
                   },
                   controller: _controller,
                   decoration: InputDecoration(
