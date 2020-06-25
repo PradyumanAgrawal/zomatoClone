@@ -1004,6 +1004,17 @@ class Store extends StatefulWidget {
 }
 
 class _StoreState extends State<Store> {
+
+  String f(String name) {
+    List<String> n = name.split(' ');
+    for (int i = 0; i < n.length; i++) {
+      n[i] =
+          n[i].substring(0, 1).toUpperCase() + n[i].substring(1).toLowerCase();
+    }
+    String nam = n.join(' ');
+    return nam;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1070,7 +1081,7 @@ class _StoreState extends State<Store> {
                                           'assets/typeIcons/$type.png'),
                                     ),
                                   ),
-                                  Text(document['name'],
+                                  Text(f(document['name']),
                                       style: TextStyle(
                                         fontSize: 10,
                                       )),

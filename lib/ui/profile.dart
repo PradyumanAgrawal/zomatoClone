@@ -246,13 +246,13 @@ class _ProfileState extends State<Profile> {
                   fontWeight: FontWeight.bold),
             ),
             actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.share,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              )
+              // IconButton(
+              //   icon: Icon(
+              //     Icons.share,
+              //     color: Colors.white,
+              //   ),
+              //   onPressed: () {},
+              // )
             ],
             shape: RoundedRectangleBorder(),
           ),

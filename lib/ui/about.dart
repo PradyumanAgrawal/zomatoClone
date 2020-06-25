@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class About extends StatelessWidget {
   final BuildContext navContext;
@@ -153,7 +154,12 @@ class About extends StatelessWidget {
                 ),
                 Text("1.0.0"),
                 Text("Copyrights: Porsio Marketplace private limited"),
-                Text("Made with Love"),
+                Row(
+                  children: [
+                    Text("Made with "),
+                    Icon(Icons.favorite, color: Colors.grey, size: 15,),
+                  ],
+                ),
               ],
             ),
           ),
