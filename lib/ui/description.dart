@@ -544,6 +544,14 @@ class _DescriptionState extends State<Description> {
                 indent: 50,
                 endIndent: 50,
               ),
+              Material(
+                elevation:0,
+                child:Container(
+                  height: 50,
+                  child: Center(child: Text('One day replacement available.', style: TextStyle(color: Colors.grey))),
+                )
+              ),
+              SizedBox(height:20),
               /* Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
