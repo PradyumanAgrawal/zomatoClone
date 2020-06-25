@@ -57,7 +57,11 @@ class NavigationState extends State<Navigation> {
   }
 
   Future<bool> _onWillPop() async {
-    return (await showDialog(
+    setState(() {
+      _selectedIndex=0;
+    });
+    return false;
+    /* return (await showDialog(
       context: context,
       builder: (context) => new CupertinoAlertDialog(
         title: new Text('Are you sure?'),
@@ -74,7 +78,7 @@ class NavigationState extends State<Navigation> {
           ),
         ],
       ),
-    )) ?? false;
+    )) ?? false; */
   }
 
   @override
