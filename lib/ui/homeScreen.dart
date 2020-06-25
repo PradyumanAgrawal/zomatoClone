@@ -27,11 +27,9 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   String add = '';
-  LatLng location;
   List wishlist;
   bool isTyping = false;
   bool isSearching = false;
-  HomeScreenState({this.add, this.location});
   DocumentSnapshot userProvider;
   List<DocumentSnapshot> nearByShopsSnapshots;
   List<DocumentReference> nearByShopsReferences = [];
@@ -68,7 +66,9 @@ class HomeScreenState extends State<HomeScreen> {
         value.substring(0, 1).toUpperCase() + value.substring(1);
 
     if (queryResultSet.length == 0 && value.length == 1) {
-      FirestoreService().searchByName(value, nearByShopsReferences).then((QuerySnapshot docs) {
+      FirestoreService()
+          .searchByName(value, nearByShopsReferences)
+          .then((QuerySnapshot docs) {
         for (int i = 0; i < docs.documents.length; ++i) {
           setState(() {
             queryResultSet.add(docs.documents[i]);
@@ -134,19 +134,18 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    //user = Provider.of<DocumentSnapshot>(context);
-    LocationService().getLocation().then((value) {
+    super.initState();
+  }
+
+  void setAddress() {
+    LocationService()
+        .getAddress(LatLng(
+            double.parse(locationList[0]), double.parse(locationList[1])))
+        .then((value) {
       setState(() {
-        location = value;
-      });
-      LocationService().getAddress(value).then((value) {
-        setState(() {
-          add = value;
-        });
+        add = value;
       });
     });
-
-    super.initState();
   }
 
   void checkToken(String uid) async {
@@ -159,8 +158,6 @@ class HomeScreenState extends State<HomeScreen> {
     for (int i = 0; i < documentSnapshots.length; i++) {
       nearByShopsReferences.add(documentSnapshots[i].reference);
     }
-    // print("nearByShopsId ------->");
-    // print(nearByShopsReferences);
   }
 
   @override
@@ -173,10 +170,9 @@ class HomeScreenState extends State<HomeScreen> {
       getShopRefList(nearByShopsSnapshots);
     }
     locationPreference = Provider.of<LocationPreferences>(context);
-    if (location != null)
-      locationPreference.location.setValue(
-          [location.latitude.toString(), location.longitude.toString()]);
     locationList = Provider.of<List<String>>(context);
+    if (locationList != null && locationList != ['0.0 ', '0.0']) setAddress();
+
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: DrawerWidget(
@@ -197,7 +193,7 @@ class HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold),
             ),
             actions: <Widget>[
-              add == null
+              ((add == null) || (add == ''))
                   ? Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: IconButton(
@@ -205,9 +201,7 @@ class HomeScreenState extends State<HomeScreen> {
                           Icons.location_off,
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          
-                        },
+                        onPressed: null,
                       ),
                     )
                   : Padding(
@@ -240,14 +234,15 @@ class HomeScreenState extends State<HomeScreen> {
                               snap.data['cart'].keys.toList().length.toString();
                           return Badge(
                             child: InkWell(
-                                child: Icon(
-                                  Icons.shopping_cart,
-                                  color: Colors.white,
-                                ),
-                                onTap: () {
-                                  Navigator.of(widget.navContext)
-                                      .pushNamed('/cart', arguments: context);
-                                }),
+                              child: Icon(
+                                Icons.shopping_cart,
+                                color: Colors.white,
+                              ),
+                              onTap: () {
+                                Navigator.of(widget.navContext)
+                                    .pushNamed('/cart', arguments: context);
+                              },
+                            ),
                             badgeContent: Text(
                               len,
                               style: TextStyle(color: Colors.white),
@@ -366,18 +361,20 @@ class HomeScreenState extends State<HomeScreen> {
                                     result.latitude.toString(),
                                     result.longitude.toString()
                                   ]);
-                                  LocationService()
-                                      .getAddress(result)
-                                      .then((value) {
-                                    setState(() {
-                                      location = result;
-                                      add = value;
-                                      Scaffold.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text('Location Updated!'),
-                                      ));
-                                    });
-                                  });
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text('Location Updated!'),
+                                  ));
+                                  // LocationService()
+                                  //     .getAddress(result)
+                                  //     .then((value) {
+                                  //   setState(() {
+                                  //     add = value;
+                                  //     Scaffold.of(context)
+                                  //         .showSnackBar(SnackBar(
+                                  //       content: Text('Location Updated!'),
+                                  //     ));
+                                  //   });
+                                  // });
                                 }
                               },
                               shape: StadiumBorder(),
@@ -523,8 +520,6 @@ class HomeScreenState extends State<HomeScreen> {
                                 if (nearByShopsReferences.isEmpty)
                                   return Center(
                                     child: Column(
-                                      //mainAxisAlignment:
-                                      //MainAxisAlignment.center,
                                       children: <Widget>[
                                         Image.asset(
                                             'assets/images/comingSoon.png'),
@@ -630,7 +625,6 @@ class HomeScreenState extends State<HomeScreen> {
           child: Padding(
             padding: EdgeInsets.only(left: 5, right: 5, top: 15, bottom: 10),
             child: Container(
-              //card
               height: 180,
               width: double.infinity,
               color: Colors.white,
@@ -684,10 +678,6 @@ class HomeScreenState extends State<HomeScreen> {
                                 SizedBox(
                                   width: 10,
                                 ),
-                                // Flexible(
-                                //   flex: 1,
-                                //   child: SizedBox(),
-                                // ),
                                 Flexible(
                                   flex: 2,
                                   child: Container(
@@ -779,9 +769,6 @@ class HomeScreenState extends State<HomeScreen> {
                                             bottomLeft: Radius.circular(10)),
                                       ),
                                       height: 40,
-                                      // width: MediaQuery.of(context).size.width *
-                                      //     (1 / 3) *
-                                      //     (1.7 / 3),
                                       child: Center(
                                         child: discount != '0'
                                             ? Row(
@@ -932,7 +919,6 @@ class HomeScreenState extends State<HomeScreen> {
           width: MediaQuery.of(context).size.width * 0.45,
           child: Material(
             elevation: 2,
-            //color: Colors.grey,
             borderRadius: BorderRadius.circular(25),
             shadowColor: Colors.purple,
             child: Stack(
@@ -945,8 +931,7 @@ class HomeScreenState extends State<HomeScreen> {
                     height: MediaQuery.of(context).size.width * 0.46,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(document['catalogue']
-                            [0]), //AssetImage("assets/images/LOGO2.png"),
+                        image: NetworkImage(document['catalogue'][0]),
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(25),
@@ -956,15 +941,6 @@ class HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    // FlatButton(
-                    //     color: Colors.purple[700].withOpacity(.5),
-                    //     child: Icon(
-                    //       Icons.add_shopping_cart,
-                    //       color: Colors.white,
-                    //     ),
-                    //     onPressed: () {},
-                    //     shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(30.0))),
                     IconButton(
                       enableFeedback: true,
                       icon: inWishlist
@@ -1022,10 +998,9 @@ class _StoreState extends State<Store> {
       child: (widget.locationList == ['', ''])
           ? Center(child: Text('Location not Found'))
           : StreamBuilder(
-              stream: //FirestoreService().getStores():
-                  FirestoreService().getNearbyStores(LatLng(
-                      double.parse(widget.locationList[0]),
-                      double.parse(widget.locationList[1]))),
+              stream: FirestoreService().getNearbyStores(LatLng(
+                  double.parse(widget.locationList[0]),
+                  double.parse(widget.locationList[1]))),
               builder: (context, snapshot) {
                 if (!snapshot.hasData)
                   return Center(

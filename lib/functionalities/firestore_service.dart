@@ -70,9 +70,6 @@ class FirestoreService {
     return prods;
   }
 
-  Stream getCollection() {
-    return db.collection('products').snapshots();
-  }
 
   searchByName(String searchField, List<DocumentReference> nearByShopsReferences) {
     if(nearByShopsReferences.length!=0)

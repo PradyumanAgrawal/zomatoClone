@@ -4,7 +4,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
-import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
@@ -303,20 +302,6 @@ class _FireMapState extends State<FireMap> {
             ),
           ),
         ),
-        // Positioned(
-        //   top: 30,
-        //   left: 5,
-        //   child: Material(
-        //     color: Colors.black12,
-        //     type: MaterialType.circle,
-        //     child: IconButton(
-        //       icon: Icon(Icons.arrow_back, color: Colors.white,),
-        //       onPressed: () {
-        //         Navigator.of(context).pop();
-        //       },
-        //     ),
-        //   ),
-        // )
       ],
     );
   }
