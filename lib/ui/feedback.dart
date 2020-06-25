@@ -59,42 +59,39 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 20, right: 20, bottom: 10),
-                      child: Hero(
-                        tag: 'feedback',
-                        child: TextFormField(
-                          style: TextStyle(color: Colors.white70),
-                          minLines: null,
-                          validator: validatefeedback,
-                          decoration: InputDecoration(
-                            filled: true,
-                            focusColor: Colors.white,
-                            //fillColor: Colors.white,
-                            enabled: true,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
+                      child: TextFormField(
+                        style: TextStyle(color: Colors.white70),
+                        minLines: null,
+                        validator: validatefeedback,
+                        decoration: InputDecoration(
+                          filled: true,
+                          focusColor: Colors.white,
+                          //fillColor: Colors.white,
+                          enabled: true,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: Colors.white,
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                            ),
-                            hintText: "I am loving this....",
-                            hintStyle: TextStyle(color: Colors.white38),
                           ),
-                          onChanged: (input) {
-                            _feedback = input;
-                          },
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                            ),
+                          ),
+                          hintText: "I am loving this....",
+                          hintStyle: TextStyle(color: Colors.white38),
                         ),
+                        onChanged: (input) {
+                          _feedback = input;
+                        },
                       ),
                     ),
                     Padding(
