@@ -58,7 +58,7 @@ class NavigationState extends State<Navigation> {
 
   Future<bool> _onWillPop() async {
     setState(() {
-      _selectedIndex=0;
+      _selectedIndex = 0;
     });
     return false;
     /* return (await showDialog(
@@ -118,23 +118,20 @@ class NavigationState extends State<Navigation> {
             onWillPop: _onWillPop,
             child: MaterialApp(
               home: Scaffold(
-                body: IndexedStack(
-                  index: _selectedIndex,
-                  children: <Widget>[
-                    HomeScreen(
-                      navContext: context,
-                    ),
-                    Discover1(
-                      navContext: context,
-                    ),
-                    Orders(
-                      navContext: context,
-                    ),
-                    Share(
-                      navContext: context,
-                    ),
-                  ],
-                ),
+                body: <Widget>[
+                  HomeScreen(
+                    navContext: context,
+                  ),
+                  Discover1(
+                    navContext: context,
+                  ),
+                  Orders(
+                    navContext: context,
+                  ),
+                  Share(
+                    navContext: context,
+                  ),
+                ][_selectedIndex],
                 bottomNavigationBar: CurvedNavigationBar(
                   height: 50,
                   backgroundColor: Colors.white,

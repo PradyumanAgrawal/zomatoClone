@@ -216,43 +216,43 @@ class HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     ),
-              (userProvider == null)
-                  ? Center(
-                      child: SpinKitChasingDots(color: Colors.deepPurple),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                      child: StreamBuilder(
-                        stream:
-                            FirestoreService().getUser(userProvider.documentID),
-                        builder: (BuildContext context, AsyncSnapshot snap) {
-                          if (!snap.hasData) {
-                            return Container();
-                          }
+              // (userProvider == null)
+              //     ? Center(
+              //         child: SpinKitChasingDots(color: Colors.deepPurple),
+              //       )
+              //     : Padding(
+              //         padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+              //         child: StreamBuilder(
+              //           stream:
+              //               FirestoreService().getUser(userProvider.documentID),
+              //           builder: (BuildContext context, AsyncSnapshot snap) {
+              //             if (!snap.hasData) {
+              //               return Container();
+              //             }
 
-                          var len =
-                              snap.data['cart'].keys.toList().length.toString();
-                          return Badge(
-                            child: InkWell(
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: Colors.white,
-                              ),
-                              onTap: () {
-                                Navigator.of(widget.navContext)
-                                    .pushNamed('/cart', arguments: context);
-                              },
-                            ),
-                            badgeContent: Text(
-                              len,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            animationType: BadgeAnimationType.slide,
-                            showBadge: len != '0',
-                          );
-                        },
-                      ),
-                    ),
+              //             var len =
+              //                 snap.data['cart'].keys.toList().length.toString();
+              //             return Badge(
+              //               child: InkWell(
+              //                 child: Icon(
+              //                   Icons.shopping_cart,
+              //                   color: Colors.white,
+              //                 ),
+              //                 onTap: () {
+              //                   Navigator.of(widget.navContext)
+              //                       .pushNamed('/cart', arguments: context);
+              //                 },
+              //               ),
+              //               badgeContent: Text(
+              //                 len,
+              //                 style: TextStyle(color: Colors.white),
+              //               ),
+              //               animationType: BadgeAnimationType.slide,
+              //               showBadge: len != '0',
+              //             );
+              //           },
+              //         ),
+              //       ),
             ],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -927,13 +927,19 @@ class HomeScreenState extends State<HomeScreen> {
                 Hero(
                   tag: document['catalogue'][0],
                   child: Container(
+                    clipBehavior: Clip.hardEdge,
                     width: MediaQuery.of(context).size.width * 0.46,
                     height: MediaQuery.of(context).size.width * 0.46,
+                    child: CachedNetworkImage(
+                      imageUrl: document['catalogue'][0],
+                      filterQuality: FilterQuality.low,
+                      fit: BoxFit.cover,
+                    ),
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(document['catalogue'][0]),
-                        fit: BoxFit.cover,
-                      ),
+                      // image: DecorationImage(
+                      //   image: NetworkImage(document['catalogue'][0]),
+                      //   fit: BoxFit.cover,
+                      // ),
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
@@ -980,7 +986,6 @@ class Store extends StatefulWidget {
 }
 
 class _StoreState extends State<Store> {
-
   String f(String name) {
     List<String> n = name.split(' ');
     for (int i = 0; i < n.length; i++) {

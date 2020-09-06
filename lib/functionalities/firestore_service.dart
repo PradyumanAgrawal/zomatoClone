@@ -50,7 +50,10 @@ class FirestoreService {
   }
 
   Stream getProducts(List<DocumentReference> nearByShopsReferences) {
-    Stream<QuerySnapshot> prods = db.collection('products').where('shop', whereIn:nearByShopsReferences).snapshots();
+    Stream<QuerySnapshot> prods = db
+        .collection('products')
+        .where('shop', whereIn: nearByShopsReferences)
+        .snapshots();
     return prods;
   }
 
@@ -59,8 +62,11 @@ class FirestoreService {
   }
 
   Stream getHomeProducts(List<DocumentReference> nearByShopsReferences) {
-    Stream<QuerySnapshot> prods =
-        db.collection('products').where('shop', whereIn:nearByShopsReferences).where('onHome',isEqualTo:true).snapshots();
+    Stream<QuerySnapshot> prods = db
+        .collection('products')
+        .where('shop', whereIn: nearByShopsReferences)
+        .where('onHome', isEqualTo: true)
+        .snapshots();
     return prods;
   }
 
@@ -70,20 +76,20 @@ class FirestoreService {
     return prods;
   }
 
-
-  searchByName(String searchField, List<DocumentReference> nearByShopsReferences) {
-    if(nearByShopsReferences.length!=0)
-    return db
-        .collection('products')
-        .where('shop', whereIn: nearByShopsReferences)
-        .where('searchIndex',
-            isEqualTo: searchField.substring(0, 1).toUpperCase())
-        .getDocuments();
+  searchByName(
+      String searchField, List<DocumentReference> nearByShopsReferences) {
+    if (nearByShopsReferences.length != 0)
+      return db
+          .collection('products')
+          .where('shop', whereIn: nearByShopsReferences)
+          .where('searchIndex',
+              isEqualTo: searchField.substring(0, 1).toUpperCase())
+          .getDocuments();
     else
-    return db.collection('products')
-    .where('searchIndex',
-            isEqualTo: '^')
-        .getDocuments();
+      return db
+          .collection('products')
+          .where('searchIndex', isEqualTo: '^')
+          .getDocuments();
   }
 
   Stream getCategories() {
@@ -114,11 +120,21 @@ class FirestoreService {
     });
   }
 
-  Stream getProductsFromCategory(String category,List<DocumentReference> nearByShopsReferences) {
+  Stream getProductsFromCategory(
+      String category, List<DocumentReference> nearByShopsReferences) {
     return db
         .collection('products')
         .where('category', isEqualTo: category)
-        .where('shop', whereIn:nearByShopsReferences)
+        .where('shop', whereIn: nearByShopsReferences)
+        .snapshots();
+  }
+
+  Stream getProductsFromSubCategory(
+      String subCategory, List<DocumentReference> nearByShopsReferences) {
+    return db
+        .collection('products')
+        .where('subCategory', isEqualTo: subCategory)
+        .where('shop', whereIn: nearByShopsReferences)
         .snapshots();
   }
 
@@ -133,7 +149,7 @@ class FirestoreService {
     return db
         .collection('products')
         .orderBy('discount', descending: true)
-        .where('shop', whereIn:nearByShopsReferences)
+        .where('shop', whereIn: nearByShopsReferences)
         .snapshots();
   }
 

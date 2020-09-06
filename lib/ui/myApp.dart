@@ -21,6 +21,7 @@ class _MyAppState extends State<MyApp> {
       title: "Porsio",
       //navigatorObservers: [AnalyticsService().getObserver()],
       theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
           primaryColor: Colors.deepPurple,
           primaryColorDark: Colors.deepPurple[900],
           primaryColorLight: Colors.deepPurple[100],
@@ -32,7 +33,7 @@ class _MyAppState extends State<MyApp> {
             endIndent: 40,
           )),
       debugShowCheckedModeBanner: false,
-      initialRoute:'/main_screen',
+      initialRoute: '/main_screen',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

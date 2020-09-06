@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -60,7 +61,9 @@ class _DiscoverState extends State<Discover>
         value.substring(0, 1).toUpperCase() + value.substring(1);
 
     if (queryResultSet.length == 0 && value.length == 1) {
-      FirestoreService().searchByName(value, nearByShopsReferences).then((QuerySnapshot docs) {
+      FirestoreService()
+          .searchByName(value, nearByShopsReferences)
+          .then((QuerySnapshot docs) {
         for (int i = 0; i < docs.documents.length; ++i) {
           setState(() {
             queryResultSet.add(docs.documents[i]);
@@ -144,6 +147,9 @@ class _DiscoverState extends State<Discover>
     if (widget.args['stream'] == 'category')
       stream = FirestoreService().getProductsFromCategory(
           widget.args['category'], nearByShopsReferences);
+    else if (widget.args['stream'] == 'subCategory')
+      stream = FirestoreService().getProductsFromSubCategory(
+          widget.args['category'], nearByShopsReferences);
     else if (widget.args['stream'] == 'shop')
       stream = FirestoreService().getShopProducts(widget.args['shopId']);
     else if (widget.args['stream'] == 'offer')
@@ -188,45 +194,45 @@ class _DiscoverState extends State<Discover>
                   fontWeight: FontWeight.bold),
             ),
             actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                child: FutureBuilder(
-                  future: LocalData().getUid(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container();
-                    }
-                    String uid = snapshot.data;
-                    return StreamBuilder(
-                      stream: FirestoreService().getUser(uid),
-                      builder: (BuildContext context, AsyncSnapshot snap) {
-                        if (!snap.hasData) {
-                          return Container();
-                        }
-                        var len =
-                            snap.data['cart'].keys.toList().length.toString();
-                        return Badge(
-                          child: InkWell(
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: Colors.white,
-                              ),
-                              onTap: () {
-                                Navigator.of(context)
-                                    .pushNamed('/cart', arguments: widget.args['context']);
-                              }),
-                          badgeContent: Text(
-                            len,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          animationType: BadgeAnimationType.slide,
-                          showBadge: len != '0',
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+              //   child: FutureBuilder(
+              //     future: LocalData().getUid(),
+              //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+              //       if (!snapshot.hasData) {
+              //         return Container();
+              //       }
+              //       String uid = snapshot.data;
+              //       return StreamBuilder(
+              //         stream: FirestoreService().getUser(uid),
+              //         builder: (BuildContext context, AsyncSnapshot snap) {
+              //           if (!snap.hasData) {
+              //             return Container();
+              //           }
+              //           var len =
+              //               snap.data['cart'].keys.toList().length.toString();
+              //           return Badge(
+              //             child: InkWell(
+              //                 child: Icon(
+              //                   Icons.shopping_cart,
+              //                   color: Colors.white,
+              //                 ),
+              //                 onTap: () {
+              //                   Navigator.of(context).pushNamed('/cart',
+              //                       arguments: widget.args['context']);
+              //                 }),
+              //             badgeContent: Text(
+              //               len,
+              //               style: TextStyle(color: Colors.white),
+              //             ),
+              //             animationType: BadgeAnimationType.slide,
+              //             showBadge: len != '0',
+              //           );
+              //         },
+              //       );
+              //     },
+              //   ),
+              // ),
             ],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -310,88 +316,180 @@ class _DiscoverState extends State<Discover>
                         childCount: tempSearchStore.length,
                       ),
                     )
-              : SliverList(
-                  delegate: SliverChildListDelegate(
-                    <Widget>[
-                      Container(
-                        child: FutureBuilder(
-                          future: LocalData().getUid(),
+              : FutureBuilder(
+                  future: LocalData().getUid(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (!snapshot.hasData)
+                      return SliverList(
+                        delegate: SliverChildListDelegate(<Widget>[
+                          Center(
+                              child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 30),
+                                  child: SpinKitChasingDots(
+                                      color: Colors.deepPurple)))
+                        ]),
+                      );
+                    String userId = snapshot.data;
+                    return StreamBuilder(
+                      stream: FirestoreService().getUser(userId),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData)
+                          return SliverList(
+                            delegate: SliverChildListDelegate(<Widget>[
+                              Center(
+                                  child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 30),
+                                      child: SpinKitChasingDots(
+                                          color: Colors.deepPurple)))
+                            ]),
+                          );
+                        DocumentSnapshot document = snapshot.data;
+                        wishlist = document['wishlist'];
+                        return StreamBuilder(
+                          stream: stream,
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData)
-                              return Center(
-                                  child: SpinKitChasingDots(
-                                      color: Colors.deepPurple));
-                            String userId = snapshot.data;
-                            return StreamBuilder(
-                              stream: FirestoreService().getUser(userId),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData)
-                                  return Center(
-                                      child: SpinKitChasingDots(
-                                    color: Colors.purple,
-                                  ));
-                                DocumentSnapshot document = snapshot.data;
-                                wishlist = document['wishlist'];
-                                return StreamBuilder(
-                                  stream: stream,
-                                  // (widget.category != null)
-                                  //     ? FirestoreService()
-                                  //         .getProductsFromCategory(widget.category)
-                                  //     : FirestoreService().getProducts(),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData)
-                                      return Center(
-                                        child: SpinKitChasingDots(
-                                            color: Colors.deepPurple),
-                                      );
-                                    if (snapshot.data.documents.length == 0)
-                                      return Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 50),
-                                            Image.asset('assets/images/noProducts.png'),
-                                            Text('No Products Yet!!',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                          ],
-                                        ),
-                                      );
-                                    return Column(
-                                      children: List.generate(
-                                        snapshot.data.documents.length,
-                                        (index) {
-                                          DocumentSnapshot document =
-                                              snapshot.data.documents[index];
-                                          return itemCard(
-                                              document['name'],
-                                              document['catalogue'][0],
-                                              document['description'],
-                                              wishlist.contains(
-                                                  document.documentID),
-                                              document['price'],
-                                              document['discount'] != null
-                                                  ? document['discount']
-                                                  : '0',
-                                              document,
-                                              context);
-                                        },
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
+                              return SliverList(
+                                delegate: SliverChildListDelegate(<Widget>[
+                                  Center(
+                                      child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 30),
+                                          child: SpinKitChasingDots(
+                                              color: Colors.deepPurple)))
+                                ]),
+                              );
+                            if (snapshot.data.documents.length == 0)
+                              return SliverList(
+                                delegate: SliverChildListDelegate(<Widget>[
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(height: 50),
+                                      Image.asset(
+                                          'assets/images/noProducts.png'),
+                                      Text('No Products Yet!!',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ]),
+                              );
+                            return SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  DocumentSnapshot document =
+                                      snapshot.data.documents[index];
+                                  return itemCard(
+                                      document['name'],
+                                      document['catalogue'][0],
+                                      document['description'],
+                                      wishlist.contains(document.documentID),
+                                      document['price'],
+                                      document['discount'] != null
+                                          ? document['discount']
+                                          : '0',
+                                      document,
+                                      context);
+                                },
+                                childCount: snapshot.data.documents.length,
+                              ),
                             );
                           },
-                        ),
+                        );
+                        /* return SliverList(delegate: SliverChildBuilderDelegate(
+                            (context, index){
+                              return Text(wishlist[index]);
+                            },
+                            childCount: wishlist.length
+                          )); */
+                      },
+                    );
+                  },
+                ), /* SliverList(
+                  delegate: SliverChildListDelegate(
+                    <Widget>[
+                      FutureBuilder(
+                        future: LocalData().getUid(),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (!snapshot.hasData)
+                            return Center(
+                                child: SpinKitChasingDots(
+                                    color: Colors.deepPurple));
+                          String userId = snapshot.data;
+                          return StreamBuilder(
+                            stream: FirestoreService().getUser(userId),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Center(
+                                    child: SpinKitChasingDots(
+                                  color: Colors.purple,
+                                ));
+                              DocumentSnapshot document = snapshot.data;
+                              wishlist = document['wishlist'];
+                              return StreamBuilder(
+                                stream: stream,
+                                // (widget.category != null)
+                                //     ? FirestoreService()
+                                //         .getProductsFromCategory(widget.category)
+                                //     : FirestoreService().getProducts(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData)
+                                    return Center(
+                                      child: SpinKitChasingDots(
+                                          color: Colors.deepPurple),
+                                    );
+                                  if (snapshot.data.documents.length == 0)
+                                    return Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          SizedBox(height: 50),
+                                          Image.asset('assets/images/noProducts.png'),
+                                          Text('No Products Yet!!',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontWeight:
+                                                      FontWeight.bold)),
+                                        ],
+                                      ),
+                                    );
+                                  return Column(
+                                    children: List.generate(
+                                      snapshot.data.documents.length,
+                                      (index) {
+                                        DocumentSnapshot document =
+                                            snapshot.data.documents[index];
+                                        return itemCard(
+                                            document['name'],
+                                            document['catalogue'][0],
+                                            document['description'],
+                                            wishlist.contains(
+                                                document.documentID),
+                                            document['price'],
+                                            document['discount'] != null
+                                                ? document['discount']
+                                                : '0',
+                                            document,
+                                            context);
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
-                ),
+                ), */
         ],
       ),
     );
@@ -410,7 +508,10 @@ class _DiscoverState extends State<Discover>
       padding: const EdgeInsets.only(top: 2, bottom: 2),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed('/description', arguments: {'document':document,'providerContext':widget.args['context']});
+          Navigator.of(context).pushNamed('/description', arguments: {
+            'document': document,
+            'providerContext': widget.args['context']
+          });
         },
         child: Material(
           elevation: 2,
@@ -431,9 +532,10 @@ class _DiscoverState extends State<Discover>
                     child: Hero(
                       tag: document['catalogue'][0],
                       child: Container(
+                        clipBehavior: Clip.hardEdge,
                         height: 150.0,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
                             image: NetworkImage(document['catalogue'][0]),
                             fit: BoxFit.contain,
@@ -553,7 +655,7 @@ class _DiscoverState extends State<Discover>
                               children: <Widget>[
                                 Flexible(flex: 5, child: Container()),
                                 Flexible(
-                                  flex: 20,
+                                  flex: 5,
                                   child: Material(
                                     elevation: 7,
                                     borderRadius: BorderRadius.circular(10),
@@ -593,86 +695,86 @@ class _DiscoverState extends State<Discover>
                                     ),
                                   ),
                                 ),
-                                Flexible(
-                                  flex: 40,
-                                  child: Material(
-                                    elevation: 7,
-                                    borderRadius: BorderRadius.circular(10),
-                                    shadowColor: Colors.purple,
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                          color: (document['inStock'])
-                                              ? Colors.purple[300]
-                                              : Colors.grey[300],
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              bottomRight: Radius.circular(10)),
-                                        ),
-                                        height: 40,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                (1 / 3) *
-                                                (2.7 / 3),
-                                        child: Center(
-                                          child: Visibility(
-                                            visible: document['inStock'],
-                                            replacement: Center(
-                                              child: Text(
-                                                'Out of stock!!',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                            child: FlatButton(
-                                              onPressed: () async {
-                                                if (document['sizes'].length ==
-                                                    0) {
-                                                  int status =
-                                                      await FirestoreService()
-                                                          .addToCart(
-                                                              document
-                                                                  .documentID,
-                                                              1,
-                                                              '',
-                                                              false,
-                                                              document);
-                                                  if (status == 2) {
-                                                    Fluttertoast.showToast(
-                                                      msg:
-                                                          "Product added to the cart!",
-                                                    );
-                                                  } else if (status == 1) {
-                                                    Fluttertoast.showToast(
-                                                      msg:
-                                                          "This product is already in the cart",
-                                                    );
-                                                  } else if (status == 0) {
-                                                    Fluttertoast.showToast(
-                                                      msg:
-                                                          "Something went wrong!!!",
-                                                    );
-                                                  }
-                                                } else {
-                                                  Fluttertoast.showToast(
-                                                    msg:
-                                                        "Please open and select a size",
-                                                  );
-                                                }
-                                              },
-                                              child: Text(
-                                                'Add To Cart',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 12),
-                                              ),
-                                            ),
-                                          ),
-                                        )),
-                                  ),
-                                )
+                                // Flexible(
+                                //   flex: 40,
+                                //   child: Material(
+                                //     elevation: 7,
+                                //     borderRadius: BorderRadius.circular(10),
+                                //     shadowColor: Colors.purple,
+                                //     child: Container(
+                                //         decoration: BoxDecoration(
+                                //           color: (document['inStock'])
+                                //               ? Colors.purple[300]
+                                //               : Colors.grey[300],
+                                //           borderRadius: BorderRadius.only(
+                                //               topRight: Radius.circular(10),
+                                //               bottomRight: Radius.circular(10)),
+                                //         ),
+                                //         height: 40,
+                                //         width:
+                                //             MediaQuery.of(context).size.width *
+                                //                 (1 / 3) *
+                                //                 (2.7 / 3),
+                                //         child: Center(
+                                //           child: Visibility(
+                                //             visible: document['inStock'],
+                                //             replacement: Center(
+                                //               child: Text(
+                                //                 'Out of stock!!',
+                                //                 style: TextStyle(
+                                //                   fontWeight: FontWeight.bold,
+                                //                   color: Colors.white,
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //             child: FlatButton(
+                                //               onPressed: () async {
+                                //                 if (document['sizes'].length ==
+                                //                     0) {
+                                //                   int status =
+                                //                       await FirestoreService()
+                                //                           .addToCart(
+                                //                               document
+                                //                                   .documentID,
+                                //                               1,
+                                //                               '',
+                                //                               false,
+                                //                               document);
+                                //                   if (status == 2) {
+                                //                     Fluttertoast.showToast(
+                                //                       msg:
+                                //                           "Product added to the cart!",
+                                //                     );
+                                //                   } else if (status == 1) {
+                                //                     Fluttertoast.showToast(
+                                //                       msg:
+                                //                           "This product is already in the cart",
+                                //                     );
+                                //                   } else if (status == 0) {
+                                //                     Fluttertoast.showToast(
+                                //                       msg:
+                                //                           "Something went wrong!!!",
+                                //                     );
+                                //                   }
+                                //                 } else {
+                                //                   Fluttertoast.showToast(
+                                //                     msg:
+                                //                         "Please open and select a size",
+                                //                   );
+                                //                 }
+                                //               },
+                                //               child: Text(
+                                //                 'Add To Cart',
+                                //                 style: TextStyle(
+                                //                     color: Colors.white,
+                                //                     fontWeight: FontWeight.bold,
+                                //                     fontSize: 12),
+                                //               ),
+                                //             ),
+                                //           ),
+                                //         )),
+                                //   ),
+                                // )
                               ],
                             ),
                           )

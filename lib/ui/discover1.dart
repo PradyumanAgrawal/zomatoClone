@@ -17,18 +17,13 @@ class Discover1 extends StatefulWidget {
 
 class _Discover1State extends State<Discover1> {
   Map iconMap = {
-    "men's wear": LineAwesomeIcons.tshirt,
-    'shirt': LineAwesomeIcons.user_tie,
-    "men's accessories": LineAwesomeIcons.glasses,
-    'shoes': LineAwesomeIcons.shoe_prints,
-    'utilities': LineAwesomeIcons.toilet_paper,
-    'fitness': LineAwesomeIcons.dumbbell,
-    'books': LineAwesomeIcons.book_open,
-    'household': LineAwesomeIcons.home,
-    'beauty and health': LineAwesomeIcons.heart,
-    'others': LineAwesomeIcons.atom,
-    "women's accessories": LineAwesomeIcons.dice_d20,
-    "women's wear": LineAwesomeIcons.female,
+    'Clothing and Accessories': LineAwesomeIcons.user_tie,
+    'Books and Creative': LineAwesomeIcons.book_open,
+    'Home and Kitchen': LineAwesomeIcons.home,
+    'Beauty and Cosmetics': LineAwesomeIcons.heart,
+    'Others': LineAwesomeIcons.atom,
+    'Grocery and Essentials': LineAwesomeIcons.shopping_bag,
+    'Electronics': LineAwesomeIcons.mobile
   };
   List<String> locationList;
   DocumentSnapshot userProvider;
@@ -70,43 +65,43 @@ class _Discover1State extends State<Discover1> {
                     ),
                     onPressed: () {},
                   ), */
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                    child: (userProvider == null)
-                        ? Container()
-                        : StreamBuilder(
-                            stream: FirestoreService()
-                                .getUser(userProvider.documentID),
-                            builder:
-                                (BuildContext context, AsyncSnapshot snap) {
-                              if (!snap.hasData) {
-                                return Container();
-                              }
-                              var len = snap.data['cart'].keys
-                                  .toList()
-                                  .length
-                                  .toString();
-                              return Badge(
-                                child: InkWell(
-                                  child: Icon(
-                                    Icons.shopping_cart,
-                                    color: Colors.white,
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(widget.navContext)
-                                        .pushNamed('/cart', arguments: context);
-                                  },
-                                ),
-                                badgeContent: Text(
-                                  len,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                animationType: BadgeAnimationType.slide,
-                                showBadge: len != '0',
-                              );
-                            },
-                          ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                  //   child: (userProvider == null)
+                  //       ? Container()
+                  //       : StreamBuilder(
+                  //           stream: FirestoreService()
+                  //               .getUser(userProvider.documentID),
+                  //           builder:
+                  //               (BuildContext context, AsyncSnapshot snap) {
+                  //             if (!snap.hasData) {
+                  //               return Container();
+                  //             }
+                  //             var len = snap.data['cart'].keys
+                  //                 .toList()
+                  //                 .length
+                  //                 .toString();
+                  //             return Badge(
+                  //               child: InkWell(
+                  //                 child: Icon(
+                  //                   Icons.shopping_cart,
+                  //                   color: Colors.white,
+                  //                 ),
+                  //                 onTap: () {
+                  //                   Navigator.of(widget.navContext)
+                  //                       .pushNamed('/cart', arguments: context);
+                  //                 },
+                  //               ),
+                  //               badgeContent: Text(
+                  //                 len,
+                  //                 style: TextStyle(color: Colors.white),
+                  //               ),
+                  //               animationType: BadgeAnimationType.slide,
+                  //               showBadge: len != '0',
+                  //             );
+                  //           },
+                  //         ),
+                  // ),
                 ],
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -174,24 +169,9 @@ class _Discover1State extends State<Discover1> {
                     itemBuilder: (context, index) {
                       DocumentSnapshot document =
                           snapshot.data.documents[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(widget.navContext).pushNamed(
-                                '/discover',
-                                arguments: {
-                                  'category': document.documentID,
-                                  'stream': 'category',
-                                  'context': context
-                                },
-                              );
-                            },
-                            child: Container(
-                              margin: EdgeInsets.all(0),
-                              padding: EdgeInsets.all(15),
-                              child: Row(
+                      return document['subCategories'].length != 0
+                          ? ExpansionTile(
+                              title: Row(
                                 children: <Widget>[
                                   Icon(
                                     iconMap[document.documentID.toString()],
@@ -207,17 +187,103 @@ class _Discover1State extends State<Discover1> {
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                          Divider(
-                            color: Colors.deepPurpleAccent,
-                            thickness: 0,
-                            height: 0,
-                            indent: 20,
-                            endIndent: 20,
-                          )
-                        ],
-                      );
+                              children: List<Widget>.generate(
+                                  document['subCategories'].length, (ind) {
+                                return Material(
+                                  elevation: 10,
+                                  child: ListTile(
+                                    onTap: () {
+                                      Navigator.of(widget.navContext).pushNamed(
+                                        '/discover',
+                                        arguments: {
+                                          'category': document['subCategories']
+                                              [ind],
+                                          'stream': 'subCategory',
+                                          'context': context
+                                        },
+                                      );
+                                    },
+                                    title: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child:
+                                          Text(document['subCategories'][ind]),
+                                    ),
+                                  ),
+                                );
+                              }),
+                            )
+                          : ListTile(
+                              onTap: () {
+                                Navigator.of(widget.navContext).pushNamed(
+                                  '/discover',
+                                  arguments: {
+                                    'category': document.documentID,
+                                    'stream': 'category',
+                                    'context': context
+                                  },
+                                );
+                              },
+                              title: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    iconMap[document.documentID.toString()],
+                                    //size: 60.0,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(width: 30),
+                                  Text(
+                                    document.documentID,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                      // return Column(
+                      //   crossAxisAlignment: CrossAxisAlignment.stretch,
+                      //   children: <Widget>[
+                      //     InkWell(
+                      //       onTap: () {
+                      //         Navigator.of(widget.navContext).pushNamed(
+                      //           '/discover',
+                      //           arguments: {
+                      //             'category': document.documentID,
+                      //             'stream': 'category',
+                      //             'context': context
+                      //           },
+                      //         );
+                      //       },
+                      //       child: Container(
+                      //         margin: EdgeInsets.all(0),
+                      //         padding: EdgeInsets.all(15),
+                      //         child: Row(
+                      //           children: <Widget>[
+                      //             Icon(
+                      //               iconMap[document.documentID.toString()],
+                      //               //size: 60.0,
+                      //               color: Colors.grey,
+                      //             ),
+                      //             SizedBox(width: 30),
+                      //             Text(
+                      //               document.documentID,
+                      //               style: TextStyle(
+                      //                 fontSize: 20,
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Divider(
+                      //       color: Colors.deepPurpleAccent,
+                      //       thickness: 0,
+                      //       height: 0,
+                      //       indent: 20,
+                      //       endIndent: 20,
+                      //     )
+                      //   ],
+                      // );
                     },
                   );
                 },

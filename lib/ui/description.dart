@@ -56,58 +56,58 @@ class _DescriptionState extends State<Description> {
               Container(
                 height: 50,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    color: Colors.black,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 15.0, top: 8.0),
-                    child: FutureBuilder(
-                      future: LocalData().getUid(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (!snapshot.hasData) {
-                          return Container();
-                        }
-                        String uid = snapshot.data;
-                        return StreamBuilder(
-                          stream: FirestoreService().getUser(uid),
-                          builder: (BuildContext context, AsyncSnapshot snap) {
-                            if (!snap.hasData) {
-                              return Container();
-                            }
-                            var len = snap.data['cart'].keys
-                                .toList()
-                                .length
-                                .toString();
-                            return Badge(
-                              child: InkWell(
-                                  child: Icon(
-                                    Icons.shopping_cart,
-                                    color: Colors.black,
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        '/cart',
-                                        arguments: widget.args['providerContext']);
-                                  }),
-                              badgeContent: Text(
-                                len,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              animationType: BadgeAnimationType.slide,
-                              showBadge: len != '0',
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ]),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        color: Colors.black,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 15.0, top: 8.0),
+                      //   child: FutureBuilder(
+                      //     future: LocalData().getUid(),
+                      //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      //       if (!snapshot.hasData) {
+                      //         return Container();
+                      //       }
+                      //       String uid = snapshot.data;
+                      //       return StreamBuilder(
+                      //         stream: FirestoreService().getUser(uid),
+                      //         builder: (BuildContext context, AsyncSnapshot snap) {
+                      //           if (!snap.hasData) {
+                      //             return Container();
+                      //           }
+                      //           var len = snap.data['cart'].keys
+                      //               .toList()
+                      //               .length
+                      //               .toString();
+                      //           return Badge(
+                      //             child: InkWell(
+                      //                 child: Icon(
+                      //                   Icons.shopping_cart,
+                      //                   color: Colors.black,
+                      //                 ),
+                      //                 onTap: () {
+                      //                   Navigator.of(context).pushNamed(
+                      //                       '/cart',
+                      //                       arguments: widget.args['providerContext']);
+                      //                 }),
+                      //             badgeContent: Text(
+                      //               len,
+                      //               style: TextStyle(color: Colors.white),
+                      //             ),
+                      //             animationType: BadgeAnimationType.slide,
+                      //             showBadge: len != '0',
+                      //           );
+                      //         },
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+                    ]),
               ),
               Material(
                 color: Colors.white,
@@ -338,8 +338,8 @@ class _DescriptionState extends State<Description> {
                     ],
                   )),
               Visibility(
-                visible: document['sizes'].length!=0,
-                              child: Divider(
+                visible: document['sizes'].length != 0,
+                child: Divider(
                   color: Colors.purple.withOpacity(0.5),
                   height: 30,
                   indent: 50,
@@ -347,8 +347,8 @@ class _DescriptionState extends State<Description> {
                 ),
               ),
               Visibility(
-                visible: document['sizes'].length!=0,
-                              child: Padding(
+                visible: document['sizes'].length != 0,
+                child: Padding(
                   padding: EdgeInsets.only(left: 15.0),
                   child: Text(
                     'Variants',
@@ -362,7 +362,7 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(height: 20.0),
               Visibility(
-                visible: document['sizes'].length!=0,
+                visible: document['sizes'].length != 0,
                 child: Padding(
                   padding: EdgeInsets.only(left: 15.0),
                   child: Wrap(
@@ -402,7 +402,6 @@ class _DescriptionState extends State<Description> {
                                   ]),
                               child: Center(
                                 child: Text(
-                                  
                                   document['sizes'][index],
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -534,24 +533,33 @@ class _DescriptionState extends State<Description> {
                               ),
                             ],
                           ),
+                          Divider(
+                            color: Colors.purple.withOpacity(0.5),
+                            height: 30,
+                            indent: 50,
+                            endIndent: 50,
+                          ),
+                          shopDoc['deliveryPerOrder'] == null ||
+                                  shopDoc['deliveryPerOrder'] == 0
+                              ? Container()
+                              : Material(
+                                  elevation: 0,
+                                  child: Container(
+                                    height: 50,
+                                    child: Center(
+                                        child: Text(
+                                            'The Seller charges \u{20B9} ' +
+                                                shopDoc['deliveryPerOrder']
+                                                    .toString() +
+                                                ' per order.',
+                                            style:
+                                                TextStyle(color: Colors.grey))),
+                                  )),
                         ],
                       ),
                     );
                   }),
-              Divider(
-                color: Colors.purple.withOpacity(0.5),
-                height: 30,
-                indent: 50,
-                endIndent: 50,
-              ),
-              Material(
-                elevation:0,
-                child:Container(
-                  height: 50,
-                  child: Center(child: Text('One day replacement available.', style: TextStyle(color: Colors.grey))),
-                )
-              ),
-              SizedBox(height:20),
+              SizedBox(height: 20),
               /* Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
@@ -584,124 +592,119 @@ class _DescriptionState extends State<Description> {
           width: MediaQuery.of(context).size.width,
           color: Colors.white,
           child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            SizedBox(width: 10.0),
-            Flexible(
-              flex: 20,
-              child: IconButton(
-                tooltip: 'Open the shop in Maps',
-                icon: Icon(Icons.near_me, color: Colors.deepPurple[700]),
-                onPressed: () async {
-                  double latitude = shopLocation.latitude;
-                  double longitude = shopLocation.longitude;
-                  String googleUrl =
-                      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-                  if (await canLaunch(googleUrl)) {
-                    await launch(googleUrl);
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            //SizedBox(width: 10.0),
+            IconButton(
+              tooltip: 'Open the shop in Maps',
+              icon: Icon(Icons.near_me, color: Colors.deepPurple[700]),
+              onPressed: () async {
+                double latitude = shopLocation.latitude;
+                double longitude = shopLocation.longitude;
+                String googleUrl =
+                    'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                if (await canLaunch(googleUrl)) {
+                  await launch(googleUrl);
+                } else {
+                  throw 'Could not open the map.';
+                }
+              },
+            ),
+            IconButton(
+              tooltip: 'Call the shop',
+              icon: Icon(Icons.call, color: Colors.deepPurple[700]),
+              onPressed: () async {
+                if (shopContact != null) {
+                  String url = 'tel:$shopContact';
+                  if (await canLaunch(url)) {
+                    await launch(url);
                   } else {
-                    throw 'Could not open the map.';
+                    throw 'Could not launch $url';
                   }
-                },
-              ),
+                }
+              },
             ),
-            Flexible(
-              flex: 20,
-              child: IconButton(
-                tooltip: 'Call the shop',
-                icon: Icon(Icons.call, color: Colors.deepPurple[700]),
-                onPressed: () async {
-                  if (shopContact != null) {
-                    String url = 'tel:$shopContact';
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    } else {
-                      throw 'Could not launch $url';
-                    }
-                  }
-                },
-              ),
-            ),
-            Flexible(
-              flex: 60,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: (document['sizes'].toList().length == 0
-                            ? document['inStock']
-                            : a)
-                        ? Colors.deepPurple[700]
-                        : Colors.grey,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10))),
-                child: Visibility(
-                  replacement: Center(
-                    child: Text('Out of Stock!!',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white)),
-                  ),
-                  visible: document['sizes'].toList().length == 0
-                      ? document['inStock']
-                      : a,
-                  child: Center(
-                    child: FlatButton(
-                      onPressed: () async {
-                        print('pressed');
-                        int status;
-                        if (document['sizes'].length != 0 &&
-                            selectedVariant != null) {
-                          status = await FirestoreService().addToCart(
-                              document.documentID,
-                              1,
-                              document['sizes'][selectedVariant],
-                              false, document);
-                        } else if (document['sizes'].length == 0) {
-                          status = await FirestoreService()
-                              .addToCart(document.documentID, 1, '', false, document);
-                        } else {
-                          final snackbar = SnackBar(
-                              content: Text('Please select a variant'));
-                          _scaffoldKey.currentState.showSnackBar(snackbar);
-                        }
+            // Flexible(
+            //   flex: 60,
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //         color: (document['sizes'].toList().length == 0
+            //                 ? document['inStock']
+            //                 : a)
+            //             ? Colors.deepPurple[700]
+            //             : Colors.grey,
+            //         borderRadius: BorderRadius.only(
+            //             topLeft: Radius.circular(10),
+            //             bottomLeft: Radius.circular(10))),
+            //     child: Visibility(
+            //       replacement: Center(
+            //         child: Text('Out of Stock!!',
+            //             style: TextStyle(
+            //                 fontWeight: FontWeight.bold, color: Colors.white)),
+            //       ),
+            //       visible: document['sizes'].toList().length == 0
+            //           ? document['inStock']
+            //           : a,
+            //       child: Center(
+            //         child: FlatButton(
+            //           onPressed: () async {
+            //             print('pressed');
+            //             int status;
+            //             if (document['sizes'].length != 0 &&
+            //                 selectedVariant != null) {
+            //               status = await FirestoreService().addToCart(
+            //                   document.documentID,
+            //                   1,
+            //                   document['sizes'][selectedVariant],
+            //                   false,
+            //                   document);
+            //             } else if (document['sizes'].length == 0) {
+            //               status = await FirestoreService().addToCart(
+            //                   document.documentID, 1, '', false, document);
+            //             } else {
+            //               final snackbar = SnackBar(
+            //                   content: Text('Please select a variant'));
+            //               _scaffoldKey.currentState.showSnackBar(snackbar);
+            //             }
 
-                        if (status == 2) {
-                          final snackbar = SnackBar(
-                              content: Text('Product added to the cart!'));
-                          _scaffoldKey.currentState.showSnackBar(snackbar);
-                        } else if (status == 1) {
-                          final snackbar = SnackBar(
-                              content:
-                                  Text('This product is already in the cart'));
-                          _scaffoldKey.currentState.showSnackBar(snackbar);
-                        } else if (status == 0) {
-                          final snackbar = SnackBar(
-                              content: Text('Something went wrong!!!'));
-                          _scaffoldKey.currentState.showSnackBar(snackbar);
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(
-                            Icons.add_shopping_cart,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            'Add to Cart',
-                            style: TextStyle(
-                                fontSize: 15.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            //             if (status == 2) {
+            //               final snackbar = SnackBar(
+            //                   content: Text('Product added to the cart!'));
+            //               _scaffoldKey.currentState.showSnackBar(snackbar);
+            //             } else if (status == 1) {
+            //               final snackbar = SnackBar(
+            //                   content:
+            //                       Text('This product is already in the cart'));
+            //               _scaffoldKey.currentState.showSnackBar(snackbar);
+            //             } else if (status == 0) {
+            //               final snackbar = SnackBar(
+            //                   content: Text('Something went wrong!!!'));
+            //               _scaffoldKey.currentState.showSnackBar(snackbar);
+            //             }
+            //           },
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: <Widget>[
+            //               Icon(
+            //                 Icons.add_shopping_cart,
+            //                 color: Colors.white,
+            //               ),
+            //               SizedBox(
+            //                 width: 10,
+            //               ),
+            //               Text(
+            //                 'Add to Cart',
+            //                 style: TextStyle(
+            //                     fontSize: 15.0,
+            //                     color: Colors.white,
+            //                     fontWeight: FontWeight.bold),
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ]),
         ),
       ),
