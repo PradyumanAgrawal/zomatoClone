@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/ui/about.dart';
+import 'package:my_flutter_app/ui/addDemand.dart';
 import 'package:my_flutter_app/ui/forgot_password.dart';
 import 'package:my_flutter_app/ui/loading.dart';
 import 'package:my_flutter_app/ui/main_screen.dart';
@@ -83,7 +84,9 @@ class RouteGenerator {
         );
       case '/wishlist':
         return MaterialPageRoute(
-          builder: (_) => Wishlist(providerContext: args,),
+          builder: (_) => Wishlist(
+            providerContext: args,
+          ),
         );
       case '/profile':
         return MaterialPageRoute(
@@ -99,17 +102,19 @@ class RouteGenerator {
             navContext: args,
           ),
         );
-      case '/feedback':
+      case '/addDemand':
         return MaterialPageRoute(
-          builder: (_) => FeedbackPage(),
+          builder: (_) => AddDemand(),
         );
-        case '/about':
+      case '/about':
         return MaterialPageRoute(
           builder: (_) => About(),
         );
-        case '/successScreen':
+      case '/successScreen':
         return MaterialPageRoute(
-          builder: (_) => SuccessScreen(details: args,),
+          builder: (_) => SuccessScreen(
+            details: args,
+          ),
         );
       // If args is not of the correct type, return an error page.
       default:

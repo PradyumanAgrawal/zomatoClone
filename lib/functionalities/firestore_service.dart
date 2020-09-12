@@ -388,4 +388,20 @@ class FirestoreService {
     address.add(newAdd);
     await db.collection('users').document(uid).updateData({'address': address});
   }
+
+  Future demand(cat, subCat, String details) async {
+    try {
+      String uid = await LocalData().getUid();
+      await db.collection('demands').add({
+        'cat': cat,
+        'subCat': subCat,
+        'details': details,
+        'uid': uid,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
