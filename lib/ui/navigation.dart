@@ -128,9 +128,9 @@ class NavigationState extends State<Navigation> {
                   Orders(
                     navContext: context,
                   ),
-                  Share(
-                    navContext: context,
-                  ),
+                  // Share(
+                  //   navContext: context,
+                  // ),
                 ][_selectedIndex],
                 bottomNavigationBar: CurvedNavigationBar(
                   height: 50,
@@ -151,10 +151,10 @@ class NavigationState extends State<Navigation> {
                       Icons.shopping_basket,
                       color: Colors.white,
                     ),
-                    Icon(
-                      Icons.share,
-                      color: Colors.white,
-                    ),
+                    // Icon(
+                    //   Icons.share,
+                    //   color: Colors.white,
+                    // ),
                   ],
 
                   index: _selectedIndex,

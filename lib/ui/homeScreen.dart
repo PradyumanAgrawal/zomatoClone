@@ -338,7 +338,19 @@ class HomeScreenState extends State<HomeScreen> {
                     <Widget>[
                       OutlineButton(
                           splashColor: Colors.deepPurple[700].withOpacity(.5),
-                          child: Text('I want...'),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.touch_app),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'I want...',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
                           onPressed: () {
                             Navigator.of(widget.navContext)
                                 .pushNamed('/addDemand');

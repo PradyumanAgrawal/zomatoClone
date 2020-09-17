@@ -30,7 +30,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         backgroundColor: Colors.pink,
       ),
       body: Center(
-        child: Hero(tag:'feedback', child:Container(
+        child: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -155,7 +155,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   ]),
             ),
           ),
-        ),),
+        ),
       ),
     );
   }
