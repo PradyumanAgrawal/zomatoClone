@@ -11,7 +11,7 @@ class PopulateDatabase{
             mobileNo TEXT,
             location TEXT,
             displayPic TEXT
-            )"""
+          )"""
           );
         await db.execute("""
             CREATE TABLE shop(
@@ -21,7 +21,9 @@ class PopulateDatabase{
             contact TEXT,
             shopName TEXT NOT NULL,
             location TEXT,
-            type TEXT
+            type TEXT,
+            FOREIGN KEY (ownerId)
+            REFERENCES user(userId) 
             )"""
           );
         await db.execute("""
@@ -32,6 +34,8 @@ class PopulateDatabase{
             description TEXT,
             price TEXT NOT NULL,
             image TEXT,
+            FOREIGN KEY (shopId)
+            REFERENCES shop(shopId) 
             )"""
           );
   }
