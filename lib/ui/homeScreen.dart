@@ -268,8 +268,8 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
                 child: TextFormField(
                   onChanged: (value) {
-                    checkTyping(value);
-                    initiateSearch(value, nearByShopsReferences);
+                    //checkTyping(value);
+                    //initiateSearch(value, nearByShopsReferences);
                   },
                   controller: _controller,
                   decoration: InputDecoration(
@@ -1005,6 +1005,7 @@ class Store extends StatefulWidget {
 }
 
 class _StoreState extends State<Store> {
+  
   String f(String name) {
     List<String> n = name.split(' ');
     for (int i = 0; i < n.length; i++) {
