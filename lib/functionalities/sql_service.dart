@@ -27,12 +27,8 @@ class DBProvider {
       version: 1,
       onOpen: (db) {},
       onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE Client ("
-            "id INTEGER PRIMARY KEY,"
-            "first_name TEXT,"
-            "last_name TEXT,"
-            "blocked BIT"
-            ")");
+      final populator =PopulateDatabase(db);
+      populator.populateDB();
       },
     );
   }
