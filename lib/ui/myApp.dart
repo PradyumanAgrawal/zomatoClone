@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Porsio",
+      title: "zomatoClone",
       //navigatorObservers: [AnalyticsService().getObserver()],
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,

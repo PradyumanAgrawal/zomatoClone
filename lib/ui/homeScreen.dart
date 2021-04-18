@@ -186,7 +186,7 @@ class HomeScreenState extends State<HomeScreen> {
             snap: true,
             backgroundColor: Colors.deepPurple[800],
             title: Text(
-              "Porsio",
+              "zomatoClone",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 25.0,
@@ -601,7 +601,7 @@ class HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Porsio ',
+                              'zomatoClone ',
                               style: TextStyle(
                                   letterSpacing: 2, color: Colors.grey),
                             ),

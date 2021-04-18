@@ -121,7 +121,10 @@ class _ReviewCartState extends State<ReviewCart> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Products Details',
-                    style: TextStyle(fontSize: 18, color: Colors.deepPurple[900], fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.deepPurple[900],
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
                 Card(
@@ -188,7 +191,6 @@ class _ReviewCartState extends State<ReviewCart> {
                         }),
                       ),
                       Divider(),
-                      
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -246,7 +248,7 @@ class _ReviewCartState extends State<ReviewCart> {
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
                                 '\u{20B9} ' +
-                                    (snapshot.data['total']*0.0236)
+                                    (snapshot.data['total'] * 0.0236)
                                         .roundToDouble()
                                         .toString(),
                                 style: TextStyle(fontSize: 15)),
@@ -268,7 +270,7 @@ class _ReviewCartState extends State<ReviewCart> {
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
                                 '\u{20B9} ' +
-                                    (snapshot.data['total']*1.0236)
+                                    (snapshot.data['total'] * 1.0236)
                                         .roundToDouble()
                                         .toString(),
                                 style: TextStyle(fontSize: 15)),
@@ -283,7 +285,10 @@ class _ReviewCartState extends State<ReviewCart> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Delivery Details',
-                    style: TextStyle(fontSize: 18, color: Colors.deepPurple[900], fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.deepPurple[900],
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
                 Card(
@@ -304,7 +309,8 @@ class _ReviewCartState extends State<ReviewCart> {
                         ],
                       ),
                       StreamBuilder(
-                        stream:FirestoreService().getUser(snapshot.data['userId']),
+                        stream:
+                            FirestoreService().getUser(snapshot.data['userId']),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return Center(
@@ -577,7 +583,10 @@ class _ReviewCartState extends State<ReviewCart> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Payment Details',
-                    style: TextStyle(fontSize: 18, color: Colors.deepPurple[900], fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.deepPurple[900],
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
                 Card(
@@ -610,18 +619,24 @@ class _ReviewCartState extends State<ReviewCart> {
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.only(left: 20),
-                              child:Row(
+                              child: Row(
                                 children: [
                                   Container(
                                     height: 50,
                                     width: 50,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: AssetImage('assets/images/paytm.png'),
+                                        image: AssetImage(
+                                            'assets/images/paytm.png'),
                                       ),
                                     ),
                                   ),
-                                  Text(" / UPI", style: TextStyle(color: Colors.deepPurple[900], fontWeight: FontWeight.w500),),
+                                  Text(
+                                    " / UPI",
+                                    style: TextStyle(
+                                        color: Colors.deepPurple[900],
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ],
                               ),
                             ),
@@ -665,7 +680,8 @@ class _ReviewCartState extends State<ReviewCart> {
                               FirestoreService()
                                   .placeOrder(
                                       snapshot.data['address'][selectedAdd],
-                                      snapshot.data['mobileNo'],'COD',
+                                      snapshot.data['mobileNo'],
+                                      'COD',
                                       '')
                                   .then((value) {
                                 Fluttertoast.showToast(
@@ -674,15 +690,17 @@ class _ReviewCartState extends State<ReviewCart> {
                                       "Order Placed, waiting for the seller to accept the order",
                                 );
                                 Map details = {
-                                  'amount': (double.parse(totalAmount)*1.0236).round().toString(),
+                                  'amount': (double.parse(totalAmount) * 1.0236)
+                                      .round()
+                                      .toString(),
                                   'userId': userId,
                                   'email': email,
                                   'paymentMethod': "COD",
                                 };
-                                Navigator.of(context).pushNamed('/successScreen', arguments: details);
-                               
-                              })
-                              .catchError((error) {
+                                Navigator.of(context).pushNamed(
+                                    '/successScreen',
+                                    arguments: details);
+                              }).catchError((error) {
                                 print(error);
                                 Fluttertoast.showToast(
                                   msg: "Something went wrong!!!",
@@ -693,7 +711,10 @@ class _ReviewCartState extends State<ReviewCart> {
                             } else if (selectedRadioPayment == 1) {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => PaymentScreen(
-                                        amount:(double.parse(totalAmount)*1.0236).round().toString(),
+                                        amount:
+                                            (double.parse(totalAmount) * 1.0236)
+                                                .round()
+                                                .toString(),
                                         selectedAddress: snapshot
                                             .data['address'][selectedAdd],
                                         mobileNo: snapshot.data['mobileNo'],
@@ -884,8 +905,11 @@ class _AddSheetState extends State<AddSheet> {
                   if (value.isEmpty || value.length != 6) {
                     return 'Please Enter valid Pincode';
                   }
-                  if (value!='431604' && value!='431601'&& value!='431602'&& value!='431603'){
-                    return 'Porsio coming soon to your location';
+                  if (value != '431604' &&
+                      value != '431601' &&
+                      value != '431602' &&
+                      value != '431603') {
+                    return 'zomatoClone coming soon to your location';
                   }
                 },
                 keyboardType: TextInputType.number,

@@ -1,5 +1,5 @@
-const PAYMENT_URL = "https://us-central1-porsio-3829b.cloudfunctions.net/paytmGateway/payment";
-
+const PAYMENT_URL =
+    "https://us-central1-zomatoClone-3829b.cloudfunctions.net/paytmGateway/payment";
 
 const STATUS_LOADING = "PAYMENT_LOADING";
 const STATUS_SUCCESSFUL = "PAYMENT_SUCCESSFUL";

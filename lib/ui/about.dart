@@ -33,15 +33,15 @@ class About extends StatelessWidget {
                     ],
                   ),
                   Text(
-                      "Porsio is India’s First and Only Application which focuses on providing the latest fashion trends from your nearby retail shops at your fingertips."),
+                      "zomatoClone is India’s First and Only Application which focuses on providing the latest fashion trends from your nearby retail shops at your fingertips."),
                   Text(
                       "Featured with a bunch of trendy styles for your daily outfit inspiration, we are Priced-friendly too, so we can definitely make you a fashion icon even with limited budgets. "),
                   Text(
                       "With the lowest price and high quality guaranteed, we have items such as apparel, Bags, Shoes, Jewelry as well as Home and Living essentials."),
                   Text(
-                      "Porsio , delivers from stores of your choice and brands of your trust. As soon as we receive an order, a member from the Porsio team will pick it up from the store you've ordered and will deliver it to you. Porsio aims at reducing the complexity of standing in a line and wasting your holiday time spending around retail stores, instead you sit back and order, we will deliver what you need within the same day."),
+                      "zomatoClone , delivers from stores of your choice and brands of your trust. As soon as we receive an order, a member from the zomatoClone team will pick it up from the store you've ordered and will deliver it to you. zomatoClone aims at reducing the complexity of standing in a line and wasting your holiday time spending around retail stores, instead you sit back and order, we will deliver what you need within the same day."),
                   Text(
-                    "Download the Porsio App and enjoy:",
+                    "Download the zomatoClone App and enjoy:",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontSize: 20,
@@ -70,7 +70,7 @@ class About extends StatelessWidget {
                     ),
                   ),
                   Text(
-                      "Place your order online using the Porsio Online app and get it delivered at your doorstep or office at a convenient time chosen by you. You will be charged a nominal delivery fee as per your location."),
+                      "Place your order online using the zomatoClone Online app and get it delivered at your doorstep or office at a convenient time chosen by you. You will be charged a nominal delivery fee as per your location."),
                   Text(
                     "PRESENT IN CITIES",
                     textAlign: TextAlign.start,
@@ -97,7 +97,7 @@ class About extends StatelessWidget {
                   ),
                 ),
                 Text(
-                    "Welcome to Porsio. We provide goods and services to you subject to the notices, terms, and conditions set forth in this agreement (the 'Agreement') .We may from time to time change the terms that govern your use of our Site. We may change, move or delete portions of, or may add to, our Site from time to time. Every time you wish to use our site, please check these Terms and Conditions to ensure you understand the terms that apply at that time. Porsio marketplace private limited reserves the right to change this site and these terms and conditions at any time. You hereby agree and undertake not to host, display, upload, modify, publish, transmit, update or share any information "),
+                    "Welcome to zomatoClone. We provide goods and services to you subject to the notices, terms, and conditions set forth in this agreement (the 'Agreement') .We may from time to time change the terms that govern your use of our Site. We may change, move or delete portions of, or may add to, our Site from time to time. Every time you wish to use our site, please check these Terms and Conditions to ensure you understand the terms that apply at that time. zomatoClone marketplace private limited reserves the right to change this site and these terms and conditions at any time. You hereby agree and undertake not to host, display, upload, modify, publish, transmit, update or share any information "),
                 Text(
                     "To shop with us, you need to be at least 16 years old. Any accessing, browsing, or otherwise using the site indicates your agreement to all the terms and conditions in this Agreement. If you disagree with any part of the Terms then you should discontinue access or use of the Site. Please read this Agreement carefully before proceeding."),
                 Text(
@@ -108,7 +108,7 @@ class About extends StatelessWidget {
                   ),
                 ),
                 Text(
-                    "You agree that in no event shall Porsio, its affiliates, directors, officers, agents, consultants or employees be liable for any purchases made through the Website nor bears any responsibility of any nature whatsoever AND YOU HEREBY WAIVE ANY AND ALL CLAIMS AGAINST PORSIO AND OR ITS REPRESENTATIVE ARISING AS A RESULT OF OR IN RELATION TO THE WEBSITE OR PURCHASES MADE OF PRODUCTS OR SERVICES INCLUDING INTER-ALIA CLAIMS RELATING TO PAYMENT AND DELIVERY OF THE PRODUCTS AND THE LIKE."),
+                    "You agree that in no event shall zomatoClone, its affiliates, directors, officers, agents, consultants or employees be liable for any purchases made through the Website nor bears any responsibility of any nature whatsoever AND YOU HEREBY WAIVE ANY AND ALL CLAIMS AGAINST zomatoClone AND OR ITS REPRESENTATIVE ARISING AS A RESULT OF OR IN RELATION TO THE WEBSITE OR PURCHASES MADE OF PRODUCTS OR SERVICES INCLUDING INTER-ALIA CLAIMS RELATING TO PAYMENT AND DELIVERY OF THE PRODUCTS AND THE LIKE."),
                 Text(
                     "You hereby agree and undertake not to host, display, upload, modify, publish, transmit, update or share any information"),
                 Text(
@@ -153,11 +153,15 @@ class About extends StatelessWidget {
                   ),
                 ),
                 Text("1.0.0"),
-                Text("Copyrights: Porsio Marketplace private limited"),
+                Text("Copyrights: zomatoClone Marketplace private limited"),
                 Row(
                   children: [
                     Text("Made with "),
-                    Icon(Icons.favorite, color: Colors.grey, size: 15,),
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.grey,
+                      size: 15,
+                    ),
                   ],
                 ),
               ],

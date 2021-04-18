@@ -141,7 +141,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Porsio ',
+                            'zomatoClone ',
                             style: TextStyle(
                                 letterSpacing: 2, color: Colors.white),
                           ),

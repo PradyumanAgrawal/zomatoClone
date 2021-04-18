@@ -122,7 +122,7 @@ class _DiscoverState extends State<Discover>
           appBar: AppBar(
             backgroundColor: Colors.deepPurple[800],
             title: Text(
-              "Porsio",
+              "zomatoClone",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 25.0,
@@ -187,7 +187,7 @@ class _DiscoverState extends State<Discover>
             snap: true,
             backgroundColor: Colors.deepPurple[800],
             title: Text(
-              "Porsio",
+              "zomatoClone",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 25.0,
