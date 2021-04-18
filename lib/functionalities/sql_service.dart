@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:my_flutter_app/models/addressModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -46,9 +47,20 @@ class DBProvider {
     final db = await database;
     List<Map<String, Object>> res =
         await db.query("address", where: "userId = ?", whereArgs: [userId]);
-    res.forEach((k, v) => {
-      
-    });
-    return res.isNotEmpty ? User.fromMap(res.first) : null;
+    List<Address> addresses;
+    res.forEach((add) => {addresses.add(Address.fromMap(add))});
+    return addresses.isNotEmpty ? addresses : null;
+  }
+
+  deleteAddress(String userId) async {
+    final db = await database;
+    int res = await db.delete("address", where: "addrId = ?", whereArgs: [userId]);
+    return res;
+  }
+
+  insertAddress(Address address) async {
+    final db = await database;
+    int res = await db.insert("address",address.toMap());
+    return res;
   }
 }
