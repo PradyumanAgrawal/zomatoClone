@@ -3,10 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_flutter_app/blocs/shopBloc.dart';
+import 'package:my_flutter_app/blocs/userBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
 import 'package:my_flutter_app/functionalities/streaming_shared_preferences.dart';
+import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:provider/provider.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import './homeScreen.dart';
@@ -81,6 +84,14 @@ class NavigationState extends State<Navigation> {
     )) ?? false; */
   }
 
+  final shopBloc = ShopBloc();
+  final userBloc = UsersBloc(userId: "1");
+  @override
+  void dispose() {
+    shopBloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (locationPreference == null)
@@ -98,21 +109,16 @@ class NavigationState extends State<Navigation> {
               color: Colors.purple,
             ),
           );
+
         return MultiProvider(
           providers: [
             StreamProvider<DocumentSnapshot>.value(
-              value: FirestoreService().getUser(userId),
+              value: userBloc.user,
+              //FirestoreService().getUser(userId),
             ),
             Provider<LocationPreferences>.value(value: locationPreference),
             Provider<List<String>>.value(value: location),
-            StreamProvider<List<DocumentSnapshot>>.value(
-              value: FirestoreService().getNearbyStores(
-                LatLng(
-                  double.parse(location[0]),
-                  double.parse(location[1]),
-                ),
-              ),
-            )
+            StreamProvider<List<Shop>>.value(value: shopBloc.shops)
           ],
           child: new WillPopScope(
             onWillPop: _onWillPop,

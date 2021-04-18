@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:my_flutter_app/models/addressModel.dart';
+import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -50,13 +51,22 @@ class DBProvider {
 
   deleteAddress(String userId) async {
     final db = await database;
-    int res = await db.delete("address", where: "addrId = ?", whereArgs: [userId]);
+    int res =
+        await db.delete("address", where: "addrId = ?", whereArgs: [userId]);
     return res;
   }
 
   insertAddress(Address address) async {
     final db = await database;
-    int res = await db.insert("address",address.toMap());
+    int res = await db.insert("address", address.toMap());
     return res;
+  }
+
+  getShops() async {
+    final db = await database;
+    List<Map<String, Object>> res = await db.query("shops");
+    List<Shop> shops;
+    res.forEach((shop) => {shops.add(Shop.fromMap(shop))});
+    return shops.isNotEmpty ? shops : null;
   }
 }
