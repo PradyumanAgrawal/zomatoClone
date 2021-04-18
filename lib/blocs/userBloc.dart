@@ -6,14 +6,14 @@ import 'package:my_flutter_app/models/userModel.dart';
 class UsersBloc {
   String userId;
   UsersBloc({this.userId}) {
-    getUsers(userId);
+    getUser(userId);
   }
 
   final _userController = StreamController<List<User>>.broadcast();
 
-  get users => _userController.stream;
+  get user => _userController.stream;
 
-  getUsers(String userId) async {
+  getUser(String userId) async {
     _userController.sink.add(await DBProvider.db.getUser(userId));
   }
 
