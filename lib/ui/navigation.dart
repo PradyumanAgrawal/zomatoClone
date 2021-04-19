@@ -39,18 +39,28 @@ class NavigationState extends State<Navigation> {
 
   @override
   initState() {
-    StreamingSharedPreferences.instance.then((value) {
-      setState(() {
-        preferences = value;
-        locationPreference = LocationPreferences(preferences);
-        LocationService().getLocation().then((value) {
-          setState(() {
-            locationPreference.location.setValue(
-                [value.latitude.toString(), value.longitude.toString()]);
-          });
-        });
-      });
-    });
+    StreamingSharedPreferences.instance.then(
+      (value) {
+        setState(
+          () {
+            preferences = value;
+            locationPreference = LocationPreferences(preferences);
+            LocationService().getLocation().then(
+              (value) {
+                setState(
+                  () {
+                    locationPreference.location.setValue([
+                      value.latitude.toString(),
+                      value.longitude.toString()
+                    ]);
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
     LocalData().getUid().then((value) {
       setState(() {
         userId = value;
@@ -87,11 +97,11 @@ class NavigationState extends State<Navigation> {
   final shopBloc = ShopBloc();
   final userBloc = UsersBloc(userId: "1");
   @override
+  void dispose() {
     shopBloc.dispose();
     userBloc.dispose();
     super.dispose();
-  }void dispose() {
-  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,10 +123,7 @@ class NavigationState extends State<Navigation> {
 
         return MultiProvider(
           providers: [
-            StreamProvider<User>.value(
-              value: userBloc.user,
-              //FirestoreService().getUser(userId),
-            ),
+            StreamProvider<User>.value(value: userBloc.user),
             Provider<LocationPreferences>.value(value: locationPreference),
             Provider<List<String>>.value(value: location),
             StreamProvider<List<Shop>>.value(value: shopBloc.shops)

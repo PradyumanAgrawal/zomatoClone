@@ -1,7 +1,7 @@
-import 'package:my_flutter_app/functionalities/sql_service.dart';
+import 'package:sqflite/sqlite_api.dart';
 
 class PopulateDatabase{
-  final DBProvider db;
+  Database db;
   PopulateDatabase({this.db});
   populateDB() async
   {
