@@ -146,14 +146,14 @@ app.get('/products', (req, res) => {
 });
 
 //get all products details discount sorted
-app.get('/products', (req, res) => {
-    con.connect(function(err) {
-        con.query(`SELECT * FROM products orderBy discount`, function(err, result, fields) {
-            if (err) res.send(err);
-            if (result) res.send(result);
-        });
-    });
-});
+// app.get('/products', (req, res) => {
+//     con.connect(function(err) {
+//         con.query(`SELECT * FROM products orderBy discount`, function(err, result, fields) {
+//             if (err) res.send(err);
+//             if (result) res.send(result);
+//         });
+//     });
+// });
 
 //get details for one product
 app.get('/products/:productId', (req, res) => {
@@ -165,7 +165,33 @@ app.get('/products/:productId', (req, res) => {
     });
 });
 
+//get all products for one categories
+app.get('/products/type/:type', (req, res) => {
+    con.connect(function(err) {
+        con.query(`SELECT * FROM product where type=${req.params.type}`, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
 
+app.get("search/product/:query", (req, res) => {
+    con.connect(function(err) {
+        con.query(`SELECT * FROM product where pname is like %${req.params.query}%`, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
+
+app.get("search/shop/:query", (req, res) => {
+    con.connect(function(err) {
+        con.query(`SELECT * FROM shop where shopName is like %${req.params.query}%`, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
 
 
 app.listen(port, () => {
