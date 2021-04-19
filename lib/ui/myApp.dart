@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
             endIndent: 40,
           )),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/homeScreen',
+      initialRoute: '/navigation',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

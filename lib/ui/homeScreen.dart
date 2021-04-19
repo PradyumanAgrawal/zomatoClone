@@ -349,25 +349,7 @@ class HomeScreenState extends State<HomeScreen> {
               : SliverList(
                   delegate: SliverChildListDelegate(
                     <Widget>[
-                      OutlineButton(
-                          splashColor: Colors.deepPurple[700].withOpacity(.5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.touch_app),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'I want...',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            Navigator.of(widget.navContext)
-                                .pushNamed('/addDemand');
-                          }),
+                    
                       Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: 5.0, horizontal: 10.0),

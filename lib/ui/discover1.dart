@@ -2,8 +2,6 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +25,7 @@ class _Discover1State extends State<Discover1> {
     'Grocery and Essentials': LineAwesomeIcons.shopping_bag,
     'Electronics': LineAwesomeIcons.mobile
   };
-  List<String> locationList;
+  //List<String> locationList;
   DocumentSnapshot userProvider;
   String f(String name) {
     List<String> n = name.split(' ');
@@ -41,8 +39,8 @@ class _Discover1State extends State<Discover1> {
 
   @override
   Widget build(BuildContext context) {
-    locationList = Provider.of<List<String>>(context);
-    userProvider = Provider.of<DocumentSnapshot>(context);
+    //locationList = Provider.of<List<String>>(context);
+    //userProvider = Provider.of<DocumentSnapshot>(context);
     return Scaffold(
       drawer: DrawerWidget(navContext: widget.navContext),
       body: DefaultTabController(
@@ -219,85 +217,86 @@ class _Discover1State extends State<Discover1> {
                   );
                 },
               ),
-              (locationList == null)
-                  ? Center(child: Text('Location not Found'))
-                  : FutureBuilder(
-                      future:  DBProvider.db.getShops(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData)
-                          return Center(
-                            child: SpinKitChasingDots(color: Colors.deepPurple),
-                          );
-                        if (snapshot.data.length == 0)
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Image.asset('assets/images/noStore4.png'),
-                                Text(
-                                  'No stores found around you',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+               //(locationList == null)
+              //     ? Center(child: Text('Location not Found'))
+              //     :
+              FutureBuilder(
+                future: DBProvider.db.getShops(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return Center(
+                      child: SpinKitChasingDots(color: Colors.deepPurple),
+                    );
+                  if (snapshot.data.length == 0)
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset('assets/images/noStore4.png'),
+                          Text(
+                            'No stores found around you',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            Shop document = snapshot.data[index];
-                            String type = document.type;
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(widget.navContext).pushNamed(
-                                      '/discover',
-                                      arguments: {
-                                        'stream': 'shop',
-                                        'shopId': document.shopID,
-                                        'context': context
-                                      },
-                                    );
-                                    print(index);
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.all(0),
-                                    padding: EdgeInsets.all(15),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Container(
-                                          width: 30,
-                                          height: 30,
-                                          child: Image.asset(
-                                              'assets/typeIcons/$type.png'),
-                                        ),
-                                        SizedBox(width: 30),
-                                        Text(
-                                          f(document.shopName),
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ],
+                          ),
+                        ],
+                      ),
+                    );
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      Shop document = snapshot.data[index];
+                      String type = document.type;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(widget.navContext).pushNamed(
+                                '/discover',
+                                arguments: {
+                                  'stream': 'shop',
+                                  'shopId': document.shopID,
+                                  'context': context
+                                },
+                              );
+                              print(index);
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(0),
+                              padding: EdgeInsets.all(15),
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    child: Image.asset(
+                                        'assets/typeIcons/$type.png'),
+                                  ),
+                                  SizedBox(width: 30),
+                                  Text(
+                                    f(document.shopName),
+                                    style: TextStyle(
+                                      fontSize: 20,
                                     ),
                                   ),
-                                ),
-                                Divider(
-                                  color: Colors.deepPurpleAccent,
-                                  thickness: 0,
-                                  height: 0,
-                                )
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.deepPurpleAccent,
+                            thickness: 0,
+                            height: 0,
+                          )
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),

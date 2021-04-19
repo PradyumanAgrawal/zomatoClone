@@ -9,12 +9,13 @@ class UsersBloc {
     getUser(userId);
   }
 
-  final _userController = StreamController<List<User>>.broadcast();
+  final _userController = StreamController<User>.broadcast();
 
   get user => _userController.stream;
 
   getUser(String userId) async {
-    _userController.sink.add(await DBProvider.db.getUser(userId));
+    List<User> users = await DBProvider.db.getUser(userId);
+    _userController.sink.add(users[0]);
   }
 
   // Future<void> blockUnblock(User user) async {

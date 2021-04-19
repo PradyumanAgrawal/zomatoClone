@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -144,7 +145,7 @@ class _DescriptionState extends State<Description> {
                                       ));
                                     DocumentSnapshot userDoc = snapshot.data;
                                     bool inWishlist = userDoc['wishlist']
-                                        .contains(document.documentID);
+                                        .contains(document.productId);
                                     return Material(
                                       elevation: inWishlist ? 2 : 0,
                                       borderRadius: BorderRadius.circular(20.0),
@@ -167,7 +168,7 @@ class _DescriptionState extends State<Description> {
                                               : Icon(Icons.favorite_border),
                                           onPressed: () {
                                             FirestoreService().addToWishlist(
-                                                document.documentID);
+                                                document.productId);
                                           },
                                         ),
                                       ),
@@ -293,87 +294,87 @@ class _DescriptionState extends State<Description> {
                       )
                     ],
                   )),
-              Visibility(
-                visible: document['sizes'].length != 0,
-                child: Divider(
-                  color: Colors.purple.withOpacity(0.5),
-                  height: 30,
-                  indent: 50,
-                  endIndent: 50,
-                ),
-              ),
-              Visibility(
-                visible: document['sizes'].length != 0,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Text(
-                    'Variants',
-                    style: TextStyle(
-                        letterSpacing: 1.5,
-                        fontSize: 22.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              Visibility(
-                visible: document['sizes'].length != 0,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Wrap(
-                    //crossAxisAlignment: WrapCrossAlignment.center,
-                    children: List.generate(document['sizes'].length, (index) {
-                      bool isSelected = (index == selectedVariant);
-                      double blur = isSelected ? 30 : 0;
-                      double offset = isSelected ? 20 : 0;
-                      double size = isSelected ? 60 : 50;
-                      Color color = isSelected
-                          ? Colors.deepPurple[500]
-                          : Colors.purple[300];
-                      return Visibility(
-                        visible: document['sizesInStock'][index],
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedVariant = index;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: AnimatedContainer(
-                              height: size,
-                              width: size,
-                              duration: Duration(milliseconds: 500),
-                              curve: Curves.easeOutQuint,
-                              decoration: BoxDecoration(
-                                  color: color, // Colors.purple[200],
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black87,
-                                      blurRadius: blur,
-                                      offset: Offset(offset, offset),
-                                    )
-                                  ]),
-                              child: Center(
-                                child: Text(
-                                  document['sizes'][index],
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              ),
+              // Visibility(
+              //   visible: document['sizes'].length != 0,
+              //   child: Divider(
+              //     color: Colors.purple.withOpacity(0.5),
+              //     height: 30,
+              //     indent: 50,
+              //     endIndent: 50,
+              //   ),
+              // ),
+              // Visibility(
+              //   visible: document['sizes'].length != 0,
+              //   child: Padding(
+              //     padding: EdgeInsets.only(left: 15.0),
+              //     child: Text(
+              //       'Variants',
+              //       style: TextStyle(
+              //           letterSpacing: 1.5,
+              //           fontSize: 22.0,
+              //           color: Colors.black,
+              //           fontWeight: FontWeight.bold),
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(height: 20.0),
+              // Visibility(
+              //   visible: document['sizes'].length != 0,
+              //   child: Padding(
+              //     padding: EdgeInsets.only(left: 15.0),
+              //     child: Wrap(
+              //       //crossAxisAlignment: WrapCrossAlignment.center,
+              //       children: List.generate(document['sizes'].length, (index) {
+              //         bool isSelected = (index == selectedVariant);
+              //         double blur = isSelected ? 30 : 0;
+              //         double offset = isSelected ? 20 : 0;
+              //         double size = isSelected ? 60 : 50;
+              //         Color color = isSelected
+              //             ? Colors.deepPurple[500]
+              //             : Colors.purple[300];
+              //         return Visibility(
+              //           visible: document['sizesInStock'][index],
+              //           child: GestureDetector(
+              //             onTap: () {
+              //               setState(() {
+              //                 selectedVariant = index;
+              //               });
+              //             },
+              //             child: Padding(
+              //               padding: const EdgeInsets.all(8.0),
+              //               child: AnimatedContainer(
+              //                 height: size,
+              //                 width: size,
+              //                 duration: Duration(milliseconds: 500),
+              //                 curve: Curves.easeOutQuint,
+              //                 decoration: BoxDecoration(
+              //                     color: color, // Colors.purple[200],
+              //                     shape: BoxShape.circle,
+              //                     boxShadow: [
+              //                       BoxShadow(
+              //                         color: Colors.black87,
+              //                         blurRadius: blur,
+              //                         offset: Offset(offset, offset),
+              //                       )
+              //                     ]),
+              //                 child: Center(
+              //                   child: Text(
+              //                     document['sizes'][index],
+              //                     textAlign: TextAlign.center,
+              //                     style: TextStyle(
+              //                       color: Colors.white,
+              //                       fontWeight: FontWeight.bold,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         );
+              //       }),
+              //     ),
+              //   ),
+              // ),
               Divider(
                 color: Colors.purple.withOpacity(0.5),
                 height: 40,
@@ -393,7 +394,7 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(height: 20.0),
               FutureBuilder(
-                  future: FirestoreService().getShop(document.shopID),
+                  future: null, //DBProvider.db.getShops(), //FirestoreService().getShop(document.shopID),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData)
                       return Center(
