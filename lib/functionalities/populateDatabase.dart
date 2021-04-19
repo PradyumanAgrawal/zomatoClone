@@ -51,7 +51,7 @@ class PopulateDatabase{
           );
         await db.execute("""
             CREATE TABLE categories(
-            category TEXT 
+            type TEXT 
             )"""
           );
   }
