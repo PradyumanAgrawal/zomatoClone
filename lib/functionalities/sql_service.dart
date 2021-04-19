@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:my_flutter_app/functionalities/populateDatabase.dart';
 import 'package:my_flutter_app/models/addressModel.dart';
 import 'package:my_flutter_app/models/orderModel.dart';
 import 'package:my_flutter_app/models/productModel.dart';
@@ -30,7 +31,7 @@ class DBProvider {
       version: 1,
       onOpen: (db) {},
       onCreate: (Database db, int version) async {
-        final populator = PopulateDatabase(db);
+        final populator = PopulateDatabase(db:db);
         populator.populateDB();
       },
     );
