@@ -5,11 +5,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/blocs/shopBloc.dart';
 import 'package:my_flutter_app/blocs/userBloc.dart';
-import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
 import 'package:my_flutter_app/functionalities/streaming_shared_preferences.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import './homeScreen.dart';
@@ -87,10 +87,11 @@ class NavigationState extends State<Navigation> {
   final shopBloc = ShopBloc();
   final userBloc = UsersBloc(userId: "1");
   @override
-  void dispose() {
     shopBloc.dispose();
+    userBloc.dispose();
     super.dispose();
-  }
+  }void dispose() {
+  
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +113,7 @@ class NavigationState extends State<Navigation> {
 
         return MultiProvider(
           providers: [
-            StreamProvider<DocumentSnapshot>.value(
+            StreamProvider<User>.value(
               value: userBloc.user,
               //FirestoreService().getUser(userId),
             ),

@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_flutter_app/blocs/productBloc.dart';
+import 'package:my_flutter_app/blocs/shopBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
 import 'package:my_flutter_app/functionalities/streaming_shared_preferences.dart';
+import 'package:my_flutter_app/models/productModel.dart';
+import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:provider/provider.dart';
 import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -31,8 +35,8 @@ class HomeScreenState extends State<HomeScreen> {
   bool isTyping = false;
   bool isSearching = false;
   DocumentSnapshot userProvider;
-  List<DocumentSnapshot> nearByShopsSnapshots;
-  List<DocumentReference> nearByShopsReferences = [];
+  List<Shop> nearByShops;
+  //List<DocumentReference> nearByShopsReferences = [];
   LocationPreferences locationPreference;
   List<String> locationList;
   TextEditingController _controller = TextEditingController();
@@ -153,21 +157,27 @@ class HomeScreenState extends State<HomeScreen> {
     await FirestoreService().saveToken(token, uid);
   }
 
-  void getShopRefList(List<DocumentSnapshot> documentSnapshots) {
-    nearByShopsReferences = [];
-    for (int i = 0; i < documentSnapshots.length; i++) {
-      nearByShopsReferences.add(documentSnapshots[i].reference);
-    }
+  // void getShopRefList(List<DocumentSnapshot> documentSnapshots) {
+  //   nearByShopsReferences = [];
+  //   for (int i = 0; i < documentSnapshots.length; i++) {
+  //     nearByShopsReferences.add(documentSnapshots[i].reference);
+  //   }
+  // }
+
+  final productBloc = ProductBloc();
+  @override
+  void dispose() {
+    productBloc.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     userProvider = Provider.of<DocumentSnapshot>(context);
     if (userProvider != null) checkToken(userProvider.documentID);
-    if (Provider.of<List<DocumentSnapshot>>(context) != null) {
-      nearByShopsSnapshots =
-          List.from(Provider.of<List<DocumentSnapshot>>(context));
-      getShopRefList(nearByShopsSnapshots);
+    if (Provider.of<List<Shop>>(context) != null) {
+      nearByShops = List.from(Provider.of<List<Shop>>(context));
+      //getShopRefList(nearByShopsSnapshots);
     }
     locationPreference = Provider.of<LocationPreferences>(context);
     locationList = Provider.of<List<String>>(context);
@@ -535,8 +545,8 @@ class HomeScreenState extends State<HomeScreen> {
                             )
                           : Builder(
                               builder: (context) {
-                                wishlist = userProvider['wishlist'];
-                                if (nearByShopsReferences.isEmpty)
+                                //wishlist = userProvider['wishlist'];
+                                if (nearByShops.isEmpty)
                                   return Center(
                                     child: Column(
                                       children: <Widget>[
@@ -553,8 +563,8 @@ class HomeScreenState extends State<HomeScreen> {
                                     ),
                                   );
                                 return StreamBuilder(
-                                  stream: FirestoreService()
-                                      .getHomeProducts(nearByShopsReferences),
+                                  stream: productBloc.products,
+                                  //FirestoreService().getHomeProducts(nearByShopsReferences),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData)
                                       return Center(
@@ -573,10 +583,11 @@ class HomeScreenState extends State<HomeScreen> {
                                         children: List.generate(
                                           snapshot.data.documents.length,
                                           (index) {
-                                            DocumentSnapshot document =
-                                                snapshot.data.documents[index];
-                                            bool inWishlist = wishlist
-                                                .contains(document.documentID);
+                                            Product document =
+                                                snapshot.data[index];
+                                            bool inWishlist = true;
+                                            //  wishlist
+                                            //     .contains(document.documentID);
                                             return _singleProd(
                                                 "Index $index",
                                                 document,
@@ -738,8 +749,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                     (1 / 8) -
                                                 1,
                                             onPressed: () {
-                                              FirestoreService().addToWishlist(
-                                                  document.documentID);
+                                              // FirestoreService().addToWishlist(
+                                              //     document.documentID);
                                             },
                                           ),
                                         ),
@@ -925,7 +936,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _singleProd(name, DocumentSnapshot document, BuildContext navContext,
+  _singleProd(name, Product document, BuildContext navContext,
       bool inWishlist) {
     return InkWell(
       onTap: () {
@@ -944,13 +955,13 @@ class HomeScreenState extends State<HomeScreen> {
               alignment: Alignment.topRight,
               children: <Widget>[
                 Hero(
-                  tag: document['catalogue'][0],
+                  tag: document.image,
                   child: Container(
                     clipBehavior: Clip.hardEdge,
                     width: MediaQuery.of(context).size.width * 0.46,
                     height: MediaQuery.of(context).size.width * 0.46,
                     child: CachedNetworkImage(
-                      imageUrl: document['catalogue'][0],
+                      imageUrl: document.image,
                       filterQuality: FilterQuality.low,
                       fit: BoxFit.cover,
                     ),
@@ -976,7 +987,7 @@ class HomeScreenState extends State<HomeScreen> {
                           : Icon(Icons.favorite_border,
                               color: Colors.grey[900].withOpacity(0.7)),
                       onPressed: () {
-                        FirestoreService().addToWishlist(document.documentID);
+                        //FirestoreService().addToWishlist(document.productId);
                       },
                     ),
                   ],
@@ -1005,7 +1016,6 @@ class Store extends StatefulWidget {
 }
 
 class _StoreState extends State<Store> {
-  
   String f(String name) {
     List<String> n = name.split(' ');
     for (int i = 0; i < n.length; i++) {
@@ -1016,6 +1026,13 @@ class _StoreState extends State<Store> {
     return nam;
   }
 
+  final shopBloc = ShopBloc();
+  @override
+  void dispose() {
+    shopBloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1023,9 +1040,10 @@ class _StoreState extends State<Store> {
       child: (widget.locationList == ['', ''])
           ? Center(child: Text('Location not Found'))
           : StreamBuilder(
-              stream: FirestoreService().getNearbyStores(LatLng(
-                  double.parse(widget.locationList[0]),
-                  double.parse(widget.locationList[1]))),
+              stream: shopBloc.shops,
+              // FirestoreService().getNearbyStores(LatLng(
+              //     double.parse(widget.locationList[0]),
+              //     double.parse(widget.locationList[1]))),
               builder: (context, snapshot) {
                 if (!snapshot.hasData)
                   return Center(
@@ -1050,14 +1068,14 @@ class _StoreState extends State<Store> {
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
-                          DocumentSnapshot document = snapshot.data[index];
-                          String type = document['type'];
+                          Shop document = snapshot.data[index];
+                          String type = document.type;
                           return InkWell(
                             onTap: () {
                               Navigator.of(widget.navContext)
                                   .pushNamed('/discover', arguments: {
                                 'stream': 'shop',
-                                'shopId': document.documentID,
+                                'shopId': document.shopID,
                                 'context': context
                               });
                             },
@@ -1081,7 +1099,7 @@ class _StoreState extends State<Store> {
                                           'assets/typeIcons/$type.png'),
                                     ),
                                   ),
-                                  Text(f(document['name']),
+                                  Text(f(document.shopName),
                                       style: TextStyle(
                                         fontSize: 10,
                                       )),

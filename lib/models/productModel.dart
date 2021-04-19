@@ -7,14 +7,17 @@ class Product {
   String description;
   String price;
   String image;
+  String discount;
 
-  Product(
-      {this.productId,
-      this.shopID,
-      this.pName,
-      this.description,
-      this.price,
-      this.image});
+  Product({
+    this.productId,
+    this.shopID,
+    this.pName,
+    this.description,
+    this.price,
+    this.image,
+    this.discount,
+  });
 
   factory Product.fromMap(Map<String, String> json) => new Product(
       productId: json["productId"],
@@ -22,7 +25,8 @@ class Product {
       pName: json["pName"],
       description: json["description"],
       price: json["price"],
-      image: json["image"]);
+      image: json["image"],
+      discount: json["discount"]);
 
   Map<String, String> toMap() => {
         "productId": productId,
@@ -30,7 +34,8 @@ class Product {
         "pName": pName,
         "description": description,
         "price": price,
-        "image": image
+        "image": image,
+        "discount": discount,
       };
 }
 

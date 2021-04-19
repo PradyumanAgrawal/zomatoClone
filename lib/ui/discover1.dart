@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:provider/provider.dart';
 import 'drawerWidget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -157,133 +158,62 @@ class _Discover1State extends State<Discover1> {
           },
           body: TabBarView(
             children: [
-              StreamBuilder(
-                stream: FirestoreService().getCategories(),
+              FutureBuilder(
+                future: DBProvider.db.getCategories(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)
                     return Center(
                         child: SpinKitChasingDots(color: Colors.deepPurple));
+                  //List<Map> categories = DBProvider.db.getCategories();
                   return ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data.documents.length,
+                    itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
-                      DocumentSnapshot document =
-                          snapshot.data.documents[index];
-                      return document['subCategories'].length != 0
-                          ? ExpansionTile(
-                              title: Row(
+                      Map<String, dynamic> document = snapshot.data[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(widget.navContext).pushNamed(
+                                '/discover',
+                                arguments: {
+                                  'category': document["type"],
+                                  'stream': 'category',
+                                  'context': context
+                                },
+                              );
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(0),
+                              padding: EdgeInsets.all(15),
+                              child: Row(
                                 children: <Widget>[
                                   Icon(
-                                    iconMap[document.documentID.toString()],
+                                    iconMap[document["type"]],
                                     //size: 60.0,
                                     color: Colors.grey,
                                   ),
                                   SizedBox(width: 30),
                                   Text(
-                                    document.documentID,
+                                    document["type"],
                                     style: TextStyle(
                                       fontSize: 20,
                                     ),
                                   ),
                                 ],
                               ),
-                              children: List<Widget>.generate(
-                                  document['subCategories'].length, (ind) {
-                                return Material(
-                                  elevation: 10,
-                                  child: ListTile(
-                                    onTap: () {
-                                      Navigator.of(widget.navContext).pushNamed(
-                                        '/discover',
-                                        arguments: {
-                                          'category': document['subCategories']
-                                              [ind],
-                                          'stream': 'subCategory',
-                                          'context': context
-                                        },
-                                      );
-                                    },
-                                    title: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child:
-                                          Text(document['subCategories'][ind]),
-                                    ),
-                                  ),
-                                );
-                              }),
-                            )
-                          : ListTile(
-                              onTap: () {
-                                Navigator.of(widget.navContext).pushNamed(
-                                  '/discover',
-                                  arguments: {
-                                    'category': document.documentID,
-                                    'stream': 'category',
-                                    'context': context
-                                  },
-                                );
-                              },
-                              title: Row(
-                                children: <Widget>[
-                                  Icon(
-                                    iconMap[document.documentID.toString()],
-                                    //size: 60.0,
-                                    color: Colors.grey,
-                                  ),
-                                  SizedBox(width: 30),
-                                  Text(
-                                    document.documentID,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                      // return Column(
-                      //   crossAxisAlignment: CrossAxisAlignment.stretch,
-                      //   children: <Widget>[
-                      //     InkWell(
-                      //       onTap: () {
-                      //         Navigator.of(widget.navContext).pushNamed(
-                      //           '/discover',
-                      //           arguments: {
-                      //             'category': document.documentID,
-                      //             'stream': 'category',
-                      //             'context': context
-                      //           },
-                      //         );
-                      //       },
-                      //       child: Container(
-                      //         margin: EdgeInsets.all(0),
-                      //         padding: EdgeInsets.all(15),
-                      //         child: Row(
-                      //           children: <Widget>[
-                      //             Icon(
-                      //               iconMap[document.documentID.toString()],
-                      //               //size: 60.0,
-                      //               color: Colors.grey,
-                      //             ),
-                      //             SizedBox(width: 30),
-                      //             Text(
-                      //               document.documentID,
-                      //               style: TextStyle(
-                      //                 fontSize: 20,
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     Divider(
-                      //       color: Colors.deepPurpleAccent,
-                      //       thickness: 0,
-                      //       height: 0,
-                      //       indent: 20,
-                      //       endIndent: 20,
-                      //     )
-                      //   ],
-                      // );
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.deepPurpleAccent,
+                            thickness: 0,
+                            height: 0,
+                            indent: 20,
+                            endIndent: 20,
+                          )
+                        ],
+                      );
                     },
                   );
                 },

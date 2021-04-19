@@ -91,6 +91,7 @@ class _MainScreenState extends State<MainScreen> {
                                   SizedBox(
                                     height: 50,
                                   ),
+                                  // ignore: deprecated_member_use
                                   RaisedButton(
                                     shape: RoundedRectangleBorder(
                                         borderRadius:

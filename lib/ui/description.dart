@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -8,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
+import 'package:my_flutter_app/models/productModel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Description extends StatefulWidget {
@@ -20,17 +20,14 @@ class Description extends StatefulWidget {
 
 class _DescriptionState extends State<Description> {
   bool a = false;
-  DocumentSnapshot document;
+  Product document;
   int photoIndex = 0;
   List<String> photos = [];
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  _DescriptionState(DocumentSnapshot document) {
+  _DescriptionState(Product document) {
     this.document = document;
     //this.photos.addAll(document['catalogue']);
-    for (int i = 0; i < document['catalogue'].length; i++) {
-      String img = document['catalogue'][i];
-      photos.add(img);
-    }
+    photos.add(document.image);
   }
   String shopContact;
   LatLng shopLocation;
@@ -38,13 +35,14 @@ class _DescriptionState extends State<Description> {
   int selectedVariant;
   @override
   Widget build(BuildContext context) {
-    for (int i = 0; i < document['sizesInStock'].length; i++) {
-      if (document['sizesInStock'][i] == true) {
-        setState(() {
-          a = true;
-        });
-      }
-    }
+
+    // for (int i = 0; i < document['sizesInStock'].length; i++) {
+    //   if (document['sizesInStock'][i] == true) {
+    //     setState(() {
+    //       a = true;
+    //     });
+    //   }
+    // }
     return Scaffold(
       key: _scaffoldKey,
       body: ListView(
@@ -65,48 +63,6 @@ class _DescriptionState extends State<Description> {
                           Navigator.pop(context);
                         },
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(right: 15.0, top: 8.0),
-                      //   child: FutureBuilder(
-                      //     future: LocalData().getUid(),
-                      //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      //       if (!snapshot.hasData) {
-                      //         return Container();
-                      //       }
-                      //       String uid = snapshot.data;
-                      //       return StreamBuilder(
-                      //         stream: FirestoreService().getUser(uid),
-                      //         builder: (BuildContext context, AsyncSnapshot snap) {
-                      //           if (!snap.hasData) {
-                      //             return Container();
-                      //           }
-                      //           var len = snap.data['cart'].keys
-                      //               .toList()
-                      //               .length
-                      //               .toString();
-                      //           return Badge(
-                      //             child: InkWell(
-                      //                 child: Icon(
-                      //                   Icons.shopping_cart,
-                      //                   color: Colors.black,
-                      //                 ),
-                      //                 onTap: () {
-                      //                   Navigator.of(context).pushNamed(
-                      //                       '/cart',
-                      //                       arguments: widget.args['providerContext']);
-                      //                 }),
-                      //             badgeContent: Text(
-                      //               len,
-                      //               style: TextStyle(color: Colors.white),
-                      //             ),
-                      //             animationType: BadgeAnimationType.slide,
-                      //             showBadge: len != '0',
-                      //           );
-                      //         },
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
                     ]),
               ),
               Material(
@@ -130,7 +86,7 @@ class _DescriptionState extends State<Description> {
                             boxFit: BoxFit.cover,
                             images: List.generate(photos.length, (index) {
                               return Hero(
-                                tag: document['catalogue'][index],
+                                tag: document.image,
                                 child: CachedNetworkImage(
                                   imageUrl: photos[index],
                                   placeholder: (context, url) =>
@@ -239,7 +195,7 @@ class _DescriptionState extends State<Description> {
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Text(
-                  document['name'],
+                  document.pName,
                   style: TextStyle(
                       fontSize: 25.0,
                       color: Colors.black,
@@ -250,9 +206,9 @@ class _DescriptionState extends State<Description> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0),
                 child: Container(
-                  child: (document['discount'] == null
+                  child: (document.discount == null
                               ? '0'
-                              : document['discount']) !=
+                              : document.discount) !=
                           '0'
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -262,7 +218,7 @@ class _DescriptionState extends State<Description> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 Text(
-                                  '\u{20B9} ' + document['price'],
+                                  '\u{20B9} ' + document.price,
                                   style: TextStyle(
                                       decoration: TextDecoration.lineThrough,
                                       color: Colors.grey,
@@ -270,7 +226,7 @@ class _DescriptionState extends State<Description> {
                                       fontSize: 20),
                                 ),
                                 Text(
-                                  ' ' + document['discount'] + "% off",
+                                  ' ' + document.discount + "% off",
                                   style: TextStyle(
                                       fontSize: 12, color: Colors.grey),
                                 ),
@@ -282,10 +238,10 @@ class _DescriptionState extends State<Description> {
                               child: Text(
                                 "  " +
                                     '\u{20B9} ' +
-                                    (int.parse(document['price']) *
+                                    (int.parse(document.price) *
                                             (1 -
                                                 int.parse(
-                                                        document['discount']) /
+                                                        document.discount) /
                                                     100))
                                         .toStringAsFixed(2),
                                 style: TextStyle(
@@ -300,7 +256,7 @@ class _DescriptionState extends State<Description> {
                             Padding(
                               padding: const EdgeInsets.only(right: 20),
                               child: Text(
-                                '\u{20B9} ' + document['price'],
+                                '\u{20B9} ' + document.price,
                                 style: TextStyle(
                                     fontSize: 22.0,
                                     color: Colors.black,
@@ -321,7 +277,7 @@ class _DescriptionState extends State<Description> {
                         flex: 20,
                         child: Container(
                           child: Text(
-                            document['description'],
+                            document.description,
                             style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey.withOpacity(0.8),
@@ -437,7 +393,7 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(height: 20.0),
               FutureBuilder(
-                  future: FirestoreService().getShop(document['shop']),
+                  future: FirestoreService().getShop(document.shopID),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData)
                       return Center(
