@@ -24,8 +24,7 @@ class PopulateDatabase{
             shopName TEXT NOT NULL,
             location TEXT,
             type TEXT,
-            FOREIGN KEY (ownerId)
-            REFERENCES user(userId) 
+            FOREIGN KEY (ownerId) REFERENCES user(userId) 
             )"""
           );
         await db.execute("""
@@ -38,6 +37,21 @@ class PopulateDatabase{
             image TEXT,
             FOREIGN KEY (shopId)
             REFERENCES shop(shopId) 
+            )"""
+          );
+        await db.execute("""
+            CREATE TABLE orders(
+            productId TEXT,
+            addrId TEXT NOT NULL,
+            status TEXT NOT NULL,
+            date TEXT,
+            bill TEXT NOT NULL,
+            FOREIGN KEY (productId) REFERENCES products(productId) 
+            )"""
+          );
+        await db.execute("""
+            CREATE TABLE categories(
+            category TEXT 
             )"""
           );
   }
