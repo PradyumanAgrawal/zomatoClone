@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/sql_service.dart';
+import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:provider/provider.dart';
 import 'drawerWidget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -220,13 +221,8 @@ class _Discover1State extends State<Discover1> {
               ),
               (locationList == null)
                   ? Center(child: Text('Location not Found'))
-                  : StreamBuilder(
-                      stream: FirestoreService().getNearbyStores(
-                        LatLng(
-                          double.parse(locationList[0]),
-                          double.parse(locationList[1]),
-                        ),
-                      ),
+                  : FutureBuilder(
+                      future:  DBProvider.db.getShops(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData)
                           return Center(
@@ -252,8 +248,8 @@ class _Discover1State extends State<Discover1> {
                           scrollDirection: Axis.vertical,
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
-                            DocumentSnapshot document = snapshot.data[index];
-                            String type = document['type'];
+                            Shop document = snapshot.data[index];
+                            String type = document.type;
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
@@ -263,7 +259,7 @@ class _Discover1State extends State<Discover1> {
                                       '/discover',
                                       arguments: {
                                         'stream': 'shop',
-                                        'shopId': document.documentID,
+                                        'shopId': document.shopID,
                                         'context': context
                                       },
                                     );
@@ -282,7 +278,7 @@ class _Discover1State extends State<Discover1> {
                                         ),
                                         SizedBox(width: 30),
                                         Text(
-                                          f(document['name']),
+                                          f(document.shopName),
                                           style: TextStyle(
                                             fontSize: 20,
                                           ),

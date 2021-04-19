@@ -12,6 +12,7 @@ import 'package:my_flutter_app/functionalities/location_service.dart';
 import 'package:my_flutter_app/functionalities/streaming_shared_preferences.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
 import './drawerWidget.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -34,7 +35,7 @@ class HomeScreenState extends State<HomeScreen> {
   List wishlist;
   bool isTyping = false;
   bool isSearching = false;
-  DocumentSnapshot userProvider;
+  User userProvider;
   List<Shop> nearByShops;
   //List<DocumentReference> nearByShopsReferences = [];
   LocationPreferences locationPreference;
@@ -173,8 +174,10 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    userProvider = Provider.of<DocumentSnapshot>(context);
-    if (userProvider != null) checkToken(userProvider.documentID);
+    userProvider = Provider.of<User>(context);
+
+    //if (userProvider != null) checkToken(userProvider.documentID);
+    
     if (Provider.of<List<Shop>>(context) != null) {
       nearByShops = List.from(Provider.of<List<Shop>>(context));
       //getShopRefList(nearByShopsSnapshots);

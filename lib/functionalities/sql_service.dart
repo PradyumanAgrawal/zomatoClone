@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:my_flutter_app/models/addressModel.dart';
+import 'package:my_flutter_app/models/orderModel.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
@@ -29,8 +30,8 @@ class DBProvider {
       version: 1,
       onOpen: (db) {},
       onCreate: (Database db, int version) async {
-      final populator =PopulateDatabase(db);
-      populator.populateDB();
+        final populator = PopulateDatabase(db);
+        populator.populateDB();
       },
     );
   }
@@ -71,11 +72,33 @@ class DBProvider {
     return shops.isNotEmpty ? shops : null;
   }
 
+  getCategories() async {
+    final db = await database;
+    List<Map<String, Object>> res = await db.query("categories");
+    return res.isNotEmpty ? res : null;
+  }
+
+  getOrders(String userId) async {
+    final db = await database;
+    List<Map<String, Object>> res =
+        await db.query("orders", where: "userId = ?", whereArgs: [userId]);
+    List<Order> orders;
+    res.forEach((order) => {orders.add(Order.fromMap(order))});
+  }
+
   getProducts() async {
     final db = await database;
     List<Map<String, Object>> res = await db.query("products");
     List<Product> products;
     res.forEach((prod) => {products.add(Product.fromMap(prod))});
     return products.isNotEmpty ? products : null;
+  }
+
+  getSingleProd(String productId) async {
+    final db = await database;
+    List<Map<String, Object>> res = await db
+        .query("products", where: "productId = ?", whereArgs: [productId]);
+    Product product = Product.fromMap(res[0]);
+    return product;
   }
 }

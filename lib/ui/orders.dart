@@ -2,6 +2,10 @@ import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
+import 'package:my_flutter_app/models/orderModel.dart';
+import 'package:my_flutter_app/models/productModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
 import '../functionalities/firestore_service.dart';
 import 'drawerWidget.dart';
@@ -14,10 +18,10 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
-  DocumentSnapshot userProvider;
+  User userProvider;
   @override
   Widget build(BuildContext context) {
-    userProvider = Provider.of<DocumentSnapshot>(context);
+    userProvider = Provider.of<User>(context);
     return Scaffold(
       drawer: DrawerWidget(navContext: widget.navContext),
       appBar: AppBar(actions: [
@@ -59,8 +63,9 @@ class _OrdersState extends State<Orders> {
           ? Center(
               child: SpinKitChasingDots(color: Colors.deepPurple),
             )
-          : StreamBuilder(
-              stream: FirestoreService().getOrders(userProvider.documentID),
+          : FutureBuilder(
+              future: DBProvider.db.getOrders(userProvider.userId),
+              //FirestoreService().getOrders(userProvider.userId),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data == {}) {
@@ -79,7 +84,7 @@ class _OrdersState extends State<Orders> {
                       ),
                     );
                   } else {
-                    var orderList = snapshot.data.documents.toList();
+                    List<Order> orderList = snapshot.data;
                     return orderList.length == 0
                         ? Center(
                             child: Column(
@@ -121,31 +126,42 @@ class _OrdersState extends State<Orders> {
                                                   TextStyle(color: Colors.grey),
                                             ),
                                           ),
-                                          Text(orderList[index].documentID),
+                                          Text(index.toString()),
                                         ],
                                       ),
                                     ),
                                     Row(
                                       children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.all(8),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                  orderList[index]['image'],
+                                        FutureBuilder(
+                                            future: DBProvider.db.getSingleProd(
+                                                orderList[index].productId),
+                                            builder: (context, snapshot) {
+                                              if (!snapshot.hasData)
+                                                return Center(
+                                                    child: SpinKitChasingDots(
+                                                  color: Colors.purple,
+                                                ));
+                                              Product product = snapshot.data;
+                                              return Container(
+                                                padding: EdgeInsets.all(8),
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    3,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    3,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                        product.image,
+                                                      ),
+                                                      fit: BoxFit.contain),
                                                 ),
-                                                fit: BoxFit.contain),
-                                          ),
-                                        ),
+                                              );
+                                            }),
                                         SizedBox(
                                           width: 20,
                                         ),
@@ -156,29 +172,33 @@ class _OrdersState extends State<Orders> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: <Widget>[
-                                              Text(
-                                                orderList[index]['prodName'],
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
+                                              FutureBuilder(
+                                                  future: DBProvider.db
+                                                      .getSingleProd(
+                                                          orderList[index]
+                                                              .productId),
+                                                  builder: (context, snapshot) {
+                                                    if (!snapshot.hasData)
+                                                      return Center(
+                                                        child:
+                                                            SpinKitChasingDots(
+                                                          color: Colors.purple,
+                                                        ),
+                                                      );
+                                                    Product product =
+                                                        snapshot.data;
+                                                    return Text(
+                                                      product.pName,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    );
+                                                  }),
                                               SizedBox(height: 20),
-                                              Visibility(
-                                                visible: (orderList[index]
-                                                        ['variant'] !=
-                                                    ''),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 10),
-                                                  child: Text(orderList[index]
-                                                      ['variant']),
-                                                ),
-                                              ),
                                               Text(
                                                 'Quantity : ' +
-                                                    orderList[index]['quantity']
-                                                        .toString(),
+                                                    orderList[index].quantity,
                                                 style: TextStyle(
                                                   color: Colors.grey,
                                                 ),
@@ -202,13 +222,9 @@ class _OrdersState extends State<Orders> {
                                               style: TextStyle(
                                                   color: Colors.grey)),
                                           Text(
-                                            (orderList[index]['timeStamp'] ==
-                                                    null)
+                                            (orderList[index].date == null)
                                                 ? ''
-                                                : orderList[index]['timeStamp']
-                                                    .toDate()
-                                                    .toString()
-                                                    .substring(0, 10),
+                                                : orderList[index].date,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -230,14 +246,10 @@ class _OrdersState extends State<Orders> {
                                                   style: TextStyle(
                                                       color: Colors.grey)),
                                               Text(
-                                                (orderList[index][
-                                                            'amountWithCharge'] !=
+                                                (orderList[index].bill !=
                                                         null)
                                                     ? ' \u{20B9} ' +
-                                                        orderList[index][
-                                                                'amountWithCharge']
-                                                            .roundToDouble()
-                                                            .toString()
+                                                        orderList[index].bill
                                                     : '',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
@@ -262,19 +274,17 @@ class _OrdersState extends State<Orders> {
                                             ),
                                           ),
                                           Text(
-                                            orderList[index]['status'],
+                                            orderList[index].status,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: (orderList[index]
-                                                          ['status'] ==
+                                              color: (orderList[index].status ==
                                                       'pending')
                                                   ? Colors.blue
-                                                  : (orderList[index]
-                                                              ['status'] ==
+                                                  : (orderList[index].status ==
                                                           'Rejected')
                                                       ? Colors.red
                                                       : (orderList[index]
-                                                                  ['status'] ==
+                                                                  .status ==
                                                               'Accepted')
                                                           ? Colors.green
                                                           : Colors.black,

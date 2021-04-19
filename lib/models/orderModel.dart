@@ -6,6 +6,8 @@ class Order {
   String status;
   String date;
   String bill;
+  String image;
+  String quantity;
 
   Order({
     this.addrId,
@@ -13,6 +15,8 @@ class Order {
     this.status,
     this.date,
     this.bill,
+    this.image,
+    this.quantity,
   });
 
   factory Order.fromMap(Map<String, String> json) => new Order(
@@ -21,6 +25,8 @@ class Order {
         status: json["status"],
         date: json["date"],
         bill: json["bill"],
+        image: json["image"],
+        quantity: json["quantity"],
       );
 
   Map<String, String> toMap() => {
@@ -29,6 +35,8 @@ class Order {
         "status": status,
         "date": date,
         "bill": bill,
+        "image": image,
+        "quantity": quantity,
       };
 }
 

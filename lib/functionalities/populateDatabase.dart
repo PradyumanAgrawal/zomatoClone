@@ -1,5 +1,7 @@
+import 'package:my_flutter_app/functionalities/sql_service.dart';
+
 class PopulateDatabase{
-  static final DBProvider db;
+  final DBProvider db;
   PopulateDatabase({this.db});
   populateDB() async
   {
