@@ -19,7 +19,7 @@ class Shop {
     this.type,
   });
 
-  factory Shop.fromMap(Map<String, String> json) => new Shop(
+  factory Shop.fromMap(Map<String, dynamic> json) => new Shop(
         shopID: json["shopID"],
         address: json["address"],
         ownerId: json["ownerId"],

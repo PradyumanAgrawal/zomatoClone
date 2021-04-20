@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class User {
-  String userId;
+  int userId;
   String name;
   String mobileNo;
   String email;
@@ -16,7 +16,7 @@ class User {
       this.location,
       this.displayPic});
 
-  factory User.fromMap(Map<String, String> json) => new User(
+  factory User.fromMap(Map<String, dynamic> json) => new User(
         userId: json["userId"],
         name: json["name"],
         mobileNo: json["mobileNo"],
@@ -25,7 +25,7 @@ class User {
         displayPic: json["displayPic"],
       );
 
-  Map<String, String> toMap() => {
+  Map<String, dynamic> toMap() => {
         "userId": userId,
         "name": name,
         "mobileNo": mobileNo,

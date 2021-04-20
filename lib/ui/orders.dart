@@ -64,7 +64,7 @@ class _OrdersState extends State<Orders> {
               child: SpinKitChasingDots(color: Colors.deepPurple),
             )
           : FutureBuilder(
-              future: DBProvider.db.getOrders(userProvider.userId),
+              future: DBProvider.db.getOrders(userProvider.userId.toString()),
               //FirestoreService().getOrders(userProvider.userId),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {

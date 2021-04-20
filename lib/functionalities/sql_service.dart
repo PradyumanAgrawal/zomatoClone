@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:my_flutter_app/functionalities/populateDatabase.dart';
 import 'package:my_flutter_app/models/addressModel.dart';
@@ -8,6 +9,7 @@ import 'package:my_flutter_app/models/userModel.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:http/http.dart';
 
 class DBProvider {
   DBProvider._();
@@ -31,16 +33,22 @@ class DBProvider {
       version: 1,
       onOpen: (db) {},
       onCreate: (Database db, int version) async {
-        final populator = PopulateDatabase(db:db);
+        final populator = PopulateDatabase(db: db);
         populator.populateDB();
       },
     );
   }
 
   getUser(String userId) async {
-    final db = await database;
-    var res = await db.query("Client", where: "id = ?", whereArgs: [userId]);
-    return res.isNotEmpty ? User.fromMap(res.first) : null;
+    Response response = await get('http://10.0.2.2:3000/user/1');
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    User user = User.fromMap(jsonData[0]);
+    return user;
+    //final db = await database;
+    //var res = await db.query("users", where: "id = ?", whereArgs: [userId]);
+    //return res.isNotEmpty ? User.fromMap(res.first) : null;
   }
 
   getAddress(String userId) async {
@@ -66,10 +74,14 @@ class DBProvider {
   }
 
   getShops() async {
-    final db = await database;
-    List<Map<String, Object>> res = await db.query("shops");
+    Response response = await get('http://10.0.2.2:3000/shops');
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    // final db = await database;
+    // List<Map<String, Object>> res = await db.query("shops");
     List<Shop> shops;
-    res.forEach((shop) => {shops.add(Shop.fromMap(shop))});
+    jsonData.forEach((shop) => {shops.add(Shop.fromMap(shop))});
     return shops.isNotEmpty ? shops : null;
   }
 
