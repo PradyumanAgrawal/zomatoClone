@@ -2,13 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:my_flutter_app/functionalities/firestore_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:my_flutter_app/functionalities/firestore_service.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/productModel.dart';
+import 'package:my_flutter_app/models/shopModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Description extends StatefulWidget {
@@ -36,7 +38,6 @@ class _DescriptionState extends State<Description> {
   int selectedVariant;
   @override
   Widget build(BuildContext context) {
-
     // for (int i = 0; i < document['sizesInStock'].length; i++) {
     //   if (document['sizesInStock'][i] == true) {
     //     setState(() {
@@ -135,44 +136,45 @@ class _DescriptionState extends State<Description> {
                                     color: Colors.purple,
                                   ));
                                 String userId = snapshot.data;
-                                return StreamBuilder(
-                                  stream: FirestoreService().getUser(userId),
+                                return FutureBuilder(
+                                  future: DBProvider.db.getUser(userId),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData)
                                       return Center(
                                           child: SpinKitChasingDots(
                                         color: Colors.purple,
                                       ));
-                                    DocumentSnapshot userDoc = snapshot.data;
-                                    bool inWishlist = userDoc['wishlist']
-                                        .contains(document.productId);
-                                    return Material(
-                                      elevation: inWishlist ? 2 : 0,
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      child: Container(
-                                        height: 40.0,
-                                        width: 40.0,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
-                                          color: inWishlist
-                                              ? Colors.white
-                                              : Colors.grey.withOpacity(0.2),
-                                        ),
-                                        child: IconButton(
-                                          icon: inWishlist
-                                              ? Icon(
-                                                  Icons.favorite,
-                                                  color: Colors.red,
-                                                )
-                                              : Icon(Icons.favorite_border),
-                                          onPressed: () {
-                                            FirestoreService().addToWishlist(
-                                                document.productId);
-                                          },
-                                        ),
-                                      ),
-                                    );
+                                    User userDoc = snapshot.data;
+                                    // bool inWishlist = userDoc['wishlist']
+                                    //     .contains(document.productId);
+                                    return Container();
+                                    //  Material(
+                                    //   elevation: inWishlist ? 2 : 0,
+                                    //   borderRadius: BorderRadius.circular(20.0),
+                                    //   child: Container(
+                                    //     height: 40.0,
+                                    //     width: 40.0,
+                                    //     decoration: BoxDecoration(
+                                    //       borderRadius:
+                                    //           BorderRadius.circular(20.0),
+                                    //       color: inWishlist
+                                    //           ? Colors.white
+                                    //           : Colors.grey.withOpacity(0.2),
+                                    //     ),
+                                    //     child: IconButton(
+                                    //       icon: inWishlist
+                                    //           ? Icon(
+                                    //               Icons.favorite,
+                                    //               color: Colors.red,
+                                    //             )
+                                    //           : Icon(Icons.favorite_border),
+                                    //       onPressed: () {
+                                    //         FirestoreService().addToWishlist(
+                                    //             document.productId);
+                                    //       },
+                                    //     ),
+                                    //   ),
+                                    // );
                                   },
                                 );
                               },
@@ -241,8 +243,7 @@ class _DescriptionState extends State<Description> {
                                     '\u{20B9} ' +
                                     (int.parse(document.price) *
                                             (1 -
-                                                int.parse(
-                                                        document.discount) /
+                                                int.parse(document.discount) /
                                                     100))
                                         .toStringAsFixed(2),
                                 style: TextStyle(
@@ -394,16 +395,17 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(height: 20.0),
               FutureBuilder(
-                  future: null, //DBProvider.db.getShops(), //FirestoreService().getShop(document.shopID),
+                  future:
+                      null, //DBProvider.db.getShops(), //FirestoreService().getShop(document.shopID),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData)
                       return Center(
                           child: SpinKitChasingDots(color: Colors.deepPurple));
-                    DocumentSnapshot shopDoc = snapshot.data;
-                    shopContact = shopDoc['contact'];
-                    shopLocation = new LatLng(
-                        shopDoc['location']['geopoint'].latitude,
-                        shopDoc['location']['geopoint'].longitude);
+                    Shop shopDoc = snapshot.data;
+                    shopContact = shopDoc.contact;
+                    // shopLocation = new LatLng(
+                    //     shopDoc.location.latitude,
+                    //     shopDoc['location']['geopoint'].longitude);
                     return Padding(
                       padding: EdgeInsets.only(left: 15.0),
                       child: Column(
@@ -422,7 +424,7 @@ class _DescriptionState extends State<Description> {
                               Expanded(
                                 child: Container(
                                   child: Text(
-                                    shopDoc['name'],
+                                    shopDoc.shopName,
                                     //'shop name enterprice',
                                     style: TextStyle(
                                       color: Colors.grey,
@@ -449,7 +451,7 @@ class _DescriptionState extends State<Description> {
                               Expanded(
                                 child: Container(
                                   child: Text(
-                                    shopDoc['address'],
+                                    shopDoc.address,
                                     //'shop address xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                                     style: TextStyle(
                                       color: Colors.grey,
@@ -477,7 +479,7 @@ class _DescriptionState extends State<Description> {
                                 child: Container(
                                   width: 200,
                                   child: Text(
-                                    shopDoc['contact'],
+                                    shopDoc.contact,
                                     //'contact details',
                                     style: TextStyle(
                                       color: Colors.grey,
@@ -496,22 +498,6 @@ class _DescriptionState extends State<Description> {
                             indent: 50,
                             endIndent: 50,
                           ),
-                          shopDoc['deliveryPerOrder'] == null ||
-                                  shopDoc['deliveryPerOrder'] == 0
-                              ? Container()
-                              : Material(
-                                  elevation: 0,
-                                  child: Container(
-                                    height: 50,
-                                    child: Center(
-                                        child: Text(
-                                            'The Seller charges \u{20B9} ' +
-                                                shopDoc['deliveryPerOrder']
-                                                    .toString() +
-                                                ' per order.',
-                                            style:
-                                                TextStyle(color: Colors.grey))),
-                                  )),
                         ],
                       ),
                     );
