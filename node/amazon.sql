@@ -19,6 +19,7 @@ INSERT INTO user VALUES('003','swap','ss92@iitbbs.ac.in','8217299000','chhattisg
 INSERT INTO user VALUES('004','kriti','km13@iitbbs.ac.in','821111836','chhattisgarh','https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png');
 
 select * from user;
+
 CREATE TABLE shop(
 shopId INT PRIMARY KEY,
 address VARCHAR(60) NOT NULL,
@@ -29,6 +30,7 @@ location VARCHAR(40),
 type Varchar(30),
 FOREIGN KEY (ownerId) REFERENCES user(userId) 
 );
+
 INSERT INTO shop VALUES('101','xyz,abc,delhi','001','8217299836','btw','delhi','veg');
 
 CREATE TABLE products(
@@ -42,6 +44,7 @@ FOREIGN KEY (shopId) REFERENCES shop(shopId)
 );
 delete from products;
 INSERT INTO products VALUES('201','101','vadapav','dhgfjhhkhiugu','50','https://cdn11.bigcommerce.com/s-kknankib6z/images/stencil/1280x1280/products/16493/32585/vada-pav-2-quantity__06746.1604605596.png?c=2?imbypass=on');
+
 CREATE TABLE Address(
 userId INT,
 addrId INT PRIMARY KEY,
