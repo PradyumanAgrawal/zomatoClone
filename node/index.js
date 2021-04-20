@@ -97,7 +97,7 @@ app.post('/address', (req, res) => {
 //get all shops details
 app.get('/shops', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM shops`, function(err, result, fields) {
+        con.query(`SELECT * FROM shop`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -107,7 +107,7 @@ app.get('/shops', (req, res) => {
 //get details for products for one shop
 app.get('/shops/:shopId', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products  where shopId=${req.params.shopId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM products where shopId=${req.params.shopId}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });

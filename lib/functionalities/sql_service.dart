@@ -36,13 +36,15 @@ class DBProvider {
       },
     );
   }
-
+  
+  //Get one specific user details
   getUser(String userId) async {
     final db = await database;
     var res = await db.query("Client", where: "id = ?", whereArgs: [userId]);
     return res.isNotEmpty ? User.fromMap(res.first) : null;
   }
-
+  
+  // Get all address of one user
   getAddress(String userId) async {
     final db = await database;
     List<Map<String, Object>> res =
@@ -52,19 +54,22 @@ class DBProvider {
     return addresses.isNotEmpty ? addresses : null;
   }
 
-  deleteAddress(String userId) async {
+  //delete An address with a specific addrId
+  deleteAddress(String addrId) async {
     final db = await database;
     int res =
-        await db.delete("address", where: "addrId = ?", whereArgs: [userId]);
+        await db.delete("address", where: "addrId = ?", whereArgs: [addrId]);
     return res;
   }
-
+  
+  //Insert new addess into addrress table.
   insertAddress(Address address) async {
     final db = await database;
     int res = await db.insert("address", address.toMap());
     return res;
   }
-
+  
+  //Get all shops details
   getShops() async {
     final db = await database;
     List<Map<String, Object>> res = await db.query("shops");
@@ -73,12 +78,14 @@ class DBProvider {
     return shops.isNotEmpty ? shops : null;
   }
 
+  //get all categories types
   getCategories() async {
     final db = await database;
     List<Map<String, Object>> res = await db.query("categories");
     return res.isNotEmpty ? res : null;
   }
-
+ 
+  //get all orders for one specific user
   getOrders(String userId) async {
     final db = await database;
     List<Map<String, Object>> res =
@@ -87,6 +94,7 @@ class DBProvider {
     res.forEach((order) => {orders.add(Order.fromMap(order))});
   }
 
+  //Get all products
   getProducts() async {
     final db = await database;
     List<Map<String, Object>> res = await db.query("products");
@@ -95,6 +103,16 @@ class DBProvider {
     return products.isNotEmpty ? products : null;
   }
 
+  //Get all products for discount section
+  getOfferProducts() async {
+    final db = await database;
+    List<Map<String, Object>> res = await db.query("products");
+    List<Product> products;
+    res.forEach((prod) => {products.add(Product.fromMap(prod))});
+    return products.isNotEmpty ? products : null;
+  }
+
+  //get a single product based on productId
   getSingleProd(String productId) async {
     final db = await database;
     List<Map<String, Object>> res = await db
@@ -102,4 +120,17 @@ class DBProvider {
     Product product = Product.fromMap(res[0]);
     return product;
   }
+  
+  //Get all products for one shop
+  
+  //Get all products for a particular category
+
+  //product search query
+  
+  //shop search query
+  
+  //Insert into orders with Userid
+  
+  //Add products: productId and userId
+  //remove products
 }
