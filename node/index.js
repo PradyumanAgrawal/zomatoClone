@@ -97,7 +97,7 @@ app.post('/address', (req, res) => {
 //get all shops details
 app.get('/shops', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM shops`, function(err, result, fields) {
+        con.query(`SELECT * FROM shop`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -107,7 +107,7 @@ app.get('/shops', (req, res) => {
 //get details for products for one shop
 app.get('/shops/:shopId', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products  where shopId=${req.params.shopId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM products where shopId=${req.params.shopId}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -124,11 +124,11 @@ app.get('/categories', (req, res) => {
     });
 });
 
-//Get all orders for one specific user
-app.get('/orders/:userId', (req, res) => {
+//Get all orders for one specific addrId
+app.get('/orders/:addrId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM orders where userId=${req.params.userId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM orders where addrId=${req.params.userId}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -168,7 +168,7 @@ app.get('/products/:productId', (req, res) => {
 //get all products for one categories
 app.get('/products/type/:type', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM product where type=${req.params.type}`, function(err, result, fields) {
+        con.query(`SELECT * FROM products where type=${req.params.type}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -177,7 +177,7 @@ app.get('/products/type/:type', (req, res) => {
 
 app.get("search/product/:query", (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM product where pname is like %${req.params.query}%`, function(err, result, fields) {
+        con.query(`SELECT * FROM products where pname is like %${req.params.query}%`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
