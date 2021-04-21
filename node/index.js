@@ -153,7 +153,7 @@ app.get('/products', (req, res) => {
         if(!req.query.sort)
         req.query.sort="productId";
         if(!req.query.order)
-        req.query.sort="Asc";
+        req.query.order="Asc";
         con.query(`SELECT * FROM products order by ${req.query.sort} ${req.query.order}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
