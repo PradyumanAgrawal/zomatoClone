@@ -243,7 +243,8 @@ class _DescriptionState extends State<Description> {
                                     '\u{20B9} ' +
                                     (int.parse(document.price.toString()) *
                                             (1 -
-                                                int.parse(document.discount.toString()) /
+                                                int.parse(document.discount
+                                                        .toString()) /
                                                     100))
                                         .toStringAsFixed(2),
                                 style: TextStyle(
@@ -395,14 +396,15 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(height: 20.0),
               FutureBuilder(
-                  future:
-                      null, //DBProvider.db.getShops(), //FirestoreService().getShop(document.shopID),
+                  future: DBProvider.db.getSingleShop(document.shopId
+                      .toString()), //FirestoreService().getShop(document.shopID),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData)
                       return Center(
                           child: SpinKitChasingDots(color: Colors.deepPurple));
                     Shop shopDoc = snapshot.data;
                     shopContact = shopDoc.contact;
+                    shopLocation = LatLng(0, 0);
                     // shopLocation = new LatLng(
                     //     shopDoc.location.latitude,
                     //     shopDoc['location']['geopoint'].longitude);
@@ -452,7 +454,6 @@ class _DescriptionState extends State<Description> {
                                 child: Container(
                                   child: Text(
                                     shopDoc.address,
-                                    //'shop address xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                                     style: TextStyle(
                                       color: Colors.grey,
                                     ),

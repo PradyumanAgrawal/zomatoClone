@@ -85,6 +85,7 @@ class DBProvider {
     assert(jsonData is List);
     // final db = await database;
     // List<Map<String, Object>> res = await db.query("shops");
+    Shop oneShop = Shop.fromMap(jsonData[0]);
     List<Shop> shops = [];
     for (int i = 0; i < jsonData.length; i++) {
       Shop temp = Shop.fromMap(jsonData[i]);
@@ -99,6 +100,17 @@ class DBProvider {
     return shops.isNotEmpty ? shops : null;
   }
 
+  getSingleShop(String shopId) async {
+    Response response = await get('http://10.0.2.2:3000/shops/' + shopId);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    // final db = await database;
+    // List<Map<String, Object>> res = await db.query("shops");
+    Shop shop = Shop.fromMap(jsonData[0]);
+    return shop;
+  }
+
   //get all categories types
   getCategories() async {
     Response response = await get('http://10.0.2.2:3000/categories');
@@ -106,7 +118,11 @@ class DBProvider {
     final jsonData = json.decode(body);
     assert(jsonData is List);
     List<String> categories = [];
-    jsonData.forEach((category) => {categories.add(category['category'],)});
+    jsonData.forEach((category) => {
+          categories.add(
+            category['category'],
+          )
+        });
     return categories;
   }
 
@@ -145,7 +161,8 @@ class DBProvider {
   }
 
   getCategoryProducts(String category) async {
-    Response response = await get('http://10.0.2.2:3000/products/type/' + category);
+    Response response =
+        await get('http://10.0.2.2:3000/products/type/' + category);
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
@@ -173,8 +190,6 @@ class DBProvider {
     Product product = Product.fromMap(res[0]);
     return product;
   }
-
-  //Get all products for one shop
 
   //Get all products for a particular category
 
