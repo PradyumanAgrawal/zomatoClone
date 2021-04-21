@@ -38,7 +38,7 @@ class DBProvider {
       },
     );
   }
-  
+
   //Get one specific user details
   getUser(String userId) async {
     Response response = await get('http://10.0.2.2:3000/user/1');
@@ -51,7 +51,7 @@ class DBProvider {
     //var res = await db.query("users", where: "id = ?", whereArgs: [userId]);
     //return res.isNotEmpty ? User.fromMap(res.first) : null;
   }
-  
+
   // Get all address of one user
   getAddress(String userId) async {
     final db = await database;
@@ -69,24 +69,33 @@ class DBProvider {
         await db.delete("address", where: "addrId = ?", whereArgs: [addrId]);
     return res;
   }
-  
+
   //Insert new addess into addrress table.
   insertAddress(Address address) async {
     final db = await database;
     int res = await db.insert("address", address.toMap());
     return res;
   }
-  
+
   //Get all shops details
-  getShops() async {
+  Future<List<Shop>> getShops() async {
     Response response = await get('http://10.0.2.2:3000/shops');
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
     // final db = await database;
     // List<Map<String, Object>> res = await db.query("shops");
-    List<Shop> shops;
-    jsonData.forEach((shop) => {shops.add(Shop.fromMap(shop))});
+    List<Shop> shops = [];
+    for (int i = 0; i < jsonData.length; i++) {
+      Shop temp = Shop.fromMap(jsonData[i]);
+      shops.add(temp);
+    }
+    // jsonData.forEach((shop) => {
+    //       shops.add(
+    //         Shop.fromMap(shop),
+    //       )
+    //     });
+
     return shops.isNotEmpty ? shops : null;
   }
 
@@ -96,7 +105,7 @@ class DBProvider {
     List<Map<String, Object>> res = await db.query("categories");
     return res.isNotEmpty ? res : null;
   }
- 
+
   //get all orders for one specific user
   getOrders(String userId) async {
     final db = await database;
@@ -108,10 +117,14 @@ class DBProvider {
 
   //Get all products
   getProducts() async {
-    final db = await database;
-    List<Map<String, Object>> res = await db.query("products");
-    List<Product> products;
-    res.forEach((prod) => {products.add(Product.fromMap(prod))});
+    Response response = await get('http://10.0.2.2:3000/products');
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    //final db = await database;
+    //List<Map<String, Object>> res = await db.query("products");
+    List<Product> products = [];
+    jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
     return products.isNotEmpty ? products : null;
   }
 
@@ -132,17 +145,17 @@ class DBProvider {
     Product product = Product.fromMap(res[0]);
     return product;
   }
-  
+
   //Get all products for one shop
-  
+
   //Get all products for a particular category
 
   //product search query
-  
+
   //shop search query
-  
+
   //Insert into orders with Userid
-  
+
   //Add products: productId and userId
   //remove products
 }

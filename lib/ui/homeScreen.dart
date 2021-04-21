@@ -9,6 +9,7 @@ import 'package:my_flutter_app/blocs/shopBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/functionalities/streaming_shared_preferences.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
@@ -177,7 +178,7 @@ class HomeScreenState extends State<HomeScreen> {
     userProvider = Provider.of<User>(context);
 
     //if (userProvider != null) checkToken(userProvider.documentID);
-    
+
     if (Provider.of<List<Shop>>(context) != null) {
       nearByShops = List.from(Provider.of<List<Shop>>(context));
       //getShopRefList(nearByShopsSnapshots);
@@ -349,7 +350,6 @@ class HomeScreenState extends State<HomeScreen> {
               : SliverList(
                   delegate: SliverChildListDelegate(
                     <Widget>[
-                    
                       Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: 5.0, horizontal: 10.0),
@@ -523,30 +523,31 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       SizedBox(height: 10.0),
-                      (userProvider == null)
-                          ? Center(
-                              child:
-                                  SpinKitChasingDots(color: Colors.deepPurple),
-                            )
-                          : Builder(
+                      // (userProvider == null)
+                      //     ? Center(
+                      //         child:
+                      //             SpinKitChasingDots(color: Colors.deepPurple),
+                      //       )
+                      //     :
+                           Builder(
                               builder: (context) {
                                 //wishlist = userProvider['wishlist'];
-                                if (nearByShops.isEmpty)
-                                  return Center(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Image.asset(
-                                            'assets/images/comingSoon.png'),
-                                        Text(
-                                          'Coming to your place soon!',
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                // if (nearByShops.isEmpty)
+                                //   return Center(
+                                //     child: Column(
+                                //       children: <Widget>[
+                                //         Image.asset(
+                                //             'assets/images/comingSoon.png'),
+                                //         Text(
+                                //           'Coming to your place soon!',
+                                //           style: TextStyle(
+                                //             color: Colors.grey,
+                                //             fontWeight: FontWeight.bold,
+                                //           ),
+                                //         ),
+                                //       ],
+                                //     ),
+                                //   );
                                 return StreamBuilder(
                                   stream: productBloc.products,
                                   //FirestoreService().getHomeProducts(nearByShopsReferences),
@@ -557,7 +558,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           color: Colors.deepPurple,
                                         ),
                                       );
-                                    if (snapshot.data.documents.length == 0)
+                                    if (snapshot.data.length == 0)
                                       return Center(
                                           child:
                                               Text('Go to explore products'));
@@ -566,7 +567,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         runSpacing: 2,
                                         spacing: 2,
                                         children: List.generate(
-                                          snapshot.data.documents.length,
+                                          snapshot.data.length,
                                           (index) {
                                             Product document =
                                                 snapshot.data[index];
@@ -921,8 +922,8 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _singleProd(name, Product document, BuildContext navContext,
-      bool inWishlist) {
+  _singleProd(
+      name, Product document, BuildContext navContext, bool inWishlist) {
     return InkWell(
       onTap: () {
         Navigator.of(navContext).pushNamed('/description',
@@ -1025,7 +1026,9 @@ class _StoreState extends State<Store> {
       child: (widget.locationList == ['', ''])
           ? Center(child: Text('Location not Found'))
           : StreamBuilder(
-              stream: shopBloc.shops,
+              stream:
+                  //DBProvider.db.getShops(),
+                  shopBloc.shops,
               // FirestoreService().getNearbyStores(LatLng(
               //     double.parse(widget.locationList[0]),
               //     double.parse(widget.locationList[1]))),
@@ -1060,7 +1063,7 @@ class _StoreState extends State<Store> {
                               Navigator.of(widget.navContext)
                                   .pushNamed('/discover', arguments: {
                                 'stream': 'shop',
-                                'shopId': document.shopID,
+                                'shopId': document.shopId,
                                 'context': context
                               });
                             },

@@ -221,7 +221,7 @@ class _DescriptionState extends State<Description> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 Text(
-                                  '\u{20B9} ' + document.price,
+                                  '\u{20B9} ' + document.price.toString(),
                                   style: TextStyle(
                                       decoration: TextDecoration.lineThrough,
                                       color: Colors.grey,
@@ -229,7 +229,7 @@ class _DescriptionState extends State<Description> {
                                       fontSize: 20),
                                 ),
                                 Text(
-                                  ' ' + document.discount + "% off",
+                                  ' ' + document.discount.toString() + "% off",
                                   style: TextStyle(
                                       fontSize: 12, color: Colors.grey),
                                 ),
@@ -241,9 +241,9 @@ class _DescriptionState extends State<Description> {
                               child: Text(
                                 "  " +
                                     '\u{20B9} ' +
-                                    (int.parse(document.price) *
+                                    (int.parse(document.price.toString()) *
                                             (1 -
-                                                int.parse(document.discount) /
+                                                int.parse(document.discount.toString()) /
                                                     100))
                                         .toStringAsFixed(2),
                                 style: TextStyle(
@@ -258,7 +258,7 @@ class _DescriptionState extends State<Description> {
                             Padding(
                               padding: const EdgeInsets.only(right: 20),
                               child: Text(
-                                '\u{20B9} ' + document.price,
+                                '\u{20B9} ' + document.price.toString(),
                                 style: TextStyle(
                                     fontSize: 22.0,
                                     color: Colors.black,

@@ -258,7 +258,7 @@ class _Discover1State extends State<Discover1> {
                                 '/discover',
                                 arguments: {
                                   'stream': 'shop',
-                                  'shopId': document.shopID,
+                                  'shopId': document.shopId,
                                   'context': context
                                 },
                               );

@@ -3,12 +3,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_flutter_app/blocs/productBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_flutter_app/models/productModel.dart';
+import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:provider/provider.dart';
 
 class Discover extends StatefulWidget {
@@ -28,6 +31,7 @@ class _DiscoverState extends State<Discover>
   List wishlist;
   List<DocumentSnapshot> nearByShopsSnapshots;
   List<DocumentReference> nearByShopsReferences;
+  List<Shop> shops;
   bool isTyping = false;
   bool isSearching = false;
   TextEditingController _controller = TextEditingController();
@@ -112,38 +116,46 @@ class _DiscoverState extends State<Discover>
     super.initState();
   }
 
+  final productBloc = ProductBloc();
+  @override
+  void dispose() {
+    productBloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    nearByShopsSnapshots =
-        List.from(Provider.of<List<DocumentSnapshot>>(widget.args['context']));
-    getShopIdList(nearByShopsSnapshots);
+    shops =
+        List.from(Provider.of<List<Shop>>(widget.args['context']));
+    //getShopIdList(nearByShopsSnapshots);
     if (nearByShopsReferences.isEmpty)
       return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.deepPurple[800],
-            title: Text(
-              "zomatoClone",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold),
-            ),
+        appBar: AppBar(
+          backgroundColor: Colors.deepPurple[800],
+          title: Text(
+            "zomatoClone",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 25.0,
+                fontWeight: FontWeight.bold),
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Image.asset('assets/images/question.png'),
-                Text(
-                  'No products found!',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                  ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset('assets/images/question.png'),
+              Text(
+                'No products found!',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
-          ));
+              ),
+            ],
+          ),
+        ),
+      );
     if (widget.args['stream'] == 'category')
       stream = FirestoreService().getProductsFromCategory(
           widget.args['category'], nearByShopsReferences);
@@ -251,8 +263,8 @@ class _DiscoverState extends State<Discover>
                 ),
                 child: TextFormField(
                   onChanged: (value) {
-                    checkTyping(value);
-                    initiateSearch(value);
+                    // checkTyping(value);
+                    // initiateSearch(value);
                   },
                   controller: _controller,
                   decoration: InputDecoration(
@@ -317,52 +329,59 @@ class _DiscoverState extends State<Discover>
                       ),
                     )
               : FutureBuilder(
-                  future: LocalData().getUid(),
+                  future: null,
+                  //LocalData().getUid(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (!snapshot.hasData)
-                      return SliverList(
-                        delegate: SliverChildListDelegate(<Widget>[
-                          Center(
-                              child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 30),
-                                  child: SpinKitChasingDots(
-                                      color: Colors.deepPurple)))
-                        ]),
-                      );
-                    String userId = snapshot.data;
+                    // if (!snapshot.hasData)
+                    //   return SliverList(
+                    //     delegate: SliverChildListDelegate(<Widget>[
+                    //       Center(
+                    //           child: Padding(
+                    //               padding:
+                    //                   const EdgeInsets.symmetric(vertical: 30),
+                    //               child: SpinKitChasingDots(
+                    //                   color: Colors.deepPurple)))
+                    //     ]),
+                    //   );
+                    // String userId = snapshot.data;
                     return StreamBuilder(
-                      stream: FirestoreService().getUser(userId),
+                      stream: null,
+                      //FirestoreService().getUser(userId),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (!snapshot.hasData)
-                          return SliverList(
-                            delegate: SliverChildListDelegate(<Widget>[
-                              Center(
-                                  child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 30),
-                                      child: SpinKitChasingDots(
-                                          color: Colors.deepPurple)))
-                            ]),
-                          );
-                        DocumentSnapshot document = snapshot.data;
-                        wishlist = document['wishlist'];
+                        // if (!snapshot.hasData)
+                        //   return SliverList(
+                        //     delegate: SliverChildListDelegate(<Widget>[
+                        //       Center(
+                        //           child: Padding(
+                        //               padding: const EdgeInsets.symmetric(
+                        //                   vertical: 30),
+                        //               child: SpinKitChasingDots(
+                        //                   color: Colors.deepPurple)))
+                        //     ]),
+                        //   );
+                        // DocumentSnapshot document = snapshot.data;
+                        // wishlist = document['wishlist'];
                         return StreamBuilder(
-                          stream: stream,
+                          stream: productBloc.products,
+                          //stream,
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData)
                               return SliverList(
-                                delegate: SliverChildListDelegate(<Widget>[
-                                  Center(
+                                delegate: SliverChildListDelegate(
+                                  <Widget>[
+                                    Center(
                                       child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 30),
-                                          child: SpinKitChasingDots(
-                                              color: Colors.deepPurple)))
-                                ]),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 30),
+                                        child: SpinKitChasingDots(
+                                            color: Colors.deepPurple),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               );
-                            if (snapshot.data.documents.length == 0)
+                            if (snapshot.data.length == 0)
                               return SliverList(
                                 delegate: SliverChildListDelegate(<Widget>[
                                   Column(
@@ -382,21 +401,20 @@ class _DiscoverState extends State<Discover>
                             return SliverList(
                               delegate: SliverChildBuilderDelegate(
                                 (context, index) {
-                                  DocumentSnapshot document =
-                                      snapshot.data.documents[index];
+                                  Product document = snapshot.data[index];
                                   return itemCard(
-                                      document['name'],
-                                      document['catalogue'][0],
-                                      document['description'],
-                                      wishlist.contains(document.documentID),
-                                      document['price'],
-                                      document['discount'] != null
-                                          ? document['discount']
+                                      document.pName,
+                                      document.image,
+                                      document.description,
+                                      true,
+                                      document.price.toString(),
+                                      document.discount != null
+                                          ? document.discount.toString()
                                           : '0',
                                       document,
                                       context);
                                 },
-                                childCount: snapshot.data.documents.length,
+                                childCount: snapshot.data.length,
                               ),
                             );
                           },
@@ -502,7 +520,7 @@ class _DiscoverState extends State<Discover>
       bool inWishlist,
       String price,
       String discount,
-      DocumentSnapshot document,
+      Product document,
       BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 2),
@@ -530,14 +548,14 @@ class _DiscoverState extends State<Discover>
                   Flexible(
                     flex: 12,
                     child: Hero(
-                      tag: document['catalogue'][0],
+                      tag: document.image,
                       child: Container(
                         clipBehavior: Clip.hardEdge,
                         height: 150.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
-                            image: NetworkImage(document['catalogue'][0]),
+                            image: NetworkImage(document.image),
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -565,7 +583,7 @@ class _DiscoverState extends State<Discover>
                                             (3 / 4) -
                                         10,
                                     child: Text(
-                                      document['name'],
+                                      document.pName,
                                       style: TextStyle(
                                           fontSize: 17,
                                           fontWeight: FontWeight.bold),
@@ -620,8 +638,8 @@ class _DiscoverState extends State<Discover>
                                                     (1 / 8) -
                                                 1,
                                             onPressed: () {
-                                              FirestoreService().addToWishlist(
-                                                  document.documentID);
+                                              // FirestoreService().addToWishlist(
+                                              //     document.documentID);
                                             },
                                           ),
                                         ),
@@ -639,7 +657,7 @@ class _DiscoverState extends State<Discover>
                             child: Container(
                               width: MediaQuery.of(context).size.width * 2 / 3,
                               child: Text(
-                                document['description'],
+                                document.description,
                                 textAlign: TextAlign.left,
                                 style:
                                     TextStyle(color: Colors.grey, fontSize: 12),
@@ -662,7 +680,7 @@ class _DiscoverState extends State<Discover>
                                     shadowColor: Colors.purple,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: (document['inStock'])
+                                        color: (true)
                                             ? Colors.purple
                                             : Colors.grey,
                                         borderRadius: BorderRadius.only(

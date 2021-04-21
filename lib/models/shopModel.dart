@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 class Shop {
-  String shopID;
+  int shopId;
   String address;
-  String ownerId;
+  int ownerId;
   String contact;
   String shopName;
   String location;
   String type;
 
   Shop({
-    this.shopID,
+    this.shopId,
     this.address,
     this.ownerId,
     this.contact,
@@ -20,7 +20,7 @@ class Shop {
   });
 
   factory Shop.fromMap(Map<String, dynamic> json) => new Shop(
-        shopID: json["shopID"],
+        shopId: json["shopId"],
         address: json["address"],
         ownerId: json["ownerId"],
         contact: json["contact"],
@@ -29,8 +29,8 @@ class Shop {
         type: json["type"],
       );
 
-  Map<String, String> toMap() => {
-        "shopID": shopID,
+  Map<String, dynamic> toMap() => {
+        "shopId": shopId,
         "address": address,
         "ownerId": ownerId,
         "contact": contact,

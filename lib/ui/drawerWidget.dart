@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'myApp.dart';
@@ -16,7 +17,7 @@ class DrawerWidget extends StatefulWidget {
 class _DrawerWidgetState extends State<DrawerWidget> {
   AuthService auth = new AuthService();
   String userEmail;
-  DocumentSnapshot userProvider;
+  User userProvider;
 
   Future<void> _logout(context) async {
     showDialog(
@@ -24,7 +25,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
-            
             content: Text(
               'Logout ?',
               style: TextStyle(
@@ -43,10 +43,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                         MaterialPageRoute(builder: (context) => MyApp()),
                         (Route<dynamic> route) => false);
                   },
-                  child: Text('Yes', style: TextStyle(fontSize: 18.0, color: Colors.deepPurple[900]))),
+                  child: Text('Yes',
+                      style: TextStyle(
+                          fontSize: 18.0, color: Colors.deepPurple[900]))),
               FlatButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('No', style: TextStyle(fontSize: 18.0, color: Colors.pink)))
+                  child: Text('No',
+                      style: TextStyle(fontSize: 18.0, color: Colors.pink)))
             ],
           );
         });
@@ -54,8 +57,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    userProvider = Provider.of<DocumentSnapshot>(context);
-    userEmail = userProvider['name'];
+    userProvider = Provider.of<User>(context);
+    userEmail = userProvider.name;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -111,7 +114,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             leading: Hero(tag: 'wishlist', child: Icon(Icons.favorite)),
             title: Text('Wishlist'),
             onTap: () {
-              Navigator.of(widget.navContext).pushNamed('/wishlist',arguments:context);
+              Navigator.of(widget.navContext)
+                  .pushNamed('/wishlist', arguments: context);
             },
           ),
           /* ListTile(
