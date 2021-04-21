@@ -156,10 +156,10 @@ class _DiscoverState extends State<Discover>
           ),
         ),
       );
-    if (widget.args['stream'] == 'category')
-      stream = FirestoreService().getProductsFromCategory(
-          widget.args['category'], nearByShopsReferences);
-    else if (widget.args['stream'] == 'subCategory')
+    if (widget.args['stream'] == 'category') {
+      productBloc = ProductBloc(category: widget.args['category']);
+      stream = productBloc.categoryProducts;
+    } else if (widget.args['stream'] == 'subCategory')
       stream = FirestoreService().getProductsFromSubCategory(
           widget.args['category'], nearByShopsReferences);
     else if (widget.args['stream'] == 'shop') {
