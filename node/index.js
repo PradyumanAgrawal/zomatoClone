@@ -105,8 +105,19 @@ app.get('/shops', (req, res) => {
     });
 });
 
+
 //get details for products for one shop
 app.get('/shops/:shopId', (req, res) => {
+    con.connect(function(err) {
+        con.query(`SELECT * FROM shops where shopId=${req.params.shopId}`, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
+
+//get details for products for one shop
+app.get('/shops/:shopId/products', (req, res) => {
     con.connect(function(err) {
         con.query(`SELECT * FROM products where shopId=${req.params.shopId}`, function(err, result, fields) {
             if (err) res.send(err);
