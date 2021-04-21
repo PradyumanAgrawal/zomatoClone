@@ -116,7 +116,7 @@ class _DiscoverState extends State<Discover>
     super.initState();
   }
 
-  final productBloc = ProductBloc();
+  ProductBloc productBloc;
   @override
   void dispose() {
     productBloc.dispose();
@@ -125,10 +125,10 @@ class _DiscoverState extends State<Discover>
 
   @override
   Widget build(BuildContext context) {
-    shops =
-        List.from(Provider.of<List<Shop>>(widget.args['context']));
+    // shops =
+    //     List.from(Provider.of<List<Shop>>(widget.args['context']));
     //getShopIdList(nearByShopsSnapshots);
-    if (nearByShopsReferences.isEmpty)
+    if (false)
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.deepPurple[800],
@@ -162,12 +162,14 @@ class _DiscoverState extends State<Discover>
     else if (widget.args['stream'] == 'subCategory')
       stream = FirestoreService().getProductsFromSubCategory(
           widget.args['category'], nearByShopsReferences);
-    else if (widget.args['stream'] == 'shop')
-      stream = FirestoreService().getShopProducts(widget.args['shopId']);
-    else if (widget.args['stream'] == 'offer')
-      stream = FirestoreService().getOfferProducts(nearByShopsReferences);
-    else if (widget.args['stream'] == 'allProducts')
-      stream = FirestoreService().getProducts(nearByShopsReferences);
+    else if (widget.args['stream'] == 'shop') {
+      productBloc = ProductBloc(shopId: widget.args['shopId']);
+      stream = productBloc.shopProducts;
+    } else if (widget.args['stream'] == 'allProducts') {
+      productBloc = ProductBloc();
+      stream = productBloc.products;
+    }
+
     return Scaffold(
       //drawer: DrawerWidget(),
       floatingActionButton: SpeedDial(
@@ -362,7 +364,7 @@ class _DiscoverState extends State<Discover>
                         // DocumentSnapshot document = snapshot.data;
                         // wishlist = document['wishlist'];
                         return StreamBuilder(
-                          stream: productBloc.products,
+                          stream: stream,
                           //stream,
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {

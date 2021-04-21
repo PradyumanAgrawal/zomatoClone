@@ -217,7 +217,7 @@ class _Discover1State extends State<Discover1> {
                   );
                 },
               ),
-               //(locationList == null)
+              //(locationList == null)
               //     ? Center(child: Text('Location not Found'))
               //     :
               FutureBuilder(
@@ -258,7 +258,7 @@ class _Discover1State extends State<Discover1> {
                                 '/discover',
                                 arguments: {
                                   'stream': 'shop',
-                                  'shopId': document.shopId,
+                                  'shopId': document.shopId.toString(),
                                   'context': context
                                 },
                               );

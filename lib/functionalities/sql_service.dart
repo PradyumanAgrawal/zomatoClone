@@ -101,9 +101,13 @@ class DBProvider {
 
   //get all categories types
   getCategories() async {
-    final db = await database;
-    List<Map<String, Object>> res = await db.query("categories");
-    return res.isNotEmpty ? res : null;
+    Response response = await get('http://10.0.2.2:3000/categories');
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    List<String> categories = [];
+    jsonData.forEach((category) => {categories.add(category['category'],)});
+    return categories;
   }
 
   //get all orders for one specific user
@@ -118,6 +122,18 @@ class DBProvider {
   //Get all products
   getProducts() async {
     Response response = await get('http://10.0.2.2:3000/products');
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    //final db = await database;
+    //List<Map<String, Object>> res = await db.query("products");
+    List<Product> products = [];
+    jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
+    return products.isNotEmpty ? products : null;
+  }
+
+  getShopProducts(String shopId) async {
+    Response response = await get('http://10.0.2.2:3000/shops/' + shopId);
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);

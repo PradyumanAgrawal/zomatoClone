@@ -529,64 +529,62 @@ class HomeScreenState extends State<HomeScreen> {
                       //             SpinKitChasingDots(color: Colors.deepPurple),
                       //       )
                       //     :
-                           Builder(
-                              builder: (context) {
-                                //wishlist = userProvider['wishlist'];
-                                // if (nearByShops.isEmpty)
-                                //   return Center(
-                                //     child: Column(
-                                //       children: <Widget>[
-                                //         Image.asset(
-                                //             'assets/images/comingSoon.png'),
-                                //         Text(
-                                //           'Coming to your place soon!',
-                                //           style: TextStyle(
-                                //             color: Colors.grey,
-                                //             fontWeight: FontWeight.bold,
-                                //           ),
-                                //         ),
-                                //       ],
-                                //     ),
-                                //   );
-                                return StreamBuilder(
-                                  stream: productBloc.products,
-                                  //FirestoreService().getHomeProducts(nearByShopsReferences),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData)
-                                      return Center(
-                                        child: SpinKitChasingDots(
-                                          color: Colors.deepPurple,
-                                        ),
-                                      );
-                                    if (snapshot.data.length == 0)
-                                      return Center(
-                                          child:
-                                              Text('Go to explore products'));
-                                    return Center(
-                                      child: Wrap(
-                                        runSpacing: 2,
-                                        spacing: 2,
-                                        children: List.generate(
-                                          snapshot.data.length,
-                                          (index) {
-                                            Product document =
-                                                snapshot.data[index];
-                                            bool inWishlist = true;
-                                            //  wishlist
-                                            //     .contains(document.documentID);
-                                            return _singleProd(
-                                                "Index $index",
-                                                document,
-                                                widget.navContext,
-                                                inWishlist);
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  },
+                      Builder(
+                        builder: (context) {
+                          //wishlist = userProvider['wishlist'];
+                          // if (nearByShops.isEmpty)
+                          //   return Center(
+                          //     child: Column(
+                          //       children: <Widget>[
+                          //         Image.asset(
+                          //             'assets/images/comingSoon.png'),
+                          //         Text(
+                          //           'Coming to your place soon!',
+                          //           style: TextStyle(
+                          //             color: Colors.grey,
+                          //             fontWeight: FontWeight.bold,
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   );
+                          return StreamBuilder(
+                            stream: productBloc.products,
+                            //FirestoreService().getHomeProducts(nearByShopsReferences),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Center(
+                                  child: SpinKitChasingDots(
+                                    color: Colors.deepPurple,
+                                  ),
                                 );
-                              },
-                            ),
+                              if (snapshot.data.length == 0)
+                                return Center(
+                                    child: Text('Go to explore products'));
+                              return Center(
+                                child: Wrap(
+                                  runSpacing: 2,
+                                  spacing: 2,
+                                  children: List.generate(
+                                    snapshot.data.length,
+                                    (index) {
+                                      Product document = snapshot.data[index];
+                                      bool inWishlist = true;
+                                      //  wishlist
+                                      //     .contains(document.documentID);
+                                      return _singleProd(
+                                          "Index $index",
+                                          document,
+                                          widget.navContext,
+                                          inWishlist);
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                       Divider(
                         color: Colors.purple.withOpacity(0.5),
                         height: 80,
@@ -1063,7 +1061,7 @@ class _StoreState extends State<Store> {
                               Navigator.of(widget.navContext)
                                   .pushNamed('/discover', arguments: {
                                 'stream': 'shop',
-                                'shopId': document.shopId,
+                                'shopId': document.shopId.toString(),
                                 'context': context
                               });
                             },
