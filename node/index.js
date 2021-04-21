@@ -21,7 +21,7 @@ const con = mysql.createConnection({
 con.connect(function(err) {
     if (err) throw err;
     console.log("Database Connected!");
-    con.query('USE amazon;');
+    con.query('USE amazon;');``
 });
 
 
@@ -87,10 +87,11 @@ app.delete('/address/:addrId', (req, res) => {
 app.post('/address', (req, res) => {
     con.connect(function(err) {
         var sql = "INSERT INTO address VALUES ";
-        con.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted");
-        });
+        console.log(req.body);
+        // con.query(sql, function (err, result) {
+        //     if (err) throw err;
+        //     console.log("1 record inserted");
+        // });
     });
 });
 
@@ -117,7 +118,7 @@ app.get('/shops/:shopId', (req, res) => {
 //get all categories types
 app.get('/categories', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM categories`, function(err, result, fields) {
+        con.query(`SELECT distinct category from products`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -125,10 +126,10 @@ app.get('/categories', (req, res) => {
 });
 
 //Get all orders for one specific addrId
-app.get('/orders/:addrId', (req, res) => {
+app.get('/orders/:userId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM orders where addrId=${req.params.userId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM orders natural join Address where userId=${req.params.userId}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -138,7 +139,11 @@ app.get('/orders/:addrId', (req, res) => {
 //get all products details
 app.get('/products', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products`, function(err, result, fields) {
+        if(!req.query.sort)
+        req.query.sort="productId";
+        if(!req.query.order)
+        req.query.sort="Asc";
+        con.query(`SELECT * FROM products order by ${req.query.sort} ${req.query.order}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -153,7 +158,7 @@ app.get('/products', (req, res) => {
 //             if (result) res.send(result);
 //         });
 //     });
-// });
+// });`
 
 //get details for one product
 app.get('/products/:productId', (req, res) => {
@@ -168,7 +173,7 @@ app.get('/products/:productId', (req, res) => {
 //get all products for one categories
 app.get('/products/type/:type', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products where type=${req.params.type}`, function(err, result, fields) {
+        con.query(`SELECT * FROM products where category=${req.params.type}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -177,7 +182,7 @@ app.get('/products/type/:type', (req, res) => {
 
 app.get("search/product/:query", (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products where pname is like %${req.params.query}%`, function(err, result, fields) {
+        con.query(`SELECT * FROM products where pName is like %${req.params.query}%`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
