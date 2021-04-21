@@ -21,7 +21,7 @@ const con = mysql.createConnection({
 con.connect(function(err) {
     if (err) throw err;
     console.log("Database Connected!");
-    con.query('USE amazon;');``
+    con.query('USE amazon;');
 });
 
 
@@ -173,7 +173,7 @@ app.get('/products/:productId', (req, res) => {
 //get all products for one categories
 app.get('/products/type/:type', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products where category=${req.params.type}`, function(err, result, fields) {
+        con.query(`SELECT * FROM products where category='${req.params.type}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
