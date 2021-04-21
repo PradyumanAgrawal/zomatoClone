@@ -106,7 +106,7 @@ app.get('/shops', (req, res) => {
 });
 
 
-//get details for products for one shop
+//get details for one shop
 app.get('/shops/:shopId', (req, res) => {
     con.connect(function(err) {
         con.query(`SELECT * FROM shop where shopId=${req.params.shopId}`, function(err, result, fields) {
@@ -191,7 +191,7 @@ app.get('/products/type/:type', (req, res) => {
     });
 });
 
-app.get("search/product/:query", (req, res) => {
+app.get("/search/product/:query", (req, res) => {
     con.connect(function(err) {
         con.query(`SELECT * FROM products where pName is like %${req.params.query}%`, function(err, result, fields) {
             if (err) res.send(err);
@@ -200,7 +200,7 @@ app.get("search/product/:query", (req, res) => {
     });
 });
 
-app.get("search/shop/:query", (req, res) => {
+app.get("/search/shop/:query", (req, res) => {
     con.connect(function(err) {
         con.query(`SELECT * FROM shop where shopName is like %${req.params.query}%`, function(err, result, fields) {
             if (err) res.send(err);
@@ -209,6 +209,25 @@ app.get("search/shop/:query", (req, res) => {
     });
 });
 
+app.get("/sort/:stream", (req, res) => {
+    var sql;
+    if(req.params.stream.localeCompare("category")==0){
+        console.log("-----------------");
+    }
+    if(req.params.stream.localeCompare("category")==0){
+        sql=`SELECT * FROM products where category='${req.query.meta}' order by price ${req.query.order}`
+    }
+    else if(req.params.stream.localeCompare("shop")==0)
+        sql=`SELECT * FROM products where shopId=${req.query.meta} order by price ${req.query.order}`
+    else
+        sql=`SELECT * FROM products order by price ${req.query.order}`
+    con.connect(function(err) {
+        con.query(sql, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
