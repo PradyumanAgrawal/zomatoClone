@@ -149,7 +149,8 @@ class DBProvider {
   }
 
   getShopProducts(String shopId) async {
-    Response response = await get('http://10.0.2.2:3000/shops/' + shopId);
+    Response response =
+        await get('http://10.0.2.2:3000/shops/' + shopId + '/products');
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
