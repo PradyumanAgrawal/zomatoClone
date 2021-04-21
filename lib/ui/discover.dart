@@ -101,6 +101,34 @@ class _DiscoverState extends State<Discover>
     // print(nearByShopsReferences);
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('AlertDialog Title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('This is a demo alert dialog.'),
+                Text('Would you like to approve of this message?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   //var productList = new List<Product>();
   Future<dynamic> stream;
 
@@ -151,12 +179,8 @@ class _DiscoverState extends State<Discover>
         ),
       );
     if (widget.args['stream'] == 'category') {
-      //productBloc = ProductBloc(category: widget.args['category']);
-      //stream = productBloc.categoryProducts;
       stream = DBProvider.db.getCategoryProducts(widget.args['category']);
     } else if (widget.args['stream'] == 'shop') {
-      //productBloc = ProductBloc(shopId: widget.args['shopId']);
-      //stream = productBloc.shopProducts;
       stream = DBProvider.db.getShopProducts(widget.args['shopId']);
     } else if (widget.args['stream'] == 'allProducts') {
       //productBloc = ProductBloc();
@@ -176,16 +200,53 @@ class _DiscoverState extends State<Discover>
                 child: Icon(
                   LineAwesomeIcons.sort,
                 ),
-                label: "sort",
+                label: "price : high to low",
                 backgroundColor: Colors.purple[300],
-                onTap: () {}),
+                onTap: () {
+                  setState(() {
+                    if (widget.args['stream'] == 'category')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'],
+                          'desc',
+                          widget.args['category']);
+                    else if (widget.args['stream'] == 'shop')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'], 'desc', widget.args['shopId']);
+                    else if (widget.args['stream'] == 'allProducts')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'], 'desc', '');
+                  });
+                }),
+            SpeedDialChild(
+                child: Icon(
+                  LineAwesomeIcons.sort,
+                ),
+                label: "price : low to high",
+                backgroundColor: Colors.purple[300],
+                onTap: () {
+                  setState(() {
+                     if (widget.args['stream'] == 'category')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'],
+                          'asc',
+                          widget.args['category']);
+                    else if (widget.args['stream'] == 'shop')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'], 'asc', widget.args['shopId']);
+                    else if (widget.args['stream'] == 'allProducts')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'], 'asc', '');
+                  });
+                }),
             SpeedDialChild(
                 child: Icon(
                   LineAwesomeIcons.filter,
                 ),
                 label: "filter",
                 backgroundColor: Colors.purple[300],
-                onTap: () {})
+                onTap: () {
+                  _showMyDialog();
+                })
           ]),
       body: CustomScrollView(
         slivers: <Widget>[

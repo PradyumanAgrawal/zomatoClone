@@ -147,6 +147,19 @@ class DBProvider {
     return products.isNotEmpty ? products : null;
   }
 
+  getCustomSortProducts(String stream, String order, String meta) async {
+    Response response =
+        await get('http://10.0.2.2:3000/sort/' + stream + '?order = ' + order + '&meta = '+ meta);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    //final db = await database;
+    //List<Map<String, Object>> res = await db.query("products");
+    List<Product> products = [];
+    jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
+    return products.isNotEmpty ? products : null;
+  }
+
   getShopProducts(String shopId) async {
     Response response =
         await get('http://10.0.2.2:3000/shops/' + shopId + '/products');
