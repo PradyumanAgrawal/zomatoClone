@@ -17,12 +17,12 @@ class Discover1 extends StatefulWidget {
 
 class _Discover1State extends State<Discover1> {
   Map iconMap = {
-    'Clothing and Accessories': LineAwesomeIcons.user_tie,
-    'Books and Creative': LineAwesomeIcons.book_open,
-    'Home and Kitchen': LineAwesomeIcons.home,
-    'Beauty and Cosmetics': LineAwesomeIcons.heart,
-    'Others': LineAwesomeIcons.atom,
-    'Grocery and Essentials': LineAwesomeIcons.shopping_bag,
+    'street food': LineAwesomeIcons.user_tie,
+    'italian': LineAwesomeIcons.book_open,
+    'chinese': LineAwesomeIcons.home,
+    'health and diet': LineAwesomeIcons.heart,
+    'asian': LineAwesomeIcons.atom,
+    'beverages': LineAwesomeIcons.shopping_bag,
     'Electronics': LineAwesomeIcons.mobile
   };
   //List<String> locationList;
@@ -168,7 +168,7 @@ class _Discover1State extends State<Discover1> {
                     scrollDirection: Axis.vertical,
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
-                      Map<String, dynamic> document = snapshot.data[index];
+                      String document = snapshot.data[index];
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
@@ -177,7 +177,7 @@ class _Discover1State extends State<Discover1> {
                               Navigator.of(widget.navContext).pushNamed(
                                 '/discover',
                                 arguments: {
-                                  'category': document["type"],
+                                  'category': document,
                                   'stream': 'category',
                                   'context': context
                                 },
@@ -189,13 +189,13 @@ class _Discover1State extends State<Discover1> {
                               child: Row(
                                 children: <Widget>[
                                   Icon(
-                                    iconMap[document["type"]],
+                                    iconMap[document],
                                     //size: 60.0,
                                     color: Colors.grey,
                                   ),
                                   SizedBox(width: 30),
                                   Text(
-                                    document["type"],
+                                    document,
                                     style: TextStyle(
                                       fontSize: 20,
                                     ),

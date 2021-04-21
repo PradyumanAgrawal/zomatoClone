@@ -144,6 +144,18 @@ class DBProvider {
     return products.isNotEmpty ? products : null;
   }
 
+  getCategoryProducts(String category) async {
+    Response response = await get('http://10.0.2.2:3000/products/type/' + category);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    //final db = await database;
+    //List<Map<String, Object>> res = await db.query("products");
+    List<Product> products = [];
+    jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
+    return products.isNotEmpty ? products : null;
+  }
+
   //Get all products for discount section
   getOfferProducts() async {
     final db = await database;
