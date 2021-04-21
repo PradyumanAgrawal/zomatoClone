@@ -85,7 +85,6 @@ class DBProvider {
     assert(jsonData is List);
     // final db = await database;
     // List<Map<String, Object>> res = await db.query("shops");
-    Shop oneShop = Shop.fromMap(jsonData[0]);
     List<Shop> shops = [];
     for (int i = 0; i < jsonData.length; i++) {
       Shop temp = Shop.fromMap(jsonData[i]);

@@ -10,6 +10,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:provider/provider.dart';
@@ -101,7 +102,7 @@ class _DiscoverState extends State<Discover>
   }
 
   //var productList = new List<Product>();
-  Stream<dynamic> stream;
+  Future<dynamic> stream;
 
   @override
   void initState() {
@@ -114,13 +115,6 @@ class _DiscoverState extends State<Discover>
     // else if (widget.other == 'allProducts')
     //   stream = FirestoreService().getProducts();
     super.initState();
-  }
-
-  ProductBloc productBloc;
-  @override
-  void dispose() {
-    productBloc.dispose();
-    super.dispose();
   }
 
   @override
@@ -157,17 +151,17 @@ class _DiscoverState extends State<Discover>
         ),
       );
     if (widget.args['stream'] == 'category') {
-      productBloc = ProductBloc(category: widget.args['category']);
-      stream = productBloc.categoryProducts;
-    } else if (widget.args['stream'] == 'subCategory')
-      stream = FirestoreService().getProductsFromSubCategory(
-          widget.args['category'], nearByShopsReferences);
-    else if (widget.args['stream'] == 'shop') {
-      productBloc = ProductBloc(shopId: widget.args['shopId']);
-      stream = productBloc.shopProducts;
+      //productBloc = ProductBloc(category: widget.args['category']);
+      //stream = productBloc.categoryProducts;
+      stream = DBProvider.db.getCategoryProducts(widget.args['category']);
+    } else if (widget.args['stream'] == 'shop') {
+      //productBloc = ProductBloc(shopId: widget.args['shopId']);
+      //stream = productBloc.shopProducts;
+      stream = DBProvider.db.getShopProducts(widget.args['shopId']);
     } else if (widget.args['stream'] == 'allProducts') {
-      productBloc = ProductBloc();
-      stream = productBloc.products;
+      //productBloc = ProductBloc();
+      //stream = productBloc.products;
+      stream = DBProvider.db.getProducts();
     }
 
     return Scaffold(
@@ -363,8 +357,8 @@ class _DiscoverState extends State<Discover>
                         //   );
                         // DocumentSnapshot document = snapshot.data;
                         // wishlist = document['wishlist'];
-                        return StreamBuilder(
-                          stream: stream,
+                        return FutureBuilder(
+                          future: stream,
                           //stream,
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
