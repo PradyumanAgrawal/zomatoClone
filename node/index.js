@@ -109,7 +109,7 @@ app.get('/shops', (req, res) => {
 //get details for products for one shop
 app.get('/shops/:shopId', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM shops where shopId=${req.params.shopId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM shop where shopId=${req.params.shopId}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -153,7 +153,7 @@ app.get('/products', (req, res) => {
         if(!req.query.sort)
         req.query.sort="productId";
         if(!req.query.order)
-        req.query.sort="Asc";
+        req.query.order="Asc";
         con.query(`SELECT * FROM products order by ${req.query.sort} ${req.query.order}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
