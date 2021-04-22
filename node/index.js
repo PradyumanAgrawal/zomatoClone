@@ -82,21 +82,9 @@ app.get('/user/:id', (req, res) => {
     });
 });
 
-//Insert user into database
-app.post('/user', (req, res) => {
-    con.connect(function(err) {
-        var sql = "INSERT INTO user VALUES (2,'Swapnil','ss93@iitbbs.ac.in','8085241233','Gondia','https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png')";
-        con.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted");
-        });
-    });
-});
-
 //Get all address for one specific user
 app.get('/user/address/:userId', (req, res) => {
     con.connect(function(err) {
-        console.log(req.params.id)
         con.query(`SELECT * FROM Address where userId='${req.params.userId}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
@@ -117,12 +105,12 @@ app.delete('/address/:addrId', (req, res) => {
 
 app.post('/address', (req, res) => {
     con.connect(function(err) {
-        var sql = "INSERT INTO Address VALUES ";
         console.log(req.body);
-        // con.query(sql, function (err, result) {
-        //     if (err) throw err;
-        //     console.log("1 record inserted");
-        // });
+        let body=req.body;
+        con.query(`INSERT IGNORE INTO Address(userId,city,line1,line2,name,phone,state) values ('${body.userId}','${body.city}','${body.line1}','${body.line2}','${body.name}','${body.phone}','${body.state}')`, function(err, result) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
     });
 });
 
