@@ -116,7 +116,7 @@ class AuthService {
           token: token);
       //await FirestoreService().saveToken(token, user.uid);
       //await AnalyticsService().logLogIn('google');
-      DBProvider.db.registerUser(user.uid, user.email, user.displayName,user.photoUrl);
+      await DBProvider.db.registerUser(user.uid, user.email, user.displayName,user.photoUrl);
       print("user name: ${user.displayName}");
       print(user.displayName);
       print(user.photoUrl);

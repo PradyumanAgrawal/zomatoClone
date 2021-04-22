@@ -196,7 +196,14 @@ class DBProvider {
 
   void registerUser(
       String uid, String email, String displayName, String photoUrl) async {
-    Response response = await post('', body: {});
+    Response response = await post('http://10.0.2.2:3000/user', body: {
+      "uid": uid,
+      "email": email,
+      "displayName": displayName,
+      "photoUrl": photoUrl
+    });
+    String body = response.body;
+    final jsonData = json.decode(body);
   }
 
   //Get all products for a particular category
