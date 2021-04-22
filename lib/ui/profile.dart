@@ -7,14 +7,20 @@ import 'package:my_flutter_app/blocs/userBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
+import 'package:my_flutter_app/models/addressModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
+import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
+  final BuildContext navContext;
+  Profile({this.navContext});
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
-  DocumentSnapshot userDoc;
+  User userDoc;
   String name;
   String email;
   String phone;
@@ -22,7 +28,8 @@ class _ProfileState extends State<Profile> {
   final picker = ImagePicker();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   newAddress() {}
-  final userBloc = UsersBloc(userId: "1");
+  UsersBloc userBloc;
+  User user;
   @override
   void dispose() {
     userBloc.dispose();
@@ -31,6 +38,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<User>(widget.navContext);
+    userBloc = UsersBloc(userId: user.userId);
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white,
@@ -71,9 +80,9 @@ class _ProfileState extends State<Profile> {
                           setState(() {
                             editVisible = false;
                           });
-
-                          bool status = await FirestoreService().editProfile(
-                              name, email, phone, userDoc, profilePic);
+                          bool status;
+                          // bool status = await FirestoreService().editProfile(
+                          //     name, email, phone, userDoc, profilePic);
                           if (status) {
                             // Scaffold.of(context).showSnackBar(SnackBar(
                             //   content: Text('Updated!!'),
@@ -110,7 +119,7 @@ class _ProfileState extends State<Profile> {
                                         image: (profilePic != null)
                                             ? FileImage(profilePic)
                                             : NetworkImage(
-                                                userDoc['displayPic'],
+                                                userDoc.displayPic,
                                               ),
                                         fit: BoxFit.cover,
                                       ),
@@ -266,181 +275,163 @@ class _ProfileState extends State<Profile> {
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
-                FutureBuilder(
-                  future: LocalData().getUid(),
+                StreamBuilder(
+                  stream: userBloc.user,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData)
                       return Center(
-                          child: SpinKitChasingDots(
-                        color: Colors.purple,
-                      ));
-                    String userId = snapshot.data;
-                    return StreamBuilder(
-                      stream: userBloc.user,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData)
-                          return Center(
-                            child: SpinKitChasingDots(
-                              color: Colors.purple,
-                            ),
-                          );
-                        userDoc = snapshot.data;
-                        name = userDoc['name'];
-                        email = userDoc['email'];
-                        phone = userDoc['mobileNo'];
-                        return Column(
+                        child: SpinKitChasingDots(
+                          color: Colors.purple,
+                        ),
+                      );
+                    userDoc = snapshot.data;
+                    name = userDoc.name;
+                    email = userDoc.email;
+                    phone = userDoc.mobileNo;
+                    return Column(
+                      children: <Widget>[
+                        Stack(
+                          overflow: Overflow.clip,
+                          alignment: Alignment.bottomCenter,
                           children: <Widget>[
-                            Stack(
-                              overflow: Overflow.clip,
-                              alignment: Alignment.bottomCenter,
-                              children: <Widget>[
-                                Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.35,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image:
-                                          NetworkImage(userDoc['displayPic']),
-                                      fit: BoxFit.cover,
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.35,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(userDoc.displayPic),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              child: BackdropFilter(
+                                  filter: new ImageFilter.blur(
+                                      sigmaX: 10.0, sigmaY: 0.0),
+                                  child: Container(
+                                    decoration: new BoxDecoration(
+                                        color:
+                                            Colors.deepPurple.withOpacity(0.0)),
+                                  )),
+                            ),
+                            Positioned(
+                              bottom: -5,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                overflow: Overflow.visible,
+                                children: <Widget>[
+                                  Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              6,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.9),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                      )),
+                                  Positioned(
+                                    top: -MediaQuery.of(context).size.width / 6,
+                                    child: Hero(
+                                      tag: 'profile',
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                3,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                3,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                              userDoc.displayPic,
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black,
+                                              offset: Offset(0.0, 1.0), //(x,y)
+                                              blurRadius: 6.0,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  child: BackdropFilter(
-                                      filter: new ImageFilter.blur(
-                                          sigmaX: 10.0, sigmaY: 0.0),
-                                      child: Container(
-                                        decoration: new BoxDecoration(
-                                            color: Colors.deepPurple
-                                                .withOpacity(0.0)),
-                                      )),
-                                ),
-                                Positioned(
-                                  bottom: -5,
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    overflow: Overflow.visible,
-                                    children: <Widget>[
-                                      Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              6,
-                                          decoration: BoxDecoration(
-                                            color:
-                                                Colors.white.withOpacity(0.9),
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(10),
-                                              topRight: Radius.circular(10),
-                                            ),
-                                          )),
-                                      Positioned(
-                                        top:
-                                            -MediaQuery.of(context).size.width /
-                                                6,
-                                        child: Hero(
-                                          tag: 'profile',
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(
-                                                image: NetworkImage(
-                                                  userDoc['displayPic'],
-                                                ),
-                                                fit: BoxFit.cover,
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black,
-                                                  offset:
-                                                      Offset(0.0, 1.0), //(x,y)
-                                                  blurRadius: 6.0,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
+                                  Positioned(
+                                    top: MediaQuery.of(context).size.width / 6 +
+                                        5,
+                                    child: Text(
+                                      userDoc.name,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 20,
                                       ),
-                                      Positioned(
-                                        top: MediaQuery.of(context).size.width /
-                                                6 +
-                                            5,
-                                        child: Text(
-                                          userDoc['name'],
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                            SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Flexible(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text(
-                                        'Wishlist Items',
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                          userDoc['wishlist'].length.toString(),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ))
-                                    ],
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Flexible(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    'Wishlist Items',
+                                    style: TextStyle(color: Colors.grey),
                                   ),
-                                ),
-                                Flexible(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text(
-                                        'Cart Items',
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(userDoc['cart'].length.toString(),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ))
-                                    ],
+                                  SizedBox(height: 5),
+                                  Text('4',
+                                      //userDoc['wishlist'].length.toString(),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ))
+                                ],
+                              ),
+                            ),
+                            Flexible(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    'Cart Items',
+                                    style: TextStyle(color: Colors.grey),
                                   ),
-                                ),
-                                Flexible(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text(
-                                        'Profile',
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                      SizedBox(height: 5),
-                                      userDoc['isProfileComplete']
-                                          ? Icon(
-                                              Icons.done,
-                                              color: Colors.green,
-                                            )
-                                          : Icon(
-                                              Icons.cancel,
-                                              color: Colors.red,
-                                            ),
-                                      /* Text('50%',
+                                  SizedBox(height: 5),
+                                  Text('4',
+                                      //userDoc['cart'].length.toString(),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ))
+                                ],
+                              ),
+                            ),
+                            Flexible(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    'Profile',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  SizedBox(height: 5),
+                                  true
+                                      //userDoc['isProfileComplete']
+                                      ? Icon(
+                                          Icons.done,
+                                          color: Colors.green,
+                                        )
+                                      : Icon(
+                                          Icons.cancel,
+                                          color: Colors.red,
+                                        ),
+                                  /* Text('50%',
                                           style: TextStyle(
                                             color: userDoc['isProfileComplete']
                                                 ? Colors.green
@@ -448,14 +439,14 @@ class _ProfileState extends State<Profile> {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20,
                                           )) */
-                                    ],
-                                  ),
-                                ),
-                                //VerticalDivider(),
-                              ],
+                                ],
+                              ),
                             ),
-                            Divider(),
-                            /* Padding(
+                            //VerticalDivider(),
+                          ],
+                        ),
+                        Divider(),
+                        /* Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),
                               child: Row(
@@ -477,291 +468,292 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                             Divider(), */
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Text(
-                                      'Email',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      userDoc['email'],
-                                    ),
-                                  ),
-                                ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                child: Text(
+                                  'Email',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
                               ),
-                            ),
-                            Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Text(
-                                      'Contact info',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      userDoc['mobileNo'],
-                                    ),
-                                  ),
-                                ],
+                              Flexible(
+                                child: Text(
+                                  userDoc.email,
+                                ),
                               ),
-                            ),
-                            Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Text(
-                                      'Addresses',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: SizedBox(),
-                                  ),
-                                ],
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                child: Text(
+                                  'Contact info',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: 170.0,
-                                  child: ListView.builder(
-                                    physics: ClampingScrollPhysics(),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: userDoc['address'].length + 2,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      if (index == 0)
-                                        return SizedBox(
-                                          width: 30,
-                                        );
-                                      else if (index ==
-                                          userDoc['address'].length + 1)
-                                        return Card(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                          ),
-                                          child: InkWell(
-                                            onTap: () {
-                                              showBottomSheet(
-                                                  elevation: 10,
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15)),
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      AddSheet(
-                                                        userDoc: userDoc,
-                                                      ));
-                                            },
-                                            child: Container(
-                                              width: 100,
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
-                                              child: Center(
-                                                  child: Icon(Icons.add_box)),
+                              Flexible(
+                                child: Text(
+                                  userDoc.mobileNo,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                child: Text(
+                                  'Addresses',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                              Flexible(
+                                child: SizedBox(),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+
+                        FutureBuilder(
+                            future: DBProvider.db.getAddress(userDoc.userId),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Center(
+                                    child: SpinKitChasingDots(
+                                        color: Colors.deepPurple));
+                              List<Address> addressList = snapshot.data;
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 170.0,
+                                    child: ListView.builder(
+                                      physics: ClampingScrollPhysics(),
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: addressList.length + 2,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        if (index == 0)
+                                          return SizedBox(
+                                            width: 30,
+                                          );
+                                        else if (index ==
+                                            addressList.length + 1)
+                                          return Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
                                             ),
-                                          ),
-                                        );
-                                      return Stack(
-                                        overflow: Overflow.visible,
-                                        children: <Widget>[
-                                          InkWell(
-                                            onTap: () {
-                                              /* 
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
+                                            child: InkWell(
+                                              onTap: () {
+                                                showBottomSheet(
+                                                    elevation: 10,
                                                     shape:
                                                         RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    content: Center(
-                                                      child: Text(
-                                                        userDoc['address']
-                                                            [index - 1],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ); */
-                                            },
-                                            child: Card(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
-                                              ),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AddSheet(
+                                                          userDoc: userDoc,
+                                                        ));
+                                              },
                                               child: Container(
-                                                width: 150,
+                                                width: 100,
                                                 padding:
                                                     const EdgeInsets.all(10.0),
-                                                // child: Center(
-                                                //   child: Text(
-                                                //     userDoc['address']
-                                                //         [index - 1],
-                                                //     style: TextStyle(
-                                                //       fontSize: 10,
-                                                //       color: Colors.black87,
-                                                //     ),
-                                                //   ),
-                                                // ),
                                                 child: Center(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        userDoc['address']
-                                                            [index - 1]['name'],
-                                                        // 'Name',
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                    child: Icon(Icons.add_box)),
+                                              ),
+                                            ),
+                                          );
+                                        return Stack(
+                                          overflow: Overflow.visible,
+                                          children: <Widget>[
+                                            InkWell(
+                                              onTap: () {
+                                                /* 
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  20),
                                                         ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Text(
-                                                        userDoc['address']
-                                                                [index - 1]
-                                                            ['line1'],
-                                                        //'Address Line xxxxxxxx 1',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 3),
-                                                      Text(
-                                                        userDoc['address']
-                                                                [index - 1]
-                                                            ['line2'],
-                                                        //'AddressLine2',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 4),
-                                                      Text(
-                                                        userDoc['address']
-                                                            [index - 1]['city'],
-                                                        //'City',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 3),
-                                                      Text(
-                                                        userDoc['address']
-                                                                [index - 1]
-                                                            ['state'],
-                                                        //'State',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 3),
-                                                      Text(
-                                                        userDoc['address']
-                                                                [index - 1]
-                                                            ['pincode'],
-                                                        //'Pincode',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 4),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Icon(Icons.call,
-                                                              size: 10),
-                                                          SizedBox(width: 10),
-                                                          Text(
-                                                            userDoc['address']
-                                                                    [index - 1]
-                                                                ['phone'],
-                                                            //'xxxxxxxxxx',
-                                                            style: TextStyle(
-                                                              fontSize: 10,
-                                                            ),
+                                                        content: Center(
+                                                          child: Text(
+                                                            addressList
+                                                                [index - 1],
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  ); */
+                                              },
+                                              child: Card(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.0),
+                                                ),
+                                                child: Container(
+                                                  width: 150,
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  // child: Center(
+                                                  //   child: Text(
+                                                  //     addressList
+                                                  //         [index - 1],
+                                                  //     style: TextStyle(
+                                                  //       fontSize: 10,
+                                                  //       color: Colors.black87,
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
+                                                  child: Center(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          addressList[index - 1]
+                                                              .name,
+                                                          // 'Name',
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                          addressList[index - 1]
+                                                              .line1,
+                                                          //'Address Line xxxxxxxx 1',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 3),
+                                                        Text(
+                                                          addressList[index - 1]
+                                                              .line2,
+                                                          //'AddressLine2',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 4),
+                                                        Text(
+                                                          addressList[index - 1]
+                                                              .city,
+                                                          //'City',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 3),
+                                                        Text(
+                                                          addressList[index - 1]
+                                                              .state,
+                                                          //'State',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 3),
+                                                        Text(
+                                                          addressList[index - 1]
+                                                              .state,
+                                                          //'Pincode',
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 4),
+                                                        Row(
+                                                          children: <Widget>[
+                                                            Icon(Icons.call,
+                                                                size: 10),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                              addressList[
+                                                                      index - 1]
+                                                                  .phone,
+                                                              //'xxxxxxxxxx',
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          Positioned(
-                                            right: -10,
-                                            top: -10,
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.remove_circle,
-                                                color: Colors.red,
+                                            Positioned(
+                                              right: -10,
+                                              top: -10,
+                                              child: IconButton(
+                                                icon: Icon(
+                                                  Icons.remove_circle,
+                                                  color: Colors.red,
+                                                ),
+                                                onPressed: () {
+                                                  // FirestoreService()
+                                                  //     .removeAddress(
+                                                  //         index - 1, userDoc);
+                                                },
                                               ),
-                                              onPressed: () {
-                                                FirestoreService()
-                                                    .removeAddress(
-                                                        index - 1, userDoc);
-                                              },
-                                            ),
-                                          )
-                                        ],
-                                      );
-                                    },
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    ),
                                   ),
-                                ),
-                                Divider(),
-                              ],
-                            ),
-                            // Expanded(
-                            //   child: ListView.builder(
-                            //     scrollDirection: Axis.horizontal,
-                            //     itemBuilder: (context, index) {},
-                            //   ),
-                            // ),
-                            // Card(
-                            //   child:Padding(
-                            //     padding: const EdgeInsets.all(8.0),
-                            //     child: Text('card'),
-                            //   )
-                            // ),
-                            SizedBox(height: 80),
-                          ],
-                        );
-                      },
+                                  Divider(),
+                                ],
+                              );
+                            }),
+                        // Expanded(
+                        //   child: ListView.builder(
+                        //     scrollDirection: Axis.horizontal,
+                        //     itemBuilder: (context, index) {},
+                        //   ),
+                        // ),
+                        // Card(
+                        //   child:Padding(
+                        //     padding: const EdgeInsets.all(8.0),
+                        //     child: Text('card'),
+                        //   )
+                        // ),
+                        SizedBox(height: 80),
+                      ],
                     );
                   },
-                ),
+                )
               ],
             ),
           ),

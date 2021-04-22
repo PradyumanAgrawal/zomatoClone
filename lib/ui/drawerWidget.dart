@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/blocs/userBloc.dart';
 import 'package:my_flutter_app/functionalities/auth.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,12 +21,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   String userEmail;
   String userId;
   User userProvider;
-  UsersBloc userBloc;
-  @override
-  void dispose() {
-    userBloc.dispose();
-    super.dispose();
-  }
+
 
   Future<void> _logout(context) async {
     showDialog(
@@ -65,107 +61,97 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // userProvider = Provider.of<User>(context);
-    // userEmail = userProvider.name;
     List<String> locationList = Provider.of<List<String>>(context);
-    userId = Provider.of<String>(context);
-    userBloc = UsersBloc(userId: userId);
-    return StreamBuilder<User>(
-        stream: userBloc.user,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return Center(child: SpinKitChasingDots(color: Colors.deepPurple));
-          userProvider = snapshot.data;
-          userEmail = userProvider.name;
-          return Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(widget.navContext).pushNamed('/profile');
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Hero(
-                            tag: 'profile',
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white,
-                              child: Icon(Icons.person, color: Colors.black),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Text(
-                            userEmail == null ? '' : userEmail,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
+    userProvider = Provider.of<User>(context);
+    userEmail = userProvider.name;
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            child: InkWell(
+              onTap: () {
+                Navigator.of(widget.navContext).pushNamed('/profile',arguments: context);
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Hero(
+                      tag: 'profile',
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.person, color: Colors.black),
+                      ),
                     ),
                   ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
-                      ),
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.pink, Colors.deepPurple])),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      userEmail == null ? '' : userEmail,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(15),
                 ),
-                // ListTile(
-                //   leading: Icon(Icons.home),
-                //   title: Text('Home'),
-                //   onTap: () {
-                //     Navigator.of(widget.navContext).pushNamedAndRemoveUntil(
-                //                 '/navigation', (Route<dynamic> route) => false);
-                //   },
-                // ),
-                ListTile(
-                  leading: Hero(tag: 'wishlist', child: Icon(Icons.favorite)),
-                  title: Text('Wishlist'),
-                  onTap: () {
-                    Navigator.of(widget.navContext)
-                        .pushNamed('/wishlist', arguments: context);
-                  },
-                ),
-                /* ListTile(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.pink, Colors.deepPurple])),
+          ),
+          // ListTile(
+          //   leading: Icon(Icons.home),
+          //   title: Text('Home'),
+          //   onTap: () {
+          //     Navigator.of(widget.navContext).pushNamedAndRemoveUntil(
+          //                 '/navigation', (Route<dynamic> route) => false);
+          //   },
+          // ),
+          ListTile(
+            leading: Hero(tag: 'wishlist', child: Icon(Icons.favorite)),
+            title: Text('Wishlist'),
+            onTap: () {
+              Navigator.of(widget.navContext)
+                  .pushNamed('/wishlist', arguments: context);
+            },
+          ),
+          /* ListTile(
                 leading: Icon(Icons.history),
                 title: Text('Order History'),
                 onTap: () {},
               ), */
-                ListTile(
-                  leading: Hero(tag: 'feedback', child: Icon(Icons.feedback)),
-                  title: Text('Feedback'),
-                  onTap: () {
-                    Navigator.of(widget.navContext)
-                        .pushNamed('/feedback', arguments: widget.navContext);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.backspace),
-                  title: Text('Logout'),
-                  onTap: () {
-                    _logout(context);
-                  },
-                ),
-                ListTile(
-                  leading: Hero(tag: 'about', child: Icon(Icons.info)),
-                  title: Text('About'),
-                  onTap: () {
-                    Navigator.of(widget.navContext).pushNamed('/about');
-                  },
-                ),
-              ],
-            ),
-          );
-        });
+          ListTile(
+            leading: Hero(tag: 'feedback', child: Icon(Icons.feedback)),
+            title: Text('Feedback'),
+            onTap: () {
+              Navigator.of(widget.navContext)
+                  .pushNamed('/feedback', arguments: widget.navContext);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.backspace),
+            title: Text('Logout'),
+            onTap: () {
+              _logout(context);
+            },
+          ),
+          ListTile(
+            leading: Hero(tag: 'about', child: Icon(Icons.info)),
+            title: Text('About'),
+            onTap: () {
+              Navigator.of(widget.navContext).pushNamed('/about');
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

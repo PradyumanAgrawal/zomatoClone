@@ -7,6 +7,7 @@ import 'package:my_flutter_app/blocs/shopBloc.dart';
 import 'package:my_flutter_app/blocs/userBloc.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/location_service.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/functionalities/streaming_shared_preferences.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
@@ -37,6 +38,7 @@ class NavigationState extends State<Navigation> {
     });
   }
 
+  User user;
   final shopBloc = ShopBloc();
   UsersBloc userBloc;
   @override
@@ -66,8 +68,14 @@ class NavigationState extends State<Navigation> {
     LocalData().getUid().then((value) {
       setState(() {
         userId = value;
+        // DBProvider.db.getUser(userId).then((value) {
+        //   setState(() {
+        //     user = value;
+        //   });
+        // });
       });
     });
+
     super.initState();
   }
 
@@ -123,15 +131,15 @@ class NavigationState extends State<Navigation> {
             ),
           );
 
-        return StreamBuilder<User>(
-            stream: userBloc.user,
+        return FutureBuilder<User>(
+            future: DBProvider.db.getUser(userId),
             builder: (context, snapshot) {
-              // if (!snapshot.hasData)
-              //   return Center(
-              //       child: SpinKitChasingDots(color: Colors.deepPurple));
+              if (!snapshot.hasData)
+                return Center(
+                    child: SpinKitChasingDots(color: Colors.deepPurple));
               return MultiProvider(
                 providers: [
-                  Provider<String>.value(value:userId),
+                  Provider<String>.value(value: userId),
                   Provider<User>.value(value: snapshot.data),
                   Provider<LocationPreferences>.value(
                       value: locationPreference),
