@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 //register user
 app.post('/user', (req, res) => {
     con.connect(function(err) {
-        
+        console.log(req.body);
         con.query(`SELECT * FROM user`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
