@@ -132,19 +132,7 @@ class _DiscoverState extends State<Discover>
   //var productList = new List<Product>();
   Future<dynamic> stream;
 
-  @override
-  void initState() {
-    // if (widget.category != null)
-    //   stream = FirestoreService().getProductsFromCategory(widget.category);
-    // else if (widget.shopID != null)
-    //   stream = FirestoreService().getShopProducts(widget.shopID);
-    // else if (widget.other == 'offer')
-    //   stream = FirestoreService().getOfferProducts();
-    // else if (widget.other == 'allProducts')
-    //   stream = FirestoreService().getProducts();
-    super.initState();
-  }
-
+  int flag = 0;
   @override
   Widget build(BuildContext context) {
     // shops =
@@ -178,14 +166,17 @@ class _DiscoverState extends State<Discover>
           ),
         ),
       );
-    if (widget.args['stream'] == 'category') {
-      stream = DBProvider.db.getCategoryProducts(widget.args['category']);
-    } else if (widget.args['stream'] == 'shop') {
-      stream = DBProvider.db.getShopProducts(widget.args['shopId']);
-    } else if (widget.args['stream'] == 'allProducts') {
-      //productBloc = ProductBloc();
-      //stream = productBloc.products;
-      stream = DBProvider.db.getProducts();
+    if (flag == 0) {
+      if (widget.args['stream'] == 'category') {
+        stream = DBProvider.db.getCategoryProducts(widget.args['category']);
+      } else if (widget.args['stream'] == 'shop') {
+        stream = DBProvider.db.getShopProducts(widget.args['shopId']);
+      } else if (widget.args['stream'] == 'allProducts') {
+        stream = DBProvider.db.getProducts();
+      }
+      else if (widget.args['stream'] == 'offer') {
+        stream = DBProvider.db.getOfferProducts();
+      }
     }
 
     return Scaffold(
@@ -204,6 +195,7 @@ class _DiscoverState extends State<Discover>
                 backgroundColor: Colors.purple[300],
                 onTap: () {
                   setState(() {
+                    flag = 1;
                     if (widget.args['stream'] == 'category')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'],
@@ -225,7 +217,8 @@ class _DiscoverState extends State<Discover>
                 backgroundColor: Colors.purple[300],
                 onTap: () {
                   setState(() {
-                     if (widget.args['stream'] == 'category')
+                    flag = 1;
+                    if (widget.args['stream'] == 'category')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'],
                           'asc',

@@ -57,7 +57,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    userProvider = Provider.of<User>(context);
+    userProvider = Provider.of<User>(widget.navContext);
     userEmail = userProvider.name;
     return Drawer(
       child: ListView(
