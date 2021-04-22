@@ -13,6 +13,9 @@ app.use(logger("dev"));
 
 // Parse incoming requests data
 app.use(express.json());
+app.use(express.urlencoded({
+    extended: true
+}));
 
 const con = mysql.createConnection({
     host:process.env.sql_endpoint,
