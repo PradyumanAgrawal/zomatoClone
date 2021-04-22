@@ -27,7 +27,6 @@ const con = mysql.createConnection({
 con.connect(function(err) {
     if (err) throw err;
     console.log("Database Connected!");
-    console.log(`${err}`);
     //con.query('USE amazon;');
 });
 
@@ -95,7 +94,7 @@ app.post('/user', (req, res) => {
 });
 
 //Get all address for one specific user
-app.get('/address/:userId', (req, res) => {
+app.get('/user/address/:userId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
         con.query(`SELECT * FROM address where userId='${req.params.userId}'`, function(err, result, fields) {
