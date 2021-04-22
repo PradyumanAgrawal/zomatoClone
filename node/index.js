@@ -76,7 +76,7 @@ app.get('/user', (req, res) => {
 app.get('/user/:id', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM user where userId=${req.params.id}`, function(err, result, fields) {
+        con.query(`SELECT * FROM user where userId='${req.params.id}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -98,7 +98,7 @@ app.post('/user', (req, res) => {
 app.get('/address/:userId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM address where userId=${req.params.userId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM address where userId='${req.params.userId}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -172,7 +172,7 @@ app.get('/categories', (req, res) => {
 app.get('/orders/:userId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM orders natural join Address where userId=${req.params.userId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM orders natural join Address where userId='${req.params.userId}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
