@@ -150,11 +150,14 @@ app.get('/orders/:userId', (req, res) => {
 //get all products details
 app.get('/products', (req, res) => {
     con.connect(function(err) {
+        var removeNull='';
         if(!req.query.sort)
         req.query.sort="productId";
         if(!req.query.order)
         req.query.order="Asc";
-        con.query(`SELECT * FROM products order by ${req.query.sort} ${req.query.order}`, function(err, result, fields) {
+        if(req.query.sort.localeCompare("discount")==0)
+        removeNull='where discount is not NULL'
+        con.query(`SELECT * FROM products ${removeNull} order by ${req.query.sort} ${req.query.order}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
