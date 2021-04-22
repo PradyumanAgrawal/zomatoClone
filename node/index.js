@@ -97,7 +97,7 @@ app.post('/user', (req, res) => {
 app.get('/user/address/:userId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM address where userId='${req.params.userId}'`, function(err, result, fields) {
+        con.query(`SELECT * FROM Address where userId='${req.params.userId}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -108,7 +108,7 @@ app.get('/user/address/:userId', (req, res) => {
 app.delete('/address/:addrId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`DELETE FROM address where addrId=${req.params.addrId}`, function(err, result, fields) {
+        con.query(`DELETE FROM Address where addrId=${req.params.addrId}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -117,7 +117,7 @@ app.delete('/address/:addrId', (req, res) => {
 
 app.post('/address', (req, res) => {
     con.connect(function(err) {
-        var sql = "INSERT INTO address VALUES ";
+        var sql = "INSERT INTO Address VALUES ";
         console.log(req.body);
         // con.query(sql, function (err, result) {
         //     if (err) throw err;
