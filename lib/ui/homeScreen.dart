@@ -444,21 +444,14 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      StreamBuilder(
-                        stream: FirestoreService().getOfferPosters(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData)
-                            return Center(
-                                child: SpinKitChasingDots(
-                              color: Colors.purple,
-                            ));
-                          DocumentSnapshot posterDoc = snapshot.data;
-                          List<String> posters = [];
-                          for (int i = 0;
-                              i < posterDoc['posters'].length;
-                              i++) {
-                            posters.add(posterDoc['posters'][i]);
-                          }
+                      Builder(
+                        builder: (context) {
+                          List<String> posters = [
+                            'https://cdnb.artstation.com/p/assets/images/images/025/858/179/large/ruchita-ghatage-food-poster.jpg?1587143002',
+                            'https://penji.co/wp-content/uploads/2020/12/Food_Poster_Design_Examples_and_Tips_for_Getting_Customers-min.jpg',
+                            'https://i.ytimg.com/vi/WGyqJ-rqqtY/maxresdefault.jpg',
+                            'https://i.pinimg.com/originals/63/37/90/633790eda4fc3d35065ebe3088c7ee72.jpg'
+                          ];
                           return Container(
                             height: 200.0,
                             decoration: BoxDecoration(
