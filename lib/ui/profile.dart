@@ -764,7 +764,7 @@ class _ProfileState extends State<Profile> {
 }
 
 class AddSheet extends StatefulWidget {
-  var userDoc;
+  User userDoc;
   AddSheet({this.userDoc});
   @override
   _AddSheetState createState() => _AddSheetState();
@@ -775,7 +775,7 @@ class _AddSheetState extends State<AddSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Map newAdd = new Map();
+    Map<String, dynamic> newAdd = new Map();
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
@@ -902,12 +902,12 @@ class _AddSheetState extends State<AddSheet> {
                   if (value.isEmpty || value.length != 6) {
                     return 'Please Enter valid Pincode';
                   }
-                  if (value != '431604' &&
-                      value != '431601' &&
-                      value != '431602' &&
-                      value != '431603') {
-                    return 'zomatoClone coming soon to your location';
-                  }
+                  // if (value != '431604' &&
+                  //     value != '431601' &&
+                  //     value != '431602' &&
+                  //     value != '431603') {
+                  //   return 'zomatoClone coming soon to your location';
+                  // }
                 },
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
@@ -921,7 +921,7 @@ class _AddSheetState extends State<AddSheet> {
                   ),
                 ),
                 onSaved: (value) {
-                  newAdd['pincode'] = value;
+                  //newAdd['pincode'] = value;
                 },
               ),
               SizedBox(height: 20),
@@ -975,8 +975,10 @@ class _AddSheetState extends State<AddSheet> {
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
-                              FirestoreService()
-                                  .newAddress(newAdd, widget.userDoc);
+                              newAdd['userId'] = widget.userDoc.userId;
+                              await DBProvider.db.insertAddress(newAdd);
+                              // FirestoreService()
+                              //     .newAddress(newAdd, widget.userDoc);
                               Navigator.of(context).pop();
                             }
                           }),

@@ -50,14 +50,15 @@ class DBProvider {
   }
 
   // Get all address of one user
-  Future<List<Address>>getAddress(String userId) async {
-    Response response = await get('http://10.0.2.2:3000/user/address/' + userId);
+  Future<List<Address>> getAddress(String userId) async {
+    Response response =
+        await get('http://10.0.2.2:3000/user/address/' + userId);
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
-    List<Address> addresses;
+    List<Address> addresses = [];
     jsonData.forEach((add) => {addresses.add(Address.fromMap(add))});
-    return addresses.isNotEmpty ? addresses : null;
+    return addresses;
   }
 
   //delete An address with a specific addrId
@@ -69,10 +70,10 @@ class DBProvider {
   }
 
   //Insert new addess into addrress table.
-  insertAddress(Address address) async {
-    final db = await database;
-    int res = await db.insert("address", address.toMap());
-    return res;
+  insertAddress(Map<String, dynamic> address) async {
+    Response response =
+        await post('http://10.0.2.2:3000/address', body: address);
+    String body = response.body;
   }
 
   //Get all shops details
