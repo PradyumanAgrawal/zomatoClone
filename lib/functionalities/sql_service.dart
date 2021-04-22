@@ -41,7 +41,7 @@ class DBProvider {
 
   //Get one specific user details
   getUser(String userId) async {
-    Response response = await get('http://10.0.2.2:3000/user/'+userId);
+    Response response = await get('http://10.0.2.2:3000/user/' + userId);
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
@@ -176,7 +176,7 @@ class DBProvider {
   //Get all products for discount section
   getOfferProducts() async {
     Response response =
-        await get('http://10.0.2.2:3000/products?sort=discount ');
+        await get('http://10.0.2.2:3000/products?sort=discount&order=desc');
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
@@ -192,6 +192,11 @@ class DBProvider {
         .query("products", where: "productId = ?", whereArgs: [productId]);
     Product product = Product.fromMap(res[0]);
     return product;
+  }
+
+  void registerUser(
+      String uid, String email, String displayName, String photoUrl) async {
+    Response response = await post('', body: {});
   }
 
   //Get all products for a particular category
