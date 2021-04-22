@@ -40,25 +40,23 @@ class DBProvider {
   }
 
   //Get one specific user details
-  getUser(String userId) async {
+  Future<User> getUser(String userId) async {
     Response response = await get('http://10.0.2.2:3000/user/' + userId);
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
     User user = User.fromMap(jsonData[0]);
     return user;
-    //final db = await database;
-    //var res = await db.query("users", where: "id = ?", whereArgs: [userId]);
-    //return res.isNotEmpty ? User.fromMap(res.first) : null;
   }
 
   // Get all address of one user
-  getAddress(String userId) async {
-    final db = await database;
-    List<Map<String, Object>> res =
-        await db.query("address", where: "userId = ?", whereArgs: [userId]);
+  Future<List<Address>>getAddress(String userId) async {
+    Response response = await get('http://10.0.2.2:3000/user/address/' + userId);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
     List<Address> addresses;
-    res.forEach((add) => {addresses.add(Address.fromMap(add))});
+    jsonData.forEach((add) => {addresses.add(Address.fromMap(add))});
     return addresses.isNotEmpty ? addresses : null;
   }
 

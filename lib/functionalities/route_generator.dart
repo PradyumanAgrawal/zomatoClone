@@ -90,7 +90,7 @@ class RouteGenerator {
         );
       case '/profile':
         return MaterialPageRoute(
-          builder: (_) => Profile(),
+          builder: (_) => Profile(navContext: args),
         );
       case '/feedback':
         return MaterialPageRoute(

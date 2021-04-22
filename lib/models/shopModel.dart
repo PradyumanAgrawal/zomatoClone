@@ -3,7 +3,7 @@ import 'dart:convert';
 class Shop {
   int shopId;
   String address;
-  int ownerId;
+  String ownerId;
   String contact;
   String shopName;
   String location;

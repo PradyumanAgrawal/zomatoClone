@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class Address {
-  String addrId;
+  int addrId;
   String userId;
   String city;
   String line1;
@@ -21,7 +21,7 @@ class Address {
     this.state,
   });
 
-  factory Address.fromMap(Map<String, String> json) => new Address(
+  factory Address.fromMap(Map<String, dynamic> json) => new Address(
         addrId: json["addrId"],
         userId: json["userId"],
         city: json["city"],
@@ -32,7 +32,7 @@ class Address {
         state: json["state"],
       );
 
-  Map<String, String> toMap() => {
+  Map<String, dynamic> toMap() => {
         "addrId": addrId,
         "userId": userId,
         "city": city,
