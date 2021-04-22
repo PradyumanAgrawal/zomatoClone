@@ -36,6 +36,7 @@ class NavigationState extends State<Navigation> {
       _selectedIndex = index;
     });
   }
+
   final shopBloc = ShopBloc();
   final userBloc = UsersBloc(userId: "1");
   @override
@@ -95,7 +96,6 @@ class NavigationState extends State<Navigation> {
     )) ?? false; */
   }
 
-  
   @override
   void dispose() {
     shopBloc.dispose();
@@ -121,64 +121,72 @@ class NavigationState extends State<Navigation> {
             ),
           );
 
-        return MultiProvider(
-          providers: [
-            StreamProvider<User>.value(value: userBloc.user),
-            Provider<LocationPreferences>.value(value: locationPreference),
-            Provider<List<String>>.value(value: location),
-            StreamProvider<List<Shop>>.value(value: shopBloc.shops)
-          ],
-          child: new WillPopScope(
-            onWillPop: _onWillPop,
-            child: MaterialApp(
-              home: Scaffold(
-                body: <Widget>[
-                  HomeScreen(
-                    navContext: context,
-                  ),
-                  Discover1(
-                    navContext: context,
-                  ),
-                  Orders(
-                    navContext: context,
-                  ),
-                  // Share(
-                  //   navContext: context,
-                  // ),
-                ][_selectedIndex],
-                bottomNavigationBar: CurvedNavigationBar(
-                  height: 50,
-                  backgroundColor: Colors.white,
-                  animationDuration: Duration(milliseconds: 250),
-                  //animationCurve: Curves.elasticOut,
-                  color: Colors.deepPurple[800],
-                  items: <Widget>[
-                    Icon(
-                      Icons.home,
-                      color: Colors.white,
-                    ),
-                    Icon(
-                      Icons.favorite,
-                      color: Colors.white,
-                    ),
-                    Icon(
-                      Icons.shopping_basket,
-                      color: Colors.white,
-                    ),
-                    // Icon(
-                    //   Icons.share,
-                    //   color: Colors.white,
-                    // ),
-                  ],
+        return StreamBuilder<User>(
+            stream: userBloc.user,
+            builder: (context, snapshot) {
+              // if (!snapshot.hasData)
+              //   return Center(
+              //       child: SpinKitChasingDots(color: Colors.deepPurple));
+              return MultiProvider(
+                providers: [
+                  Provider<User>.value(value: snapshot.data),
+                  Provider<LocationPreferences>.value(
+                      value: locationPreference),
+                  Provider<List<String>>.value(value: location),
+                  StreamProvider<List<Shop>>.value(value: shopBloc.shops)
+                ],
+                child: new WillPopScope(
+                  onWillPop: _onWillPop,
+                  child: MaterialApp(
+                    home: Scaffold(
+                      body: <Widget>[
+                        HomeScreen(
+                          navContext: context,
+                        ),
+                        Discover1(
+                          navContext: context,
+                        ),
+                        Orders(
+                          navContext: context,
+                        ),
+                        // Share(
+                        //   navContext: context,
+                        // ),
+                      ][_selectedIndex],
+                      bottomNavigationBar: CurvedNavigationBar(
+                        height: 50,
+                        backgroundColor: Colors.white,
+                        animationDuration: Duration(milliseconds: 250),
+                        //animationCurve: Curves.elasticOut,
+                        color: Colors.deepPurple[800],
+                        items: <Widget>[
+                          Icon(
+                            Icons.home,
+                            color: Colors.white,
+                          ),
+                          Icon(
+                            Icons.favorite,
+                            color: Colors.white,
+                          ),
+                          Icon(
+                            Icons.shopping_basket,
+                            color: Colors.white,
+                          ),
+                          // Icon(
+                          //   Icons.share,
+                          //   color: Colors.white,
+                          // ),
+                        ],
 
-                  index: _selectedIndex,
-                  onTap: _onItemTapped,
+                        index: _selectedIndex,
+                        onTap: _onItemTapped,
+                      ),
+                    ),
+                    debugShowCheckedModeBanner: false,
+                  ),
                 ),
-              ),
-              debugShowCheckedModeBanner: false,
-            ),
-          ),
-        );
+              );
+            });
       },
     );
   }

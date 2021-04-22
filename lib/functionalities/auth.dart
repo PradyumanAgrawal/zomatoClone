@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/functionalities/analytics.dart';
-import 'package:my_flutter_app/functionalities/firestore_service.dart';
+//import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -84,7 +85,7 @@ class AuthService {
     prefs.setString("password", null);
     prefs.setString('uid', null);
     prefs.setString("token", null);
-    await FirestoreService().deleteToken(token, userId);
+    //await FirestoreService().deleteToken(token, userId);
 
     try {
       await _auth.signOut();
@@ -114,10 +115,12 @@ class AuthService {
           uid: user.uid,
           token: token);
       //await FirestoreService().saveToken(token, user.uid);
-      await AnalyticsService().logLogIn('google');
+      //await AnalyticsService().logLogIn('google');
+      DBProvider.db.registerUser(user.uid, user.email, user.displayName,user.photoUrl);
       print("user name: ${user.displayName}");
       print(user.displayName);
       print(user.photoUrl);
+      print('uid :' + user.uid);
       //updateUserData(user);
       return true;
     } catch (error) {
