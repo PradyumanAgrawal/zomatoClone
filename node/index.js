@@ -31,6 +31,30 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+//register user
+app.post('/user', (req, res) => {
+    con.connect(function(err) {
+        
+        con.query(`SELECT * FROM user`, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
+
+
+//update user profile
+app.put('/user/:userId', (req, res) => {
+    con.connect(function(err) {
+        
+        con.query(`SELECT * FROM user`, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
+
+
 //get all users details
 app.get('/user', (req, res) => {
     con.connect(function(err) {
@@ -159,6 +183,9 @@ app.get('/products', (req, res) => {
         req.query.order="Asc";
         if(req.query.sort.localeCompare("discount")==0)
         removeNull='where discount is not NULL'
+        // obj = JSON.parse(req.query.productId));
+        // shareInfoLen = Object.keys(obj.shareInfo[0]).length;
+        // console.log(JSON.parse(req.query.productId).size())
         con.query(`SELECT * FROM products ${removeNull} order by ${req.query.sort} ${req.query.order}`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
