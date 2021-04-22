@@ -48,7 +48,9 @@ class AuthService {
           .user;
       //updateUserData(user);
       if (user != null) {
-        String token = await _messaging.getToken();
+        String token; // = await _messaging.getToken();
+        await DBProvider.db.registerUser(
+            user.uid, user.email, user.displayName, 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png');
         localData.saveData(
             userEmail: email,
             password: password,
@@ -56,7 +58,7 @@ class AuthService {
             uid: user.uid,
             token: token);
         //await FirestoreService().saveToken(token, user.uid);
-        await AnalyticsService().logSignUp('email');
+        //await AnalyticsService().logSignUp('email');
         return true;
       }
       return false;
@@ -107,7 +109,9 @@ class AuthService {
       );
 
       FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
-      String token = await _messaging.getToken();
+      String token; // = await _messaging.getToken();
+      await DBProvider.db
+          .registerUser(user.uid, user.email, user.displayName, user.photoUrl);
       localData.saveData(
           userEmail: user.email,
           password: '',
@@ -116,7 +120,6 @@ class AuthService {
           token: token);
       //await FirestoreService().saveToken(token, user.uid);
       //await AnalyticsService().logLogIn('google');
-      await DBProvider.db.registerUser(user.uid, user.email, user.displayName,user.photoUrl);
       print("user name: ${user.displayName}");
       print(user.displayName);
       print(user.photoUrl);

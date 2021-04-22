@@ -41,6 +41,7 @@ class HomeScreenState extends State<HomeScreen> {
   //List<DocumentReference> nearByShopsReferences = [];
   LocationPreferences locationPreference;
   List<String> locationList;
+  String userId;
   TextEditingController _controller = TextEditingController();
   checkTyping(value) {
     if (value.length > 0) {
@@ -176,7 +177,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     userProvider = Provider.of<User>(context);
-
+    userId = Provider.of<String>(context);
     //if (userProvider != null) checkToken(userProvider.documentID);
 
     if (Provider.of<List<Shop>>(context) != null) {

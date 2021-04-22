@@ -194,7 +194,7 @@ class DBProvider {
     return product;
   }
 
-  void registerUser(
+  Future<void> registerUser(
       String uid, String email, String displayName, String photoUrl) async {
     Response response = await post('http://10.0.2.2:3000/user', body: {
       "uid": uid,

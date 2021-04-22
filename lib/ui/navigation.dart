@@ -38,7 +38,7 @@ class NavigationState extends State<Navigation> {
   }
 
   final shopBloc = ShopBloc();
-  final userBloc = UsersBloc(userId: "1");
+  UsersBloc userBloc;
   @override
   initState() {
     StreamingSharedPreferences.instance.then(
@@ -105,6 +105,8 @@ class NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+    print(userId);
+    userBloc = UsersBloc(userId: userId);
     if (locationPreference == null)
       return Center(
         child: SpinKitChasingDots(
@@ -129,6 +131,7 @@ class NavigationState extends State<Navigation> {
               //       child: SpinKitChasingDots(color: Colors.deepPurple));
               return MultiProvider(
                 providers: [
+                  Provider<String>.value(value:userId),
                   Provider<User>.value(value: snapshot.data),
                   Provider<LocationPreferences>.value(
                       value: locationPreference),

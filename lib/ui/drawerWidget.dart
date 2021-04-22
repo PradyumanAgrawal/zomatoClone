@@ -18,8 +18,9 @@ class DrawerWidget extends StatefulWidget {
 class _DrawerWidgetState extends State<DrawerWidget> {
   AuthService auth = new AuthService();
   String userEmail;
+  String userId;
   User userProvider;
-  final userBloc = UsersBloc(userId: "1");
+  UsersBloc userBloc;
   @override
   void dispose() {
     userBloc.dispose();
@@ -67,6 +68,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     // userProvider = Provider.of<User>(context);
     // userEmail = userProvider.name;
     List<String> locationList = Provider.of<List<String>>(context);
+    userId = Provider.of<String>(context);
+    userBloc = UsersBloc(userId: userId);
     return StreamBuilder<User>(
         stream: userBloc.user,
         builder: (context, snapshot) {
