@@ -1,10 +1,12 @@
 const express = require('express')
 const logger = require("morgan");
+var dotenv = require('dotenv');
 const mysql = require('mysql');
 
 // Set up the express app
 const app = express()
-const port = 3000
+dotenv.config();
+const port = process.env.PORT;
 
 // Log requests to the console.
 app.use(logger("dev"));
@@ -13,9 +15,9 @@ app.use(logger("dev"));
 app.use(express.json());
 
 const con = mysql.createConnection({
-    host: "database-1.ct5yrt1vuny7.ap-south-1.rds.amazonaws.com",
-    user: "admin",
-    password: "Password"
+    host:process.env.sql_endpoint,
+    user: process.env.db_username,
+    password: process.env.db_password
 });
 
 con.connect(function(err) {
