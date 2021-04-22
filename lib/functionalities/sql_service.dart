@@ -41,7 +41,7 @@ class DBProvider {
 
   //Get one specific user details
   getUser(String userId) async {
-    Response response = await get('http://10.0.2.2:3000/user/1');
+    Response response = await get('http://10.0.2.2:3000/user/'+userId);
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
@@ -83,19 +83,11 @@ class DBProvider {
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
-    // final db = await database;
-    // List<Map<String, Object>> res = await db.query("shops");
     List<Shop> shops = [];
     for (int i = 0; i < jsonData.length; i++) {
       Shop temp = Shop.fromMap(jsonData[i]);
       shops.add(temp);
     }
-    // jsonData.forEach((shop) => {
-    //       shops.add(
-    //         Shop.fromMap(shop),
-    //       )
-    //     });
-
     return shops.isNotEmpty ? shops : null;
   }
 
@@ -104,8 +96,6 @@ class DBProvider {
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
-    // final db = await database;
-    // List<Map<String, Object>> res = await db.query("shops");
     Shop shop = Shop.fromMap(jsonData[0]);
     return shop;
   }
@@ -140,8 +130,6 @@ class DBProvider {
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
-    //final db = await database;
-    //List<Map<String, Object>> res = await db.query("products");
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
     return products.isNotEmpty ? products : null;
@@ -158,8 +146,6 @@ class DBProvider {
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
-    //final db = await database;
-    //List<Map<String, Object>> res = await db.query("products");
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
     return products.isNotEmpty ? products : null;
@@ -171,8 +157,6 @@ class DBProvider {
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
-    //final db = await database;
-    //List<Map<String, Object>> res = await db.query("products");
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
     return products.isNotEmpty ? products : null;
@@ -184,8 +168,6 @@ class DBProvider {
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
-    //final db = await database;
-    //List<Map<String, Object>> res = await db.query("products");
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
     return products.isNotEmpty ? products : null;
@@ -194,12 +176,10 @@ class DBProvider {
   //Get all products for discount section
   getOfferProducts() async {
     Response response =
-        await get('http://10.0.2.2:3000/products?sort=discount');
+        await get('http://10.0.2.2:3000/products?sort=discount ');
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
-    //final db = await database;
-    //List<Map<String, Object>> res = await db.query("products");
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
     return products.isNotEmpty ? products : null;

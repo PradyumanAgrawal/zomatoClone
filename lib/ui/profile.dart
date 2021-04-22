@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_flutter_app/blocs/userBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +22,12 @@ class _ProfileState extends State<Profile> {
   final picker = ImagePicker();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   newAddress() {}
+  final userBloc = UsersBloc(userId: "1");
+  @override
+  void dispose() {
+    userBloc.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +276,7 @@ class _ProfileState extends State<Profile> {
                       ));
                     String userId = snapshot.data;
                     return StreamBuilder(
-                      stream: FirestoreService().getUser(userId),
+                      stream: userBloc.user,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData)
                           return Center(

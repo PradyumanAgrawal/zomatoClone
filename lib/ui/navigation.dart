@@ -36,7 +36,8 @@ class NavigationState extends State<Navigation> {
       _selectedIndex = index;
     });
   }
-
+  final shopBloc = ShopBloc();
+  final userBloc = UsersBloc(userId: "1");
   @override
   initState() {
     StreamingSharedPreferences.instance.then(
@@ -94,8 +95,7 @@ class NavigationState extends State<Navigation> {
     )) ?? false; */
   }
 
-  final shopBloc = ShopBloc();
-  final userBloc = UsersBloc(userId: "1");
+  
   @override
   void dispose() {
     shopBloc.dispose();

@@ -14,8 +14,8 @@ class UsersBloc {
   get user => _userController.stream;
 
   getUser(String userId) async {
-    List<User> users = await DBProvider.db.getUser(userId);
-    _userController.sink.add(users[0]);
+    User user = await DBProvider.db.getUser(userId);
+    _userController.sink.add(user);
   }
 
   // Future<void> blockUnblock(User user) async {
