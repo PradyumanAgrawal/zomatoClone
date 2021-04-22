@@ -20,13 +20,15 @@ app.use(express.urlencoded({
 const con = mysql.createConnection({
     host:process.env.sql_endpoint,
     user: process.env.db_username,
-    password: process.env.db_password
+    password: process.env.db_password,
+    database: 'amazon'
 });
 
 con.connect(function(err) {
     if (err) throw err;
     console.log("Database Connected!");
-    con.query('USE amazon;');
+    console.log(`${err}`);
+    //con.query('USE amazon;');
 });
 
 
@@ -38,7 +40,8 @@ app.get('/', (req, res) => {
 app.post('/user', (req, res) => {
     con.connect(function(err) {
         console.log(req.body);
-        con.query(`SELECT * FROM user`, function(err, result, fields) {
+        let body=req.body;
+        con.query(`INSERT IGNORE INTO user(userId,name,email,displayPic) values ('${body.uid}','${body.displayName}','${body.email}','${body.photoUrl}')`, function(err, result) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -49,8 +52,8 @@ app.post('/user', (req, res) => {
 //update user profile
 app.put('/user/:userId', (req, res) => {
     con.connect(function(err) {
-        
-        con.query(`SELECT * FROM user`, function(err, result, fields) {
+        con.query(`UPDATE user SET userId = value1, column2 = value2, ...
+        WHERE condition;`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -73,7 +76,7 @@ app.get('/user', (req, res) => {
 app.get('/user/:id', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM user where userId=${req.params.id}`, function(err, result, fields) {
+        con.query(`SELECT * FROM user where userId='${req.params.id}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -95,7 +98,7 @@ app.post('/user', (req, res) => {
 app.get('/address/:userId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM address where userId=${req.params.userId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM address where userId='${req.params.userId}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -169,7 +172,7 @@ app.get('/categories', (req, res) => {
 app.get('/orders/:userId', (req, res) => {
     con.connect(function(err) {
         console.log(req.params.id)
-        con.query(`SELECT * FROM orders natural join Address where userId=${req.params.userId}`, function(err, result, fields) {
+        con.query(`SELECT * FROM orders natural join Address where userId='${req.params.userId}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
