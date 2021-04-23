@@ -3,6 +3,8 @@ const logger = require("morgan");
 var dotenv = require('dotenv');
 const mysql = require('mysql');
 
+//const userRouter = require('./routes/user.js');
+
 // Set up the express app
 const app = express()
 dotenv.config();
@@ -16,6 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
+
+app.use('/user',userRouter);
 
 const con = mysql.createConnection({
     host:process.env.sql_endpoint,
@@ -47,33 +51,20 @@ app.post('/user', (req, res) => {
 //update user profile
 app.put('/user/:userId', (req, res) => {
     con.connect(function(err) {
-        con.query(`UPDATE user SET userId = value1, column2 = value2, ...
-        WHERE condition;`, function(err, result, fields) {
+        con.query(`UPDATE user SET phone=? WHERE userId=?;`,[req.body.phone,req.params.userId], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
     });
 });
+
 
 
 //get all users details
 app.get('/user', (req, res) => {
-    con.connect(function(err) {
-        con.query(`SELECT * FROM user`, function(err, result, fields) {
-            if (err) res.send(err);
-            if (result) res.send(result);
-        });
-    });
-});
-
-//get details for one user
-app.get('/user/:userId', (req, res) => {
-    con.connect(function(err) {
-        console.log(req.params.id)
-        con.query(`SELECT * FROM user where userId=?`,[req.params.userId],function(err, result, fields) {
-            if (err) res.send(err);
-            if (result) res.send(result);
-        });
+    con.query(`SELECT * FROM user`, function(err, result, fields) {
+        if (err) res.send(err);
+        if (result) res.send(result);
     });
 });
 
@@ -179,8 +170,17 @@ app.get('/categories', (req, res) => {
 //Get all orders for one specific addrId
 app.get('/orders/:userId', (req, res) => {
     con.connect(function(err) {
-        console.log(req.params.id)
         con.query(`SELECT * FROM orders natural join Address where userId=?`,[req.params.userId], function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
+
+//Place an order
+app.post('/orders/:addrId', (req, res) => {
+    con.connect(function(err) {
+        con.query(`call cartToOrder(?)`,[req.params.addrId], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -197,10 +197,8 @@ app.get('/products', (req, res) => {
         req.query.order="Asc";
         if(req.query.sort.localeCompare("discount")==0)
         removeNull='where discount is not NULL'
-        // obj = JSON.parse(req.query.productId));
-        // shareInfoLen = Object.keys(obj.shareInfo[0]).length;
-        // console.log(JSON.parse(req.query.productId).size())
-        con.query(`SELECT * FROM products ${removeNull} order by ${req.query.sort} ${req.query.order}`, function(err, result, fields) {
+    
+        con.query(`SELECT * FROM products ${removeNull} order by ? ?`,[req.query.sort,req.query.order], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -283,5 +281,7 @@ app.get("/sort/:stream", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`app listening at http://localhost:${port}`)
 })
+
+module.exports=con
