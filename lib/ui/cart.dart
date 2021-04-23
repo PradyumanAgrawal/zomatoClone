@@ -169,10 +169,10 @@ class _CartState extends State<Cart> {
                                       child: FlatButton(
                                         onPressed: () async {
                                           if (userProvider != null) {
-                                            // Navigator.of(context).pushNamed(
-                                            //     '/review_order',
-                                            //     arguments:
-                                            //         widget.providerContext);
+                                            Navigator.of(context).pushNamed(
+                                                '/review_order',
+                                                arguments:
+                                                    widget.providerContext);
                                           }
                                         },
                                         child: Row(

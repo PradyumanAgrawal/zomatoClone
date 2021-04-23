@@ -530,14 +530,16 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         SizedBox(height: 10),
-
-                        FutureBuilder(
-                            future: DBProvider.db.getAddress(userDoc.userId),
+                        StreamBuilder(
+                            stream: addressBloc.addresses,
+                            //DBProvider.db.getAddress(userDoc.userId),
                             builder: (context, snapshot) {
-                              if (!snapshot.hasData)
+                              if (!snapshot.hasData) {
+                                addressBloc.reset();
                                 return Center(
                                     child: SpinKitChasingDots(
                                         color: Colors.deepPurple));
+                              }
                               List<Address> addressList = snapshot.data;
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -576,6 +578,8 @@ class _ProfileState extends State<Profile> {
                                                     builder: (context) =>
                                                         AddSheet(
                                                           userDoc: userDoc,
+                                                          addressBloc:
+                                                              addressBloc,
                                                         ));
                                               },
                                               child: Container(
@@ -726,9 +730,12 @@ class _ProfileState extends State<Profile> {
                                                   color: Colors.red,
                                                 ),
                                                 onPressed: () {
-                                                  DBProvider.db.deleteAddress(
+                                                  addressBloc.deleteAddress(
                                                       addressList[index - 1]
                                                           .addrId);
+                                                  // DBProvider.db.deleteAddress(
+                                                  //     addressList[index - 1]
+                                                  //         .addrId);
                                                   // FirestoreService()
                                                   //     .removeAddress(
                                                   //         index - 1, userDoc);
@@ -744,18 +751,6 @@ class _ProfileState extends State<Profile> {
                                 ],
                               );
                             }),
-                        // Expanded(
-                        //   child: ListView.builder(
-                        //     scrollDirection: Axis.horizontal,
-                        //     itemBuilder: (context, index) {},
-                        //   ),
-                        // ),
-                        // Card(
-                        //   child:Padding(
-                        //     padding: const EdgeInsets.all(8.0),
-                        //     child: Text('card'),
-                        //   )
-                        // ),
                         SizedBox(height: 80),
                       ],
                     );
@@ -771,8 +766,9 @@ class _ProfileState extends State<Profile> {
 }
 
 class AddSheet extends StatefulWidget {
-  User userDoc;
-  AddSheet({this.userDoc});
+  final User userDoc;
+  final AddressBloc addressBloc;
+  AddSheet({this.userDoc, this.addressBloc});
   @override
   _AddSheetState createState() => _AddSheetState();
 }
@@ -983,7 +979,8 @@ class _AddSheetState extends State<AddSheet> {
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
                               newAdd['userId'] = widget.userDoc.userId;
-                              await DBProvider.db.insertAddress(newAdd);
+                              widget.addressBloc.insertAddress(newAdd);
+                              //await DBProvider.db.insertAddress(newAdd);
                               setState(() {});
                               // FirestoreService()
                               //     .newAddress(newAdd, widget.userDoc);

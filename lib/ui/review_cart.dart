@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_flutter_app/blocs/addressBloc.dart';
+import 'package:my_flutter_app/blocs/userBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/paytmPay.dart';
+import 'package:my_flutter_app/functionalities/sql_service.dart';
+import 'package:my_flutter_app/models/addressModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 
 class ReviewCart extends StatefulWidget {
   final BuildContext navContext;
@@ -18,6 +23,15 @@ class _ReviewCartState extends State<ReviewCart> {
   String totalAmount;
   String userId;
   String email;
+  UsersBloc userBloc;
+  AddressBloc addressBloc;
+
+  @override
+  void dispose() {
+    userBloc.dispose();
+    addressBloc.dispose();
+    super.dispose();
+  }
 
   Future<void> detailsIncomplete(context) {
     return showDialog(
@@ -45,7 +59,7 @@ class _ReviewCartState extends State<ReviewCart> {
     return showDialog(
         context: context,
         builder: (dContext) {
-          String newAdd = '';
+          String newPhone = '';
           return AlertDialog(
               content: Form(
                 key: _fKey,
@@ -67,7 +81,7 @@ class _ReviewCartState extends State<ReviewCart> {
                     ),
                   ),
                   onChanged: (value) {
-                    newAdd = value;
+                    newPhone = value;
                   },
                 ),
               ),
@@ -87,9 +101,10 @@ class _ReviewCartState extends State<ReviewCart> {
                     child: Text('Save'),
                     onPressed: () async {
                       if (_fKey.currentState.validate()) {
-                        print(newAdd);
-                        if (newAdd != '') {
-                          await FirestoreService().addMobile(newAdd);
+                        print(newPhone);
+                        if (newPhone != '') {
+                          await userBloc.updatePhone(newPhone);
+                          //await FirestoreService().addMobile(newAdd);
                           Navigator.of(dContext).pop();
                         }
                       }
@@ -106,7 +121,7 @@ class _ReviewCartState extends State<ReviewCart> {
         backgroundColor: Colors.deepPurple[800],
       ),
       body: FutureBuilder(
-        future: FirestoreService().reviewCart(),
+        future: DBProvider.db.reviewCart(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data == 'empty') {
@@ -114,6 +129,8 @@ class _ReviewCartState extends State<ReviewCart> {
             }
             totalAmount = (snapshot.data['total']).roundToDouble().toString();
             userId = snapshot.data['userId'];
+            userBloc = UsersBloc(userId: userId);
+            addressBloc = AddressBloc(userId: userId);
             return ListView(
               children: [
                 SizedBox(height: 10),
@@ -309,8 +326,7 @@ class _ReviewCartState extends State<ReviewCart> {
                         ],
                       ),
                       StreamBuilder(
-                        stream:
-                            FirestoreService().getUser(snapshot.data['userId']),
+                        stream: userBloc.user,
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return Center(
@@ -320,10 +336,11 @@ class _ReviewCartState extends State<ReviewCart> {
                             );
                           //DocumentSnapshot document =
                           //DocumentSnapshot userDoc = snapshot.data;
-                          email = snapshot.data['email'];
+                          User user = snapshot.data;
+                          email = user.email;
                           return Column(
                             children: <Widget>[
-                              snapshot.data['mobileNo'] == ''
+                              user.mobileNo == ''
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: InkWell(
@@ -369,8 +386,7 @@ class _ReviewCartState extends State<ReviewCart> {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child:
-                                              Text(snapshot.data['mobileNo']),
+                                          child: Text(user.mobileNo),
                                         ),
                                         IconButton(
                                           onPressed: () {
@@ -395,139 +411,161 @@ class _ReviewCartState extends State<ReviewCart> {
                                   ),
                                 ],
                               ),
-                              Container(
-                                height: (snapshot.data['address'].length != 0)
-                                    ? 200
-                                    : 0,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: snapshot.data['address'].length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 5, left: 5),
-                                      child: InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            selectedAdd = index;
-                                          });
-                                        },
-                                        child: Stack(
-                                          alignment: Alignment.topRight,
-                                          children: [
-                                            Card(
-                                              clipBehavior: Clip.hardEdge,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
-                                              ),
-                                              child: Container(
-                                                color: index == selectedAdd
-                                                    ? Colors.deepPurple[100]
-                                                    : Colors.white,
-                                                width: 150,
-                                                padding:
-                                                    const EdgeInsets.all(10.0),
-                                                child: Center(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        snapshot.data['address']
-                                                            [index]['name'],
-                                                        // 'Name',
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Text(
-                                                        snapshot.data['address']
-                                                            [index]['line1'],
-                                                        //'Address Line xxxxxxxx 1',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 3),
-                                                      Text(
-                                                        snapshot.data['address']
-                                                            [index]['line2'],
-                                                        //'AddressLine2',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 4),
-                                                      Text(
-                                                        snapshot.data['address']
-                                                            [index]['city'],
-                                                        //'City',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 3),
-                                                      Text(
-                                                        snapshot.data['address']
-                                                            [index]['state'],
-                                                        //'State',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 3),
-                                                      Text(
-                                                        snapshot.data['address']
-                                                            [index]['pincode'],
-                                                        //'Pincode',
-                                                        style: TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 4),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Icon(Icons.call,
-                                                              size: 10),
-                                                          SizedBox(width: 10),
-                                                          Text(
-                                                            snapshot.data[
-                                                                    'address'][
-                                                                index]['phone'],
-                                                            style: TextStyle(
-                                                              fontSize: 10,
+                              StreamBuilder(
+                                  stream: addressBloc.addresses,
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      addressBloc.reset();
+                                      return Center(
+                                        child: SpinKitChasingDots(
+                                          color: Colors.purple,
+                                        ),
+                                      );
+                                    }
+                                    List<Address> addresses = snapshot.data;
+                                    return Container(
+                                      height: (addresses.length != 0) ? 200 : 0,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: addresses.length,
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 5, left: 5),
+                                            child: InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedAdd = index;
+                                                });
+                                              },
+                                              child: Stack(
+                                                alignment: Alignment.topRight,
+                                                children: [
+                                                  Card(
+                                                    clipBehavior: Clip.hardEdge,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15.0),
+                                                    ),
+                                                    child: Container(
+                                                      color: index ==
+                                                              selectedAdd
+                                                          ? Colors
+                                                              .deepPurple[100]
+                                                          : Colors.white,
+                                                      width: 150,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10.0),
+                                                      child: Center(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              addresses[index]
+                                                                  .name,
+                                                              // 'Name',
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
+                                                            SizedBox(
+                                                                height: 10),
+                                                            Text(
+                                                              addresses[index]
+                                                                  .line1,
+                                                              //'Address Line xxxxxxxx 1',
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 3),
+                                                            Text(
+                                                              addresses[index]
+                                                                  .line2,
+                                                              //'AddressLine2',
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 4),
+                                                            Text(
+                                                              addresses[index]
+                                                                  .city,
+                                                              //'City',
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 3),
+                                                            Text(
+                                                              addresses[index]
+                                                                  .state,
+                                                              //'State',
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 3),
+                                                            Text(
+                                                              addresses[index]
+                                                                  .state,
+                                                              //'Pincode',
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 4),
+                                                            Row(
+                                                              children: <
+                                                                  Widget>[
+                                                                Icon(Icons.call,
+                                                                    size: 10),
+                                                                SizedBox(
+                                                                    width: 10),
+                                                                Text(
+                                                                  addresses[
+                                                                          index]
+                                                                      .phone,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        10,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
-                                                ),
+                                                  index == selectedAdd
+                                                      ? CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                          child: Icon(
+                                                            Icons.done,
+                                                            color: Colors.green,
+                                                          ),
+                                                          radius: 15,
+                                                        )
+                                                      : Container(),
+                                                ],
                                               ),
                                             ),
-                                            index == selectedAdd
-                                                ? CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    child: Icon(
-                                                      Icons.done,
-                                                      color: Colors.green,
-                                                    ),
-                                                    radius: 15,
-                                                  )
-                                                : Container(),
-                                          ],
-                                        ),
+                                          );
+                                        },
                                       ),
                                     );
-                                  },
-                                ),
-                              ),
+                                  }),
                             ],
                           );
                         },
@@ -543,7 +581,9 @@ class _ReviewCartState extends State<ReviewCart> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15)),
                                 context: context,
-                                builder: (context) => AddSheet());
+                                builder: (context) => AddSheet(
+                                      userId: userId, addressBloc: addressBloc,
+                                    ));
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -756,6 +796,9 @@ class _ReviewCartState extends State<ReviewCart> {
 }
 
 class AddSheet extends StatefulWidget {
+  final String userId;
+  final AddressBloc addressBloc;
+  AddSheet({this.userId,this.addressBloc});
   @override
   _AddSheetState createState() => _AddSheetState();
 }
@@ -765,13 +808,13 @@ class _AddSheetState extends State<AddSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Map newAdd = new Map();
+    Map<String, dynamic> newAdd = new Map<String, dynamic>();
     newAdd['name'] = '';
     newAdd['line1'] = '';
     newAdd['line2'] = '';
     newAdd['city'] = '';
     newAdd['state'] = '';
-    newAdd['pincode'] = '';
+    //newAdd['pincode'] = '';
     newAdd['phone'] = '';
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
@@ -900,16 +943,10 @@ class _AddSheetState extends State<AddSheet> {
               ),
               SizedBox(height: 20),
               TextFormField(
-                initialValue: newAdd['pincode'],
+                initialValue:'',
                 validator: (value) {
                   if (value.isEmpty || value.length != 6) {
                     return 'Please Enter valid Pincode';
-                  }
-                  if (value != '431604' &&
-                      value != '431601' &&
-                      value != '431602' &&
-                      value != '431603') {
-                    return 'zomatoClone coming soon to your location';
                   }
                 },
                 keyboardType: TextInputType.number,
@@ -924,7 +961,7 @@ class _AddSheetState extends State<AddSheet> {
                   ),
                 ),
                 onSaved: (value) {
-                  newAdd['pincode'] = value;
+                  //newAdd['pincode'] = value;
                 },
               ),
               SizedBox(height: 20),
@@ -980,7 +1017,9 @@ class _AddSheetState extends State<AddSheet> {
                           setState(
                             () {
                               _formKey.currentState.save();
-                              FirestoreService().addAddress(newAdd);
+                              newAdd['userId'] = widget.userId;
+                              //FirestoreService().addAddress(newAdd);
+                              widget.addressBloc.insertAddress(newAdd);
                             },
                           );
 

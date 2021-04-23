@@ -15,11 +15,12 @@ class CartBloc {
   get cartItems => _cartController.stream;
 
   getCartItems(String userId) async {
-    _cartController.sink.add(await DBProvider.db.getCartItems(userId));
+    List<CartItem> temp = await DBProvider.db.getCartItems(userId);
+    _cartController.sink.add(temp);
   }
 
-  Future<void> updateCart(String userId,int productId,int quantity) async {
-    await DBProvider.db.updateCart(userId,productId,quantity);
+  Future<void> updateCart(String userId, int productId, int quantity) async {
+    await DBProvider.db.updateCart(userId, productId, quantity);
     await getCartItems(userId);
   }
 

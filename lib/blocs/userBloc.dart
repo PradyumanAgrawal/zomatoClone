@@ -18,6 +18,11 @@ class UsersBloc {
     _userController.sink.add(user);
   }
 
+  Future<void> updatePhone(String phoneNo) async {
+    await DBProvider.db.updateUserPhone(userId, phoneNo);
+    await getUser(userId);
+  }
+
   // Future<void> blockUnblock(User user) async {
   //   await DBProvider.db.blockOrUnblock(user);
   //   await getUsers();

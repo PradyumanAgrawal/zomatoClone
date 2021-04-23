@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/populateDatabase.dart';
 import 'package:my_flutter_app/models/addressModel.dart';
 import 'package:my_flutter_app/models/cartItem.dart';
@@ -50,7 +51,12 @@ class DBProvider {
     User user = User.fromMap(jsonData[0]);
     return user;
   }
-
+  Future<void> updateUserPhone(String userId, String phoneNo) async {
+    Response response = await put('http://10.0.2.2:3000/user/'+ userId,body:{"phone":phoneNo});
+    String body = response.body;
+    final jsonData = json.decode(body);
+    //assert(jsonData is List);
+  }
   // Get all address of one user
   Future<List<Address>> getAddress(String userId) async {
     Response response =
@@ -228,6 +234,57 @@ class DBProvider {
     return jsonData['status'];
   }
 
+  Future<dynamic> reviewCart() async {
+    double total = 0;
+    int quant = 0;
+    List<Map> products = [];
+    String uid = await LocalData().getUid();
+    List<CartItem> cartItems = await getCartItems(uid);
+    //var user = await db.collection('users').document(uid).get();
+    //var cart = user.data['cart'].keys.toList();
+    //print(cart);
+    if (cartItems.length == 0) {
+      return 'empty';
+    }
+    //var quantity = user.data['cart'].values.toList();
+    //print(quantity[0]);
+    // var q = await db
+    //     .collection('products')
+    //     .where('productId', whereIn: cart)
+    //     .getDocuments();
+    //var prodList = q.documents.toList();
+    for (int i = 0; i < cartItems.length; i++) {
+      Map temp = new Map();
+      temp['name'] = cartItems[i].product.pName; // prodList[i]['name'];
+      temp['price'] = cartItems[i].product.price; //prodList[i]['price'];
+      temp['quantity'] = cartItems[i]
+          .quantity; //user.data['cart'][prodList[i].documentID]['quantity'];
+      temp['image'] = cartItems[i].product.image; //prodList[i]['catalogue'][0];
+      temp['discount'] = cartItems[i].product.discount == null
+          ? '0'
+          : cartItems[i].product.discount.toString();
+      products.add(temp);
+      //print(int.parse(prodList[i].data['price']));
+      total += cartItems[i].product.price *
+          (1 -
+              (cartItems[i].product.discount == null
+                      ? 0
+                      : cartItems[i].product.discount) /
+                  100) *
+          cartItems[i].quantity;
+      //print(quantity[i]);
+      quant += cartItems[i].quantity;
+    }
+    var a = {
+      'total': total,
+      'itemCount': quant,
+      'products': products,
+      'userId': uid,
+    };
+    return a;
+  }
+
+  
   //Get all products for a particular category
 
   //product search query
