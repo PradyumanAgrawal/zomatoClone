@@ -240,19 +240,9 @@ class DBProvider {
     List<Map> products = [];
     String uid = await LocalData().getUid();
     List<CartItem> cartItems = await getCartItems(uid);
-    //var user = await db.collection('users').document(uid).get();
-    //var cart = user.data['cart'].keys.toList();
-    //print(cart);
     if (cartItems.length == 0) {
       return 'empty';
     }
-    //var quantity = user.data['cart'].values.toList();
-    //print(quantity[0]);
-    // var q = await db
-    //     .collection('products')
-    //     .where('productId', whereIn: cart)
-    //     .getDocuments();
-    //var prodList = q.documents.toList();
     for (int i = 0; i < cartItems.length; i++) {
       Map temp = new Map();
       temp['name'] = cartItems[i].product.pName; // prodList[i]['name'];
@@ -264,7 +254,6 @@ class DBProvider {
           ? '0'
           : cartItems[i].product.discount.toString();
       products.add(temp);
-      //print(int.parse(prodList[i].data['price']));
       total += cartItems[i].product.price *
           (1 -
               (cartItems[i].product.discount == null
@@ -283,7 +272,13 @@ class DBProvider {
     };
     return a;
   }
-
+  Future<int> placeOrder(String addrId) async {
+    Response response = await post('http://10.0.2.2:3000/orders/'+addrId);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is Map);
+    return jsonData['status'];
+  }
   
   //Get all products for a particular category
 

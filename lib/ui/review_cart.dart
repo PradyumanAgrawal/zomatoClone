@@ -24,6 +24,7 @@ class _ReviewCartState extends State<ReviewCart> {
   String userId;
   String email;
   UsersBloc userBloc;
+  List<Address> addresses;
   AddressBloc addressBloc;
 
   @override
@@ -422,7 +423,7 @@ class _ReviewCartState extends State<ReviewCart> {
                                         ),
                                       );
                                     }
-                                    List<Address> addresses = snapshot.data;
+                                    addresses = snapshot.data;
                                     return Container(
                                       height: (addresses.length != 0) ? 200 : 0,
                                       child: ListView.builder(
@@ -582,7 +583,8 @@ class _ReviewCartState extends State<ReviewCart> {
                                     borderRadius: BorderRadius.circular(15)),
                                 context: context,
                                 builder: (context) => AddSheet(
-                                      userId: userId, addressBloc: addressBloc,
+                                      userId: userId,
+                                      addressBloc: addressBloc,
                                     ));
                           },
                           child: Container(
@@ -710,20 +712,9 @@ class _ReviewCartState extends State<ReviewCart> {
                             return detailsIncomplete(context);
                           } else {
                             if (selectedRadioPayment == 0) {
-                              // Map details = {
-                              //     'amount': (double.parse(totalAmount)*1.0236).round().toString(),
-                              //     'userId': userId,
-                              //     'email': email,
-                              //     'paymentMethod': "COD",
-                              //   };
-                              // Navigator.of(context).pushNamed('/successScreen', arguments: details);
-                              FirestoreService()
-                                  .placeOrder(
-                                      snapshot.data['address'][selectedAdd],
-                                      snapshot.data['mobileNo'],
-                                      'COD',
-                                      '')
-                                  .then((value) {
+                              int status = await DBProvider.db.placeOrder(
+                                  addresses[selectedAdd].addrId.toString());
+                              if (status == 1) {
                                 Fluttertoast.showToast(
                                   toastLength: Toast.LENGTH_LONG,
                                   msg:
@@ -740,27 +731,13 @@ class _ReviewCartState extends State<ReviewCart> {
                                 Navigator.of(context).pushNamed(
                                     '/successScreen',
                                     arguments: details);
-                              }).catchError((error) {
-                                print(error);
+                              } else {
                                 Fluttertoast.showToast(
                                   msg: "Something went wrong!!!",
                                 );
                                 Navigator.of(widget.navContext).pop();
                                 Navigator.of(context).pop();
-                              });
-                            } else if (selectedRadioPayment == 1) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PaymentScreen(
-                                        amount:
-                                            (double.parse(totalAmount) * 1.0236)
-                                                .round()
-                                                .toString(),
-                                        selectedAddress: snapshot
-                                            .data['address'][selectedAdd],
-                                        mobileNo: snapshot.data['mobileNo'],
-                                        userID: userId,
-                                        email: snapshot.data['email'],
-                                      )));
+                              }
                             }
                           }
                         },
@@ -798,7 +775,7 @@ class _ReviewCartState extends State<ReviewCart> {
 class AddSheet extends StatefulWidget {
   final String userId;
   final AddressBloc addressBloc;
-  AddSheet({this.userId,this.addressBloc});
+  AddSheet({this.userId, this.addressBloc});
   @override
   _AddSheetState createState() => _AddSheetState();
 }
@@ -943,7 +920,7 @@ class _AddSheetState extends State<AddSheet> {
               ),
               SizedBox(height: 20),
               TextFormField(
-                initialValue:'',
+                initialValue: '',
                 validator: (value) {
                   if (value.isEmpty || value.length != 6) {
                     return 'Please Enter valid Pincode';
