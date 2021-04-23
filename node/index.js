@@ -175,7 +175,7 @@ app.get('/categories', (req, res) => {
 //Get all orders for one specific addrId
 app.get('/orders/:userId', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM orders natural join Address where userId=?`,[req.params.userId], function(err, result, fields) {
+        con.query(`SELECT * FROM orders natural join Address natural join products where userId=?`,[req.params.userId], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
