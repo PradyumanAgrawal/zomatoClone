@@ -51,7 +51,7 @@ app.post('/user', (req, res) => {
 //update user profile
 app.put('/user/:userId', (req, res) => {
     con.connect(function(err) {
-        con.query(`UPDATE user SET phone=? WHERE userId=?;`,[req.body.phone,req.params.userId], function(err, result, fields) {
+        con.query(`UPDATE user SET mobileNo=? WHERE userId=?;`,[req.body.phone,req.params.userId], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -60,7 +60,6 @@ app.put('/user/:userId', (req, res) => {
 
 //get details for one user
 app.get('/user/:userId', (req, res) => {
-    console.log(req.params.id)
     con.query(`SELECT * FROM user where userId=?`,[req.params.userId],function(err, result, fields) {
         if (err) res.send(err);
         if (result) res.send(result);
@@ -89,7 +88,6 @@ app.get('/user/address/:userId', (req, res) => {
 //delete one specific addrId's address entry
 app.delete('/address/:addrId', (req, res) => {
     con.connect(function(err) {
-        console.log(req.params.id)
         con.query(`DELETE FROM Address where addrId=?`,[req.params.addrId], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
@@ -99,7 +97,6 @@ app.delete('/address/:addrId', (req, res) => {
 
 app.post('/address', (req, res) => {
     con.connect(function(err) {
-        console.log(req.body);
         let body=req.body;
         con.query(`INSERT IGNORE INTO Address(userId,city,line1,line2,name,phone,state) values (?,?,?,?,?,?,?)`,[body.userId,body.city,body.line1,body.line2,body.name,body.phone,body.state], function(err, result) {
             if (err) res.send(err);
