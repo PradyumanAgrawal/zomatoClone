@@ -217,8 +217,15 @@ class DBProvider {
   }
 
   Future<int> updateCart(String userId, int productId, int quantity) async {
-    Response response = await post('http://10.0.2.2:3000/cart',
-        body: {'userId': userId, 'productId': productId, 'quantity': quantity});
+    Response response = await post('http://10.0.2.2:3000/cart', body: {
+      'userId': userId,
+      'productId': productId.toString(),
+      'quantity': quantity.toString()
+    });
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is Map);
+    return jsonData['status'];
   }
 
   //Get all products for a particular category
