@@ -112,3 +112,22 @@ FOREIGN KEY (productID) REFERENCES products(productId)
 );
 
 INSERT INTO tags VALUES('201','abcdef');
+
+
+DELIMITER $$ 
+create PROCEDURE modifyCart(in uId varchar(30),in pId int,in quantity int,out status int)
+BEGIN
+	declare
+	prevqty int;
+    status=2;
+    insert ignore into cart values (userId,productId,quantity);
+    select quantity into prevqty from cart where userId = uId and productId=pId;
+    if(quantity=0) Then
+		delete from cart where userId = uId and productId=pId;
+        status=1
+    elseif(quantity!=prevqty)
+	  Update cart set quantity=quantity where  userId = uId and productId=pId;
+      status=1
+    end if;
+END $$
+DELIMITER ;
