@@ -207,14 +207,18 @@ class DBProvider {
   }
 
   Future<List<CartItem>> getCartItems(String userId) async {
-    Response response =
-        await get('http://10.0.2.2:3000/products?sort=discount&order=desc');
+    Response response = await get('http://10.0.2.2:3000/cart/' + userId);
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is List);
     List<CartItem> cartItems = [];
     jsonData.forEach((prod) => {cartItems.add(CartItem.fromMap(prod))});
     return cartItems;
+  }
+
+  Future<int> updateCart(String userId, int productId, int quantity) async {
+    Response response = await post('http://10.0.2.2:3000/cart',
+        body: {'userId': userId, 'productId': productId, 'quantity': quantity});
   }
 
   //Get all products for a particular category

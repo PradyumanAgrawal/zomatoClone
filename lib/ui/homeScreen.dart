@@ -237,16 +237,18 @@ class HomeScreenState extends State<HomeScreen> {
                     )
                   : Padding(
                       padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                      child: InkWell(
-                        child: Icon(
-                          Icons.shopping_cart,
-                          color: Colors.white,
-                        ),
-                        onTap: () {
-                          Navigator.of(widget.navContext)
-                              .pushNamed('/cart', arguments: context);
-                        },
-                      )),
+                      child:  InkWell(
+                            child: Icon(
+                              Icons.shopping_cart,
+                              color: Colors.white,
+                            ),
+                            onTap: () {
+                              Navigator.of(widget.navContext)
+                                  .pushNamed('/cart', arguments: context);
+                            },
+                          )
+                      
+                    ),
             ],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(

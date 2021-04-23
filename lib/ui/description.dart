@@ -11,6 +11,7 @@ import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Description extends StatefulWidget {
@@ -24,6 +25,8 @@ class Description extends StatefulWidget {
 class _DescriptionState extends State<Description> {
   bool a = false;
   Product document;
+  User userProvider;
+  String userId;
   int photoIndex = 0;
   List<String> photos = [];
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -45,6 +48,7 @@ class _DescriptionState extends State<Description> {
     //     });
     //   }
     // }
+    //userProvider = Provider.of<User>(context);
     return Scaffold(
       key: _scaffoldKey,
       body: ListView(
@@ -135,48 +139,49 @@ class _DescriptionState extends State<Description> {
                                       child: SpinKitChasingDots(
                                     color: Colors.purple,
                                   ));
-                                String userId = snapshot.data;
-                                return FutureBuilder(
-                                  future: DBProvider.db.getUser(userId),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData)
-                                      return Center(
-                                          child: SpinKitChasingDots(
-                                        color: Colors.purple,
-                                      ));
-                                    User userDoc = snapshot.data;
-                                    // bool inWishlist = userDoc['wishlist']
-                                    //     .contains(document.productId);
-                                    return Container();
-                                    //  Material(
-                                    //   elevation: inWishlist ? 2 : 0,
-                                    //   borderRadius: BorderRadius.circular(20.0),
-                                    //   child: Container(
-                                    //     height: 40.0,
-                                    //     width: 40.0,
-                                    //     decoration: BoxDecoration(
-                                    //       borderRadius:
-                                    //           BorderRadius.circular(20.0),
-                                    //       color: inWishlist
-                                    //           ? Colors.white
-                                    //           : Colors.grey.withOpacity(0.2),
-                                    //     ),
-                                    //     child: IconButton(
-                                    //       icon: inWishlist
-                                    //           ? Icon(
-                                    //               Icons.favorite,
-                                    //               color: Colors.red,
-                                    //             )
-                                    //           : Icon(Icons.favorite_border),
-                                    //       onPressed: () {
-                                    //         FirestoreService().addToWishlist(
-                                    //             document.productId);
-                                    //       },
-                                    //     ),
-                                    //   ),
-                                    // );
-                                  },
-                                );
+                                userId = snapshot.data;
+                                return Container();
+                                // return FutureBuilder(
+                                //   future: DBProvider.db.getUser(userId),
+                                //   builder: (context, snapshot) {
+                                //     if (!snapshot.hasData)
+                                //       return Center(
+                                //           child: SpinKitChasingDots(
+                                //         color: Colors.purple,
+                                //       ));
+                                //     userProvider = snapshot.data;
+                                //     // bool inWishlist = userDoc['wishlist']
+                                //     //     .contains(document.productId);
+                                //     return Container();
+                                //     //  Material(
+                                //     //   elevation: inWishlist ? 2 : 0,
+                                //     //   borderRadius: BorderRadius.circular(20.0),
+                                //     //   child: Container(
+                                //     //     height: 40.0,
+                                //     //     width: 40.0,
+                                //     //     decoration: BoxDecoration(
+                                //     //       borderRadius:
+                                //     //           BorderRadius.circular(20.0),
+                                //     //       color: inWishlist
+                                //     //           ? Colors.white
+                                //     //           : Colors.grey.withOpacity(0.2),
+                                //     //     ),
+                                //     //     child: IconButton(
+                                //     //       icon: inWishlist
+                                //     //           ? Icon(
+                                //     //               Icons.favorite,
+                                //     //               color: Colors.red,
+                                //     //             )
+                                //     //           : Icon(Icons.favorite_border),
+                                //     //       onPressed: () {
+                                //     //         FirestoreService().addToWishlist(
+                                //     //             document.productId);
+                                //     //       },
+                                //     //     ),
+                                //     //   ),
+                                //     // );
+                                //   },
+                                // );
                               },
                             ),
                           ),
@@ -536,119 +541,98 @@ class _DescriptionState extends State<Description> {
           width: MediaQuery.of(context).size.width,
           color: Colors.white,
           child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            //SizedBox(width: 10.0),
-            IconButton(
-              tooltip: 'Open the shop in Maps',
-              icon: Icon(Icons.near_me, color: Colors.deepPurple[700]),
-              onPressed: () async {
-                double latitude = shopLocation.latitude;
-                double longitude = shopLocation.longitude;
-                String googleUrl =
-                    'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-                if (await canLaunch(googleUrl)) {
-                  await launch(googleUrl);
-                } else {
-                  throw 'Could not open the map.';
-                }
-              },
-            ),
-            IconButton(
-              tooltip: 'Call the shop',
-              icon: Icon(Icons.call, color: Colors.deepPurple[700]),
-              onPressed: () async {
-                if (shopContact != null) {
-                  String url = 'tel:$shopContact';
-                  if (await canLaunch(url)) {
-                    await launch(url);
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            SizedBox(width: 0.0),
+            Flexible(
+              flex: 25,
+              child: IconButton(
+                tooltip: 'Open the shop in Maps',
+                icon: Icon(Icons.near_me, color: Colors.deepPurple[700]),
+                onPressed: () async {
+                  double latitude = shopLocation.latitude;
+                  double longitude = shopLocation.longitude;
+                  String googleUrl =
+                      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                  if (await canLaunch(googleUrl)) {
+                    await launch(googleUrl);
                   } else {
-                    throw 'Could not launch $url';
+                    throw 'Could not open the map.';
                   }
-                }
-              },
+                },
+              ),
             ),
-            // Flexible(
-            //   flex: 60,
-            //   child: Container(
-            //     decoration: BoxDecoration(
-            //         color: (document['sizes'].toList().length == 0
-            //                 ? document['inStock']
-            //                 : a)
-            //             ? Colors.deepPurple[700]
-            //             : Colors.grey,
-            //         borderRadius: BorderRadius.only(
-            //             topLeft: Radius.circular(10),
-            //             bottomLeft: Radius.circular(10))),
-            //     child: Visibility(
-            //       replacement: Center(
-            //         child: Text('Out of Stock!!',
-            //             style: TextStyle(
-            //                 fontWeight: FontWeight.bold, color: Colors.white)),
-            //       ),
-            //       visible: document['sizes'].toList().length == 0
-            //           ? document['inStock']
-            //           : a,
-            //       child: Center(
-            //         child: FlatButton(
-            //           onPressed: () async {
-            //             print('pressed');
-            //             int status;
-            //             if (document['sizes'].length != 0 &&
-            //                 selectedVariant != null) {
-            //               status = await FirestoreService().addToCart(
-            //                   document.documentID,
-            //                   1,
-            //                   document['sizes'][selectedVariant],
-            //                   false,
-            //                   document);
-            //             } else if (document['sizes'].length == 0) {
-            //               status = await FirestoreService().addToCart(
-            //                   document.documentID, 1, '', false, document);
-            //             } else {
-            //               final snackbar = SnackBar(
-            //                   content: Text('Please select a variant'));
-            //               _scaffoldKey.currentState.showSnackBar(snackbar);
-            //             }
+            Flexible(
+              flex: 25,
+              child: IconButton(
+                tooltip: 'Call the shop',
+                icon: Icon(Icons.call, color: Colors.deepPurple[700]),
+                onPressed: () async {
+                  if (shopContact != null) {
+                    String url = 'tel:$shopContact';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  }
+                },
+              ),
+            ),
+            Flexible(
+              flex: 50,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.deepPurple[700],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                    )),
+                child: Center(
+                  child: FlatButton(
+                    onPressed: () async {
+                      print('pressed');
+                      int status;
+                      status = await DBProvider.db
+                          .updateCart(userId, document.productId, 1);
 
-            //             if (status == 2) {
-            //               final snackbar = SnackBar(
-            //                   content: Text('Product added to the cart!'));
-            //               _scaffoldKey.currentState.showSnackBar(snackbar);
-            //             } else if (status == 1) {
-            //               final snackbar = SnackBar(
-            //                   content:
-            //                       Text('This product is already in the cart'));
-            //               _scaffoldKey.currentState.showSnackBar(snackbar);
-            //             } else if (status == 0) {
-            //               final snackbar = SnackBar(
-            //                   content: Text('Something went wrong!!!'));
-            //               _scaffoldKey.currentState.showSnackBar(snackbar);
-            //             }
-            //           },
-            //           child: Row(
-            //             mainAxisAlignment: MainAxisAlignment.center,
-            //             children: <Widget>[
-            //               Icon(
-            //                 Icons.add_shopping_cart,
-            //                 color: Colors.white,
-            //               ),
-            //               SizedBox(
-            //                 width: 10,
-            //               ),
-            //               Text(
-            //                 'Add to Cart',
-            //                 style: TextStyle(
-            //                     fontSize: 15.0,
-            //                     color: Colors.white,
-            //                     fontWeight: FontWeight.bold),
-            //               ),
-            //             ],
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+                      if (status == 2) {
+                        final snackbar = SnackBar(
+                            content: Text('Product added to the cart!'));
+                        _scaffoldKey.currentState.showSnackBar(snackbar);
+                      } else if (status == 1) {
+                        final snackbar = SnackBar(
+                            content:
+                                Text('This product is already in the cart'));
+                        _scaffoldKey.currentState.showSnackBar(snackbar);
+                      } else if (status == 0) {
+                        final snackbar =
+                            SnackBar(content: Text('Something went wrong!!!'));
+                        _scaffoldKey.currentState.showSnackBar(snackbar);
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.add_shopping_cart,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Add to Cart',
+                          style: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ]),
         ),
       ),

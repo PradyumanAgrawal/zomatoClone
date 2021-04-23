@@ -18,8 +18,8 @@ class CartBloc {
     _cartController.sink.add(await DBProvider.db.getCartItems(userId));
   }
 
-  Future<void> deleteAddress(int addrId) async {
-    await DBProvider.db.deleteAddress(addrId);
+  Future<void> updateCart(String userId,int productId,int quantity) async {
+    await DBProvider.db.updateCart(userId,productId,quantity);
     await getCartItems(userId);
   }
 
