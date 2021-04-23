@@ -5,11 +5,9 @@ import 'package:my_flutter_app/functionalities/populateDatabase.dart';
 import 'package:my_flutter_app/models/addressModel.dart';
 import 'package:my_flutter_app/models/cartItem.dart';
 import 'package:my_flutter_app/models/orderItem.dart';
-import 'package:my_flutter_app/models/orderModel.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
-import 'package:my_flutter_app/ui/oldCart.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -132,11 +130,8 @@ class DBProvider {
     final jsonData = json.decode(body);
     assert(jsonData is List);
     List<OrderItem> orderItems = [];
-    jsonData.forEach((item) => {
-          orderItems.add(
-            item,
-          )
-        });
+    jsonData.forEach((item) => {orderItems.add(OrderItem.fromMap(item))});
+    return orderItems;
   }
 
   //Get all products
@@ -254,11 +249,11 @@ class DBProvider {
     }
     for (int i = 0; i < cartItems.length; i++) {
       Map temp = new Map();
-      temp['name'] = cartItems[i].product.pName; // prodList[i]['name'];
-      temp['price'] = cartItems[i].product.price; //prodList[i]['price'];
+      temp['name'] = cartItems[i].product.pName; 
+      temp['price'] = cartItems[i].product.price; 
       temp['quantity'] = cartItems[i]
-          .quantity; //user.data['cart'][prodList[i].documentID]['quantity'];
-      temp['image'] = cartItems[i].product.image; //prodList[i]['catalogue'][0];
+          .quantity; 
+      temp['image'] = cartItems[i].product.image;
       temp['discount'] = cartItems[i].product.discount == null
           ? '0'
           : cartItems[i].product.discount.toString();
@@ -289,15 +284,4 @@ class DBProvider {
     assert(jsonData is Map);
     return jsonData['status'];
   }
-
-  //Get all products for a particular category
-
-  //product search query
-
-  //shop search query
-
-  //Insert into orders with Userid
-
-  //Add products: productId and userId
-  //remove products
 }

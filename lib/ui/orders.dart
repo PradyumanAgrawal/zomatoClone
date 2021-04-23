@@ -1,14 +1,10 @@
-import 'package:badges/badges.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/orderItem.dart';
-import 'package:my_flutter_app/models/orderModel.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
-import '../functionalities/firestore_service.dart';
 import 'drawerWidget.dart';
 
 class Orders extends StatefulWidget {
@@ -110,6 +106,7 @@ class _OrdersState extends State<Orders> {
                             itemCount: orderList.length,
                             itemBuilder: (context, index) {
                               if (orderList[index] == null) return Container();
+                              Product product = orderList[index].product;
                               return Card(
                                 child: Column(
                                   children: [
@@ -132,36 +129,25 @@ class _OrdersState extends State<Orders> {
                                     ),
                                     Row(
                                       children: <Widget>[
-                                        FutureBuilder(
-                                            future: DBProvider.db.getSingleProd(
-                                                orderList[index].product.productId.toString()),
-                                            builder: (context, snapshot) {
-                                              if (!snapshot.hasData)
-                                                return Center(
-                                                    child: SpinKitChasingDots(
-                                                  color: Colors.purple,
-                                                ));
-                                              Product product = snapshot.data;
-                                              return Container(
-                                                padding: EdgeInsets.all(8),
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    3,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    3,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                        product.image,
-                                                      ),
-                                                      fit: BoxFit.contain),
+                                        Container(
+                                          padding: EdgeInsets.all(8),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                image: NetworkImage(
+                                                  product.image,
                                                 ),
-                                              );
-                                            }),
+                                                fit: BoxFit.contain),
+                                          ),
+                                        ),
                                         SizedBox(
                                           width: 20,
                                         ),
@@ -172,33 +158,18 @@ class _OrdersState extends State<Orders> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: <Widget>[
-                                              FutureBuilder(
-                                                  future: DBProvider.db
-                                                      .getSingleProd(
-                                                          orderList[index].product
-                                                              .productId.toString()),
-                                                  builder: (context, snapshot) {
-                                                    if (!snapshot.hasData)
-                                                      return Center(
-                                                        child:
-                                                            SpinKitChasingDots(
-                                                          color: Colors.purple,
-                                                        ),
-                                                      );
-                                                    Product product =
-                                                        snapshot.data;
-                                                    return Text(
-                                                      product.pName,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    );
-                                                  }),
+                                              Text(
+                                                product.pName,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                               SizedBox(height: 20),
                                               Text(
                                                 'Quantity : ' +
-                                                    orderList[index].quantity.toString(),
+                                                    orderList[index]
+                                                        .quantity
+                                                        .toString(),
                                                 style: TextStyle(
                                                   color: Colors.grey,
                                                 ),
@@ -246,10 +217,11 @@ class _OrdersState extends State<Orders> {
                                                   style: TextStyle(
                                                       color: Colors.grey)),
                                               Text(
-                                                (orderList[index].bill !=
-                                                        null)
+                                                (orderList[index].bill != null)
                                                     ? ' \u{20B9} ' +
-                                                        orderList[index].bill.toString()
+                                                        orderList[index]
+                                                            .bill
+                                                            .toString()
                                                     : '',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
