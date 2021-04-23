@@ -3,7 +3,7 @@ const logger = require("morgan");
 var dotenv = require('dotenv');
 const mysql = require('mysql');
 
-const userRouter = require('./routes/user.js');
+//const userRouter = require('./routes/user.js');
 
 // Set up the express app
 const app = express()
@@ -19,7 +19,7 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-app.use('/user',userRouter);
+//app.use('/user',userRouter);
 
 const con = mysql.createConnection({
     host:process.env.sql_endpoint,
@@ -58,6 +58,14 @@ app.put('/user/:userId', (req, res) => {
     });
 });
 
+//get details for one user
+app.get('/user/:userId', (req, res) => {
+    console.log(req.params.id)
+    con.query(`SELECT * FROM user where userId=?`,[req.params.userId],function(err, result, fields) {
+        if (err) res.send(err);
+        if (result) res.send(result);
+    });
+});
 
 
 //get all users details
