@@ -21,7 +21,8 @@ const con = mysql.createConnection({
     host:process.env.sql_endpoint,
     user: process.env.db_username,
     password: process.env.db_password,
-    database: 'amazon'
+    database: 'amazon',
+    multipleStatements: true
 });
 
 con.connect(function(err) {
@@ -38,7 +39,6 @@ app.get('/', (req, res) => {
 //register user
 app.post('/user', (req, res) => {
     con.connect(function(err) {
-        console.log(req.body);
         let body=req.body;
         con.query(`INSERT IGNORE INTO user(userId,name,email,displayPic) values ('${body.uid}','${body.displayName}','${body.email}','${body.photoUrl}')`, function(err, result) {
             if (err) res.send(err);
@@ -117,7 +117,6 @@ app.post('/address', (req, res) => {
 //get cart details for one user
 app.get('/cart/:userId', (req, res) => {
     con.connect(function(err) {
-        console.log(req.params.id)
         con.query(`SELECT * FROM cart natural join products where userId='${req.params.userId}'`, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
@@ -125,12 +124,17 @@ app.get('/cart/:userId', (req, res) => {
     });
 });
 
-app.post('/cart/:userId',(req,res)=>{
+app.post('/cart',(req,res)=>{
     con.connect(function(err) {
-        console.log(req.params.id)
-        con.query(`SELECT * FROM cart natural join products where userId='${req.params.userId}'`, function(err, result, fields) {
+        console.log(req.body);
+        let body=req.body;
+        con.query(`select exists(select quantity from cart where userId='${body.userId}' and productId=${body.productId}) as res;`
+        +`call modifyCart('${body.userId}',${body.productId},${body.quantity})`, function(err, result) {
+            console.log(result[0][0].res);
+            console.log(result[1]);
             if (err) res.send(err);
-            if (result) res.send(result);
+            if (result&&result[0][0].res) res.json({status:1});
+            else res.json({status:2})
         });
     });
 })
