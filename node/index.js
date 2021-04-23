@@ -3,7 +3,7 @@ const logger = require("morgan");
 var dotenv = require('dotenv');
 const mysql = require('mysql');
 
-//const userRouter = require('./routes/user.js');
+const userRouter = require('./routes/user.js');
 
 // Set up the express app
 const app = express()
