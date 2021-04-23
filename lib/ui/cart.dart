@@ -34,11 +34,11 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     userProvider = Provider.of<User>(widget.providerContext);
     cartBloc = CartBloc(userId: userProvider.userId);
-    if (Provider.of<List<DocumentSnapshot>>(widget.providerContext) != null) {
-      nearByShopsSnapshots = List.from(
-          Provider.of<List<DocumentSnapshot>>(widget.providerContext));
-      getShopRefList(nearByShopsSnapshots);
-    }
+    // if (Provider.of<List<DocumentSnapshot>>(widget.providerContext) != null) {
+    //   nearByShopsSnapshots = List.from(
+    //       Provider.of<List<DocumentSnapshot>>(widget.providerContext));
+    //   getShopRefList(nearByShopsSnapshots);
+    // }
     return Builder(
       builder: (context) {
         if (userProvider != null) {
@@ -100,10 +100,10 @@ class _CartState extends State<Cart> {
                 Product productDoc = document[i].product;
                 totalPrice += int.parse(productDoc.price.toString()) *
                     (1 -
-                        int.parse(productDoc.discount.toString() == null
+                        int.parse(productDoc.discount == null
                                 ? '0'
                                 : productDoc.discount.toString()) /
-                            100) *
+                            100.0) *
                     document[i].quantity;
               }
               int listLength = document.length;
@@ -167,17 +167,14 @@ class _CartState extends State<Cart> {
                                             bottomLeft: Radius.circular(10))),
                                     child: Center(
                                       child: FlatButton(
-                                        onPressed: (allProductsAvailable)
-                                            ? () async {
-                                                if (userProvider != null) {
-                                                  Navigator.of(context)
-                                                      .pushNamed(
-                                                          '/review_order',
-                                                          arguments: widget
-                                                              .providerContext);
-                                                }
-                                              }
-                                            : null,
+                                        onPressed: () async {
+                                          if (userProvider != null) {
+                                            // Navigator.of(context).pushNamed(
+                                            //     '/review_order',
+                                            //     arguments:
+                                            //         widget.providerContext);
+                                          }
+                                        },
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -239,7 +236,7 @@ class _CartState extends State<Cart> {
                                   index,
                                   productDoc,
                                   document[index].quantity,
-                                  "varient",
+                                  '',
                                 );
                               } catch (e) {
                                 return Container();
@@ -363,7 +360,8 @@ class _CartState extends State<Cart> {
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: (productDoc.discount == null
                                                 ? '0'
-                                                : productDoc.discount.toString()) !=
+                                                : productDoc.discount
+                                                    .toString()) !=
                                             '0'
                                         ? Row(
                                             mainAxisAlignment:
@@ -384,7 +382,8 @@ class _CartState extends State<Cart> {
                                               ),
                                               Text(
                                                   ' ' +
-                                                      productDoc.discount.toString() +
+                                                      productDoc.discount
+                                                          .toString() +
                                                       "% off",
                                                   style: TextStyle(
                                                       fontSize: 10,
@@ -447,6 +446,8 @@ class _CartState extends State<Cart> {
                             onPressed: () {
                               if (quantity > 1) {
                                 int newQuantity = quantity - 1;
+                                cartBloc.updateCart(userProvider.userId,
+                                    productDoc.productId, newQuantity);
                                 // FirestoreService().addToCart(
                                 //     productDoc.documentID,
                                 //     newQuantity,
@@ -466,6 +467,8 @@ class _CartState extends State<Cart> {
                             int newQuantity = quantity + 1;
                             // FirestoreService().addToCart(productDoc.documentID,
                             //     newQuantity, variant, true, productDoc);
+                            cartBloc.updateCart(userProvider.userId,
+                                productDoc.productId, newQuantity);
                           },
                         ),
                       ],
@@ -495,6 +498,8 @@ class _CartState extends State<Cart> {
                 child: IconButton(
                   enableFeedback: true,
                   onPressed: () {
+                    cartBloc.updateCart(
+                        userProvider.userId, productDoc.productId, 0);
                     // FirestoreService()
                     //     .addToCart(
                     //         productDoc.documentID, 0, variant, true, productDoc)
