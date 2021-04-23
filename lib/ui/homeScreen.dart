@@ -231,43 +231,22 @@ class HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     ),
-              // (userProvider == null)
-              //     ? Center(
-              //         child: SpinKitChasingDots(color: Colors.deepPurple),
-              //       )
-              //     : Padding(
-              //         padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-              //         child: StreamBuilder(
-              //           stream:
-              //               FirestoreService().getUser(userProvider.documentID),
-              //           builder: (BuildContext context, AsyncSnapshot snap) {
-              //             if (!snap.hasData) {
-              //               return Container();
-              //             }
-
-              //             var len =
-              //                 snap.data['cart'].keys.toList().length.toString();
-              //             return Badge(
-              //               child: InkWell(
-              //                 child: Icon(
-              //                   Icons.shopping_cart,
-              //                   color: Colors.white,
-              //                 ),
-              //                 onTap: () {
-              //                   Navigator.of(widget.navContext)
-              //                       .pushNamed('/cart', arguments: context);
-              //                 },
-              //               ),
-              //               badgeContent: Text(
-              //                 len,
-              //                 style: TextStyle(color: Colors.white),
-              //               ),
-              //               animationType: BadgeAnimationType.slide,
-              //               showBadge: len != '0',
-              //             );
-              //           },
-              //         ),
-              //       ),
+              (userProvider == null)
+                  ? Center(
+                      child: SpinKitChasingDots(color: Colors.deepPurple),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                      child: InkWell(
+                        child: Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
+                        onTap: () {
+                          Navigator.of(widget.navContext)
+                              .pushNamed('/cart', arguments: context);
+                        },
+                      )),
             ],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(

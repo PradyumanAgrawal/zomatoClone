@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:my_flutter_app/functionalities/populateDatabase.dart';
 import 'package:my_flutter_app/models/addressModel.dart';
+import 'package:my_flutter_app/models/cartItem.dart';
 import 'package:my_flutter_app/models/orderModel.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
+import 'package:my_flutter_app/ui/oldCart.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -62,11 +64,10 @@ class DBProvider {
   }
 
   //delete An address with a specific addrId
-  deleteAddress(String addrId) async {
-    final db = await database;
-    int res =
-        await db.delete("address", where: "addrId = ?", whereArgs: [addrId]);
-    return res;
+  deleteAddress(int addrId) async {
+    Response response =
+        await delete('http://10.0.2.2:3000/address/' + addrId.toString());
+    String body = response.body;
   }
 
   //Insert new addess into addrress table.
@@ -203,6 +204,17 @@ class DBProvider {
     });
     String body = response.body;
     final jsonData = json.decode(body);
+  }
+
+  Future<List<CartItem>> getCartItems(String userId) async {
+    Response response =
+        await get('http://10.0.2.2:3000/products?sort=discount&order=desc');
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    List<CartItem> cartItems = [];
+    jsonData.forEach((prod) => {cartItems.add(CartItem.fromMap(prod))});
+    return cartItems;
   }
 
   //Get all products for a particular category

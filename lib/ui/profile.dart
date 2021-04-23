@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_flutter_app/blocs/addressBloc.dart';
 import 'package:my_flutter_app/blocs/userBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
@@ -29,10 +30,12 @@ class _ProfileState extends State<Profile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   newAddress() {}
   UsersBloc userBloc;
+  AddressBloc addressBloc;
   User user;
   @override
   void dispose() {
     userBloc.dispose();
+    addressBloc.dispose();
     super.dispose();
   }
 
@@ -40,6 +43,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     user = Provider.of<User>(widget.navContext);
     userBloc = UsersBloc(userId: user.userId);
+    addressBloc = AddressBloc(userId: user.userId);
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white,
@@ -722,6 +726,9 @@ class _ProfileState extends State<Profile> {
                                                   color: Colors.red,
                                                 ),
                                                 onPressed: () {
+                                                  DBProvider.db.deleteAddress(
+                                                      addressList[index - 1]
+                                                          .addrId);
                                                   // FirestoreService()
                                                   //     .removeAddress(
                                                   //         index - 1, userDoc);
@@ -977,6 +984,7 @@ class _AddSheetState extends State<AddSheet> {
                               _formKey.currentState.save();
                               newAdd['userId'] = widget.userDoc.userId;
                               await DBProvider.db.insertAddress(newAdd);
+                              setState(() {});
                               // FirestoreService()
                               //     .newAddress(newAdd, widget.userDoc);
                               Navigator.of(context).pop();
