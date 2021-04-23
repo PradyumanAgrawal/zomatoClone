@@ -11,18 +11,18 @@ class AddressBloc {
 
   final _cartController = StreamController<List<Address>>.broadcast();
 
-  get users => _cartController.stream;
+  get addresses => _cartController.stream;
 
   getAddress(String userId) async {
     _cartController.sink.add(await DBProvider.db.getAddress(userId));
   }
 
-  Future<void> deleteAddress(String addrId) async {
+  Future<void> deleteAddress(int addrId) async {
     await DBProvider.db.deleteAddress(addrId);
     await getAddress(userId);
   }
 
-  Future<void> insertAddress(Address address) async {
+  Future<void> insertAddress(Map<String, dynamic>address) async {
     await DBProvider.db.insertAddress(address);
     await getAddress(userId);
   }

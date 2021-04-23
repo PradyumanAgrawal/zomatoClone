@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/blocs/cartBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_flutter_app/models/cartItem.dart';
+import 'package:my_flutter_app/models/productModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
 
 class Cart extends StatefulWidget {
@@ -15,7 +19,8 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   double totalPrice = 0;
   bool allProductsAvailable = true;
-  DocumentSnapshot userProvider;
+  User userProvider;
+  CartBloc cartBloc;
   List<DocumentSnapshot> nearByShopsSnapshots;
   List<DocumentReference> nearByShopsReferences = [];
   void getShopRefList(List<DocumentSnapshot> documentSnapshots) {
@@ -27,7 +32,8 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
-    userProvider = Provider.of<DocumentSnapshot>(widget.providerContext);
+    userProvider = Provider.of<User>(widget.providerContext);
+    cartBloc = CartBloc(userId: userProvider.userId);
     if (Provider.of<List<DocumentSnapshot>>(widget.providerContext) != null) {
       nearByShopsSnapshots = List.from(
           Provider.of<List<DocumentSnapshot>>(widget.providerContext));
@@ -37,7 +43,7 @@ class _CartState extends State<Cart> {
       builder: (context) {
         if (userProvider != null) {
           return StreamBuilder(
-            stream: FirestoreService().getUser(userProvider.documentID),
+            stream: cartBloc.cartItems,
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return Scaffold(
@@ -47,8 +53,8 @@ class _CartState extends State<Cart> {
                     ),
                   ),
                 );
-              DocumentSnapshot document = snapshot.data;
-              if (document['cart'].isEmpty) {
+              List<CartItem> document = snapshot.data;
+              if (document.isEmpty) {
                 return Scaffold(
                   appBar: AppBar(
                     leading: IconButton(
@@ -88,194 +94,168 @@ class _CartState extends State<Cart> {
                   ),
                 );
               }
-              var productList = document['cart'].keys.toList();
-              return StreamBuilder(
-                stream: FirestoreService().getCartProducts(productList),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData)
-                    return Scaffold(
-                      body: Center(
-                        child: SpinKitChasingDots(
-                          color: Colors.purple,
-                        ),
-                      ),
-                    );
-                  totalPrice = 0;
-                  allProductsAvailable = true;
-                  for (int i = 0; i < snapshot.data.documents.length; i++,) {
-                    DocumentSnapshot productDoc = snapshot.data.documents[i];
-                    if (productList.contains(productDoc.documentID)) {
-                      totalPrice += int.parse(productDoc['price']) *
-                          (1 -
-                              int.parse(productDoc['discount'] == null
-                                      ? '0'
-                                      : productDoc['discount']) /
-                                  100) *
-                          document['cart'][productDoc.documentID]['quantity'];
-                    }
-                    if (!nearByShopsReferences.contains(productDoc['shop']))
-                      allProductsAvailable = false;
-                  }
-                  int listLength = snapshot.data.documents.length;
-                  return Scaffold(
-                    bottomSheet: Material(
-                      elevation: 7.0,
-                      color: Colors.white70,
-                      child: Container(
-                        height: (allProductsAvailable) ? 50.0 : 100,
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.white,
-                        child: Column(
-                          children: <Widget>[
-                            (allProductsAvailable)
-                                ? Container()
-                                : Container(
-                                    padding: EdgeInsets.all(10),
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.info, color: Colors.red),
-                                        SizedBox(width: 10),
-                                        Flexible(
-                                          child: Text(
-                                            'Some of the products in the cart are not available in your region!',
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                            Expanded(
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    //SizedBox(width: 10.0),
+              totalPrice = 0;
+              allProductsAvailable = true;
+              for (int i = 0; i < document.length; i++,) {
+                Product productDoc = document[i].product;
+                totalPrice += int.parse(productDoc.price.toString()) *
+                    (1 -
+                        int.parse(productDoc.discount.toString() == null
+                                ? '0'
+                                : productDoc.discount.toString()) /
+                            100) *
+                    document[i].quantity;
+              }
+              int listLength = document.length;
+              return Scaffold(
+                bottomSheet: Material(
+                  elevation: 7.0,
+                  color: Colors.white70,
+                  child: Container(
+                    height: (allProductsAvailable) ? 50.0 : 100,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Column(
+                      children: <Widget>[
+                        (allProductsAvailable)
+                            ? Container()
+                            : Container(
+                                padding: EdgeInsets.all(10),
+                                width: MediaQuery.of(context).size.width,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.info, color: Colors.red),
+                                    SizedBox(width: 10),
                                     Flexible(
-                                      flex: 40,
-                                      child: Center(
-                                        child: Text(
-                                          '\u{20B9} ' +
-                                              totalPrice
-                                                  .roundToDouble()
-                                                  .toString(),
-                                          style: TextStyle(
-                                            color: Colors.deepPurple,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                      child: Text(
+                                        'Some of the products in the cart are not available in your region!',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                     ),
-                                    Flexible(
-                                      flex: 60,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: (allProductsAvailable)
-                                                ? Colors.deepPurple[800]
-                                                : Colors.grey,
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10),
-                                                bottomLeft:
-                                                    Radius.circular(10))),
-                                        child: Center(
-                                          child: FlatButton(
-                                            onPressed: (allProductsAvailable)
-                                                ? () async {
-                                                    if (userProvider != null) {
-                                                      Navigator.of(context)
-                                                          .pushNamed(
-                                                              '/review_order',
-                                                              arguments: widget
-                                                                  .providerContext);
-                                                    }
-                                                  }
-                                                : null,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Text(
-                                                  'Place Order',
-                                                  style: TextStyle(
-                                                      fontSize: 18.0,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
+                                  ],
+                                )),
+                        Expanded(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                //SizedBox(width: 10.0),
+                                Flexible(
+                                  flex: 40,
+                                  child: Center(
+                                    child: Text(
+                                      '\u{20B9} ' +
+                                          totalPrice.roundToDouble().toString(),
+                                      style: TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 60,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: (allProductsAvailable)
+                                            ? Colors.deepPurple[800]
+                                            : Colors.grey,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10))),
+                                    child: Center(
+                                      child: FlatButton(
+                                        onPressed: (allProductsAvailable)
+                                            ? () async {
+                                                if (userProvider != null) {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          '/review_order',
+                                                          arguments: widget
+                                                              .providerContext);
+                                                }
+                                              }
+                                            : null,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              'Place Order',
+                                              style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                  ]),
-                            ),
-                          ],
+                                  ),
+                                ),
+                              ]),
                         ),
-                      ),
-                    ),
-                    body: CustomScrollView(
-                      slivers: <Widget>[
-                        SliverAppBar(
-                          leading: IconButton(
-                            icon: Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          floating: true,
-                          pinned: false,
-                          snap: true,
-                          backgroundColor: Colors.deepPurple[800],
-                          title: Text(
-                            "My Cart",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.normal),
-                          ),
-                        ),
-                        SliverList(
-                            delegate: SliverChildListDelegate(
-                          <Widget>[
-                            Column(
-                              children: List<Widget>.generate(
-                                listLength,
-                                (index) {
-                                  DocumentSnapshot productDoc =
-                                      snapshot.data.documents[index];
-                                  try {
-                                    return product(
-                                        context,
-                                        index,
-                                        productDoc,
-                                        document['cart'][productDoc.documentID]
-                                            ['quantity'],
-                                        document['cart'][productDoc.documentID]
-                                            ['variant']);
-                                  } catch (e) {
-                                    return Container();
-                                  }
-                                },
-                              ),
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.09)
-                          ],
-                        )),
                       ],
                     ),
-                  );
-                },
+                  ),
+                ),
+                body: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      leading: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      floating: true,
+                      pinned: false,
+                      snap: true,
+                      backgroundColor: Colors.deepPurple[800],
+                      title: Text(
+                        "My Cart",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ),
+                    SliverList(
+                        delegate: SliverChildListDelegate(
+                      <Widget>[
+                        Column(
+                          children: List<Widget>.generate(
+                            listLength,
+                            (index) {
+                              Product productDoc = document[index].product;
+                              try {
+                                return product(
+                                  context,
+                                  index,
+                                  productDoc,
+                                  document[index].quantity,
+                                  "varient",
+                                );
+                              } catch (e) {
+                                return Container();
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4.0,
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.09)
+                      ],
+                    )),
+                  ],
+                ),
               );
             },
           );
@@ -292,8 +272,7 @@ class _CartState extends State<Cart> {
     );
   }
 
-  product(context, index, DocumentSnapshot productDoc, int quantity,
-      String variant) {
+  product(context, index, Product productDoc, int quantity, String variant) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Stack(
@@ -333,15 +312,15 @@ class _CartState extends State<Cart> {
                                   });
                             },
                             child: Hero(
-                              tag: productDoc['catalogue'][0],
+                              tag: productDoc.image,
                               child: Container(
-                                  decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image:
-                                      NetworkImage(productDoc['catalogue'][0]),
-                                  fit: BoxFit.contain,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(productDoc.image),
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
-                              )),
+                              ),
                             ),
                           ),
                         ),
@@ -365,7 +344,7 @@ class _CartState extends State<Cart> {
                                             });
                                       },
                                       child: Text(
-                                        productDoc['name'],
+                                        productDoc.pName,
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold),
@@ -382,9 +361,9 @@ class _CartState extends State<Cart> {
                                   flex: 20,
                                   child: Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: (productDoc['discount'] == null
+                                    child: (productDoc.discount == null
                                                 ? '0'
-                                                : productDoc['discount']) !=
+                                                : productDoc.discount.toString()) !=
                                             '0'
                                         ? Row(
                                             mainAxisAlignment:
@@ -394,7 +373,7 @@ class _CartState extends State<Cart> {
                                             children: [
                                               Text(
                                                 '\u{20B9} ' +
-                                                    '${int.parse(productDoc['price']) * quantity}',
+                                                    '${int.parse(productDoc.price.toString()) * quantity}',
                                                 style: TextStyle(
                                                     decoration: TextDecoration
                                                         .lineThrough,
@@ -405,7 +384,7 @@ class _CartState extends State<Cart> {
                                               ),
                                               Text(
                                                   ' ' +
-                                                      productDoc['discount'] +
+                                                      productDoc.discount.toString() +
                                                       "% off",
                                                   style: TextStyle(
                                                       fontSize: 10,
@@ -413,7 +392,7 @@ class _CartState extends State<Cart> {
                                               Text(
                                                 "  " +
                                                     '\u{20B9} ' +
-                                                    '${(int.parse(productDoc['price']) * (1 - int.parse(productDoc['discount']) / 100) * quantity).roundToDouble()}',
+                                                    '${(productDoc.price * (1 - productDoc.discount / 100.0) * quantity).roundToDouble()}',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 16),
@@ -422,7 +401,7 @@ class _CartState extends State<Cart> {
                                           )
                                         : Text(
                                             '\u{20B9} ' +
-                                                '${int.parse(productDoc['price']) * quantity}',
+                                                '${productDoc.price * quantity}',
                                             style: TextStyle(
                                                 fontSize: 16.0,
                                                 color: Colors.black,
@@ -468,12 +447,12 @@ class _CartState extends State<Cart> {
                             onPressed: () {
                               if (quantity > 1) {
                                 int newQuantity = quantity - 1;
-                                FirestoreService().addToCart(
-                                    productDoc.documentID,
-                                    newQuantity,
-                                    variant,
-                                    true,
-                                    productDoc);
+                                // FirestoreService().addToCart(
+                                //     productDoc.documentID,
+                                //     newQuantity,
+                                //     variant,
+                                //     true,
+                                //     productDoc);
                               }
                             }),
                         Text(
@@ -485,8 +464,8 @@ class _CartState extends State<Cart> {
                           icon: Icon(Icons.add, color: Colors.green),
                           onPressed: () {
                             int newQuantity = quantity + 1;
-                            FirestoreService().addToCart(productDoc.documentID,
-                                newQuantity, variant, true, productDoc);
+                            // FirestoreService().addToCart(productDoc.documentID,
+                            //     newQuantity, variant, true, productDoc);
                           },
                         ),
                       ],
@@ -516,10 +495,10 @@ class _CartState extends State<Cart> {
                 child: IconButton(
                   enableFeedback: true,
                   onPressed: () {
-                    FirestoreService()
-                        .addToCart(
-                            productDoc.documentID, 0, variant, true, productDoc)
-                        .then((value) {});
+                    // FirestoreService()
+                    //     .addToCart(
+                    //         productDoc.documentID, 0, variant, true, productDoc)
+                    //     .then((value) {});
                   },
                   icon: Icon(Icons.delete),
                   color: Colors.red,
