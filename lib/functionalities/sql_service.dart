@@ -4,6 +4,7 @@ import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/populateDatabase.dart';
 import 'package:my_flutter_app/models/addressModel.dart';
 import 'package:my_flutter_app/models/cartItem.dart';
+import 'package:my_flutter_app/models/orderItem.dart';
 import 'package:my_flutter_app/models/orderModel.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
@@ -51,12 +52,15 @@ class DBProvider {
     User user = User.fromMap(jsonData[0]);
     return user;
   }
+
   Future<void> updateUserPhone(String userId, String phoneNo) async {
-    Response response = await put('http://10.0.2.2:3000/user/'+ userId,body:{"phone":phoneNo});
+    Response response = await put('http://10.0.2.2:3000/user/' + userId,
+        body: {"phone": phoneNo});
     String body = response.body;
     final jsonData = json.decode(body);
     //assert(jsonData is List);
   }
+
   // Get all address of one user
   Future<List<Address>> getAddress(String userId) async {
     Response response =
@@ -122,12 +126,17 @@ class DBProvider {
   }
 
   //get all orders for one specific user
-  getOrders(String userId) async {
-    final db = await database;
-    List<Map<String, Object>> res =
-        await db.query("orders", where: "userId = ?", whereArgs: [userId]);
-    List<Order> orders;
-    res.forEach((order) => {orders.add(Order.fromMap(order))});
+  Future<List<OrderItem>> getOrders(String userId) async {
+    Response response = await get('http://10.0.2.2:3000/orders/' + userId);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    List<OrderItem> orderItems = [];
+    jsonData.forEach((item) => {
+          orderItems.add(
+            item,
+          )
+        });
   }
 
   //Get all products
@@ -272,14 +281,15 @@ class DBProvider {
     };
     return a;
   }
+
   Future<int> placeOrder(String addrId) async {
-    Response response = await post('http://10.0.2.2:3000/orders/'+addrId);
+    Response response = await post('http://10.0.2.2:3000/orders/' + addrId);
     String body = response.body;
     final jsonData = json.decode(body);
     assert(jsonData is Map);
     return jsonData['status'];
   }
-  
+
   //Get all products for a particular category
 
   //product search query

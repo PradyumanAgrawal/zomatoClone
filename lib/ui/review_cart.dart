@@ -23,6 +23,7 @@ class _ReviewCartState extends State<ReviewCart> {
   String totalAmount;
   String userId;
   String email;
+  User user;
   UsersBloc userBloc;
   List<Address> addresses;
   AddressBloc addressBloc;
@@ -337,7 +338,7 @@ class _ReviewCartState extends State<ReviewCart> {
                             );
                           //DocumentSnapshot document =
                           //DocumentSnapshot userDoc = snapshot.data;
-                          User user = snapshot.data;
+                          user = snapshot.data;
                           email = user.email;
                           return Column(
                             children: <Widget>[
@@ -707,8 +708,8 @@ class _ReviewCartState extends State<ReviewCart> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                         onPressed: () async {
-                          if (snapshot.data['address'].length == 0 ||
-                              snapshot.data['mobileNo'] == '') {
+                          if (addresses.length == 0 ||
+                              user.mobileNo == '' || user.mobileNo == null) {
                             return detailsIncomplete(context);
                           } else {
                             if (selectedRadioPayment == 0) {

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/sql_service.dart';
+import 'package:my_flutter_app/models/orderItem.dart';
 import 'package:my_flutter_app/models/orderModel.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/userModel.dart';
@@ -64,8 +65,7 @@ class _OrdersState extends State<Orders> {
               child: SpinKitChasingDots(color: Colors.deepPurple),
             )
           : FutureBuilder(
-              future: DBProvider.db.getOrders(userProvider.userId.toString()),
-              //FirestoreService().getOrders(userProvider.userId),
+              future: DBProvider.db.getOrders(userProvider.userId),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data == {}) {
@@ -84,7 +84,7 @@ class _OrdersState extends State<Orders> {
                       ),
                     );
                   } else {
-                    List<Order> orderList = snapshot.data;
+                    List<OrderItem> orderList = snapshot.data;
                     return orderList.length == 0
                         ? Center(
                             child: Column(
@@ -134,7 +134,7 @@ class _OrdersState extends State<Orders> {
                                       children: <Widget>[
                                         FutureBuilder(
                                             future: DBProvider.db.getSingleProd(
-                                                orderList[index].productId),
+                                                orderList[index].product.productId.toString()),
                                             builder: (context, snapshot) {
                                               if (!snapshot.hasData)
                                                 return Center(
@@ -175,8 +175,8 @@ class _OrdersState extends State<Orders> {
                                               FutureBuilder(
                                                   future: DBProvider.db
                                                       .getSingleProd(
-                                                          orderList[index]
-                                                              .productId),
+                                                          orderList[index].product
+                                                              .productId.toString()),
                                                   builder: (context, snapshot) {
                                                     if (!snapshot.hasData)
                                                       return Center(
@@ -198,7 +198,7 @@ class _OrdersState extends State<Orders> {
                                               SizedBox(height: 20),
                                               Text(
                                                 'Quantity : ' +
-                                                    orderList[index].quantity,
+                                                    orderList[index].quantity.toString(),
                                                 style: TextStyle(
                                                   color: Colors.grey,
                                                 ),
@@ -249,7 +249,7 @@ class _OrdersState extends State<Orders> {
                                                 (orderList[index].bill !=
                                                         null)
                                                     ? ' \u{20B9} ' +
-                                                        orderList[index].bill
+                                                        orderList[index].bill.toString()
                                                     : '',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
@@ -278,7 +278,7 @@ class _OrdersState extends State<Orders> {
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: (orderList[index].status ==
-                                                      'pending')
+                                                      'order placed')
                                                   ? Colors.blue
                                                   : (orderList[index].status ==
                                                           'Rejected')
