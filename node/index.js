@@ -186,7 +186,7 @@ app.get('/orders/:userId', (req, res) => {
 app.post('/orders/:addrId', (req, res) => {
     con.connect(function(err) {
         con.query(`call cartToOrder(?)`,[req.params.addrId], function(err, result, fields) {
-            if (err) res.send(err);
+            if (err) res.json({status:0});
             if (result) res.json({status:1});
         });
     });
