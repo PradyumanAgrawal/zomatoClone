@@ -114,6 +114,28 @@ app.post('/address', (req, res) => {
     });
 });
 
+//get cart details for one user
+app.get('/cart/:userId', (req, res) => {
+    con.connect(function(err) {
+        console.log(req.params.id)
+        con.query(`SELECT * FROM cart natural join products where userId='${req.params.userId}'`, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
+
+app.post('/cart/:userId',(req,res)=>{
+    con.connect(function(err) {
+        console.log(req.params.id)
+        con.query(`SELECT * FROM cart natural join products where userId='${req.params.userId}'`, function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+})
+
+
 //get all shops details
 app.get('/shops', (req, res) => {
     con.connect(function(err) {
