@@ -291,7 +291,10 @@ class _ProfileState extends State<Profile> {
                     userDoc = snapshot.data;
                     name = userDoc.name;
                     email = userDoc.email;
-                    phone = userDoc.mobileNo;
+                    if (userDoc.mobileNo != null)
+                      phone = userDoc.mobileNo;
+                    else
+                      phone = '';
                     return Column(
                       children: <Widget>[
                         Stack(
@@ -505,7 +508,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               Flexible(
                                 child: Text(
-                                  userDoc.mobileNo,
+                                  phone,
                                 ),
                               ),
                             ],

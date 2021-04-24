@@ -342,7 +342,7 @@ class _ReviewCartState extends State<ReviewCart> {
                           email = user.email;
                           return Column(
                             children: <Widget>[
-                              user.mobileNo == ''
+                              (user.mobileNo == '' || user.mobileNo == null)
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: InkWell(
@@ -709,7 +709,8 @@ class _ReviewCartState extends State<ReviewCart> {
                             borderRadius: BorderRadius.circular(20)),
                         onPressed: () async {
                           if (addresses.length == 0 ||
-                              user.mobileNo == '' || user.mobileNo == null) {
+                              user.mobileNo == '' ||
+                              user.mobileNo == null) {
                             return detailsIncomplete(context);
                           } else {
                             if (selectedRadioPayment == 0) {

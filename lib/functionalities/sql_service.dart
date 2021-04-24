@@ -215,12 +215,13 @@ class DBProvider {
   }
 
   //get a single product based on productId
-  getSingleProd(String productId) async {
-    final db = await database;
-    List<Map<String, Object>> res = await db
-        .query("products", where: "productId = ?", whereArgs: [productId]);
-    Product product = Product.fromMap(res[0]);
-    return product;
+  Future<Product> getSingleProd(String productId) async {
+    Response response = await get('http://10.0.2.2:3000/products/' + productId);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    Product prod = Product.fromMap(jsonData[0]);
+    return prod;
   }
 
   Future<void> registerUser(
