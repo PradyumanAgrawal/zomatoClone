@@ -23,6 +23,12 @@ class UsersBloc {
     await getUser(userId);
   }
 
+  Future<int> updateProfile(String name, String phoneNo) async {
+    int status = await DBProvider.db.updateUserProfile(userId, name, phoneNo);
+    await getUser(userId);
+    return status;
+  }
+
   // Future<void> blockUnblock(User user) async {
   //   await DBProvider.db.blockOrUnblock(user);
   //   await getUsers();

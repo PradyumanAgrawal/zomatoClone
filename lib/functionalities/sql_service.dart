@@ -59,6 +59,16 @@ class DBProvider {
     //assert(jsonData is List);
   }
 
+  Future<int> updateUserProfile(
+      String userId, String name, String phoneNo) async {
+    Response response = await put('http://10.0.2.2:3000/user/' + userId,
+        body: {"phone": phoneNo, "name": name});
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is Map);
+    return jsonData['status'];
+  }
+
   // Get all address of one user
   Future<List<Address>> getAddress(String userId) async {
     Response response =
@@ -249,10 +259,9 @@ class DBProvider {
     }
     for (int i = 0; i < cartItems.length; i++) {
       Map temp = new Map();
-      temp['name'] = cartItems[i].product.pName; 
-      temp['price'] = cartItems[i].product.price; 
-      temp['quantity'] = cartItems[i]
-          .quantity; 
+      temp['name'] = cartItems[i].product.pName;
+      temp['price'] = cartItems[i].product.price;
+      temp['quantity'] = cartItems[i].quantity;
       temp['image'] = cartItems[i].product.image;
       temp['discount'] = cartItems[i].product.discount == null
           ? '0'
