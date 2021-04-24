@@ -276,26 +276,27 @@ app.get("/sort/:stream", (req, res) => {
     var sql;
     var args=[];
     if(req.params.stream.localeCompare("category")==0){
-        sql=`SELECT * FROM products where category=? order by price ?`
+        sql=`SELECT * FROM products where category=? order by price`
         args.push(req.query.meta);
-        args.push(req.query.order);
     }
     else if(req.params.stream.localeCompare("shop")==0)
     {
-        sql=`SELECT * FROM products where shopId=? order by price ?`
+        sql=`SELECT * FROM products where shopId=? order by price`
         args.push(req.query.meta);
-        args.push(req.query.order);
     }
     else if(req.params.stream.localeCompare("offer")==0)
     {
-        sql=`SELECT * FROM products where discount is not NULL order by price ?`
-        args.push(req.query.order);
+        sql=`SELECT * FROM products where discount is not NULL order by price`
     }
     else
     {
-        sql=`SELECT * FROM products order by price ?`
-        args.push(req.query.order);
+        sql=`SELECT * FROM products order by price`
     }    
+
+    if(args.params.order.localeCompare("desc")==0)
+    {
+        sql+=' DESC'
+    }
     con.connect(function(err) {
         con.query(sql,args, function(err, result, fields) {
             if (err) res.send(err);
