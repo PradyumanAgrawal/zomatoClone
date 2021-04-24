@@ -129,8 +129,6 @@ app.get('/cart/:userId', (req, res) => {
 //make changes to your cart
 app.post('/cart',(req,res)=>{
     con.connect(function(err) {
-        console.log(req.body);
-        let body=req.body;
         con.query(`select exists(select quantity from cart where userId=? and productId=?) as res;`
         +`call modifyCart(?,?,?)`,
         [body.userId,body.productId,body.userId,body.productId,body.quantity],
