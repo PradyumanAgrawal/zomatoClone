@@ -131,7 +131,7 @@ class _DiscoverState extends State<Discover>
 
   //var productList = new List<Product>();
   Future<dynamic> stream;
-
+  String currentStream;
   int flag = 0;
   @override
   Widget build(BuildContext context) {
@@ -166,6 +166,7 @@ class _DiscoverState extends State<Discover>
           ),
         ),
       );
+    currentStream = widget.args['stream'];
     if (flag == 0) {
       if (widget.args['stream'] == 'category') {
         stream = DBProvider.db.getCategoryProducts(widget.args['category']);
@@ -198,23 +199,23 @@ class _DiscoverState extends State<Discover>
                 onTap: () {
                   setState(() {
                     flag = 1;
-                    if (widget.args['stream'] == 'category')
+                    if (currentStream == 'category')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'],
                           'desc',
                           widget.args['category']);
-                    else if (widget.args['stream'] == 'shop')
+                    else if (currentStream == 'shop')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'desc', widget.args['shopId']);
-                    else if (widget.args['stream'] == 'allProducts')
+                    else if (currentStream == 'allProducts')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'desc', '');
-                    else if (widget.args['stream'] == 'offer')
+                    else if (currentStream == 'offer')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'desc', '');
-                    else if (widget.args['stream'] == 'search')
+                    else if (currentStream == 'search')
                       stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'],
+                          currentStream,
                           'desc',
                           widget.args['searchSubstring']);
                   });
@@ -228,25 +229,23 @@ class _DiscoverState extends State<Discover>
                 onTap: () {
                   setState(() {
                     flag = 1;
-                    if (widget.args['stream'] == 'category')
+                    if (currentStream == 'category')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'],
                           'asc',
                           widget.args['category']);
-                    else if (widget.args['stream'] == 'shop')
+                    else if (currentStream == 'shop')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'asc', widget.args['shopId']);
-                    else if (widget.args['stream'] == 'allProducts')
+                    else if (currentStream == 'allProducts')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'asc', '');
-                    else if (widget.args['stream'] == 'offer')
+                    else if (currentStream == 'offer')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'asc', '');
-                    else if (widget.args['stream'] == 'search')
+                    else if (currentStream == 'search')
                       stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'],
-                          'asc',
-                          widget.args['searchSubstring']);
+                          currentStream, 'asc', widget.args['searchSubstring']);
                   });
                 }),
             SpeedDialChild(
@@ -333,12 +332,14 @@ class _DiscoverState extends State<Discover>
                   onChanged: (value) {
                     setState(() {
                       flag = 1;
+                      currentStream = 'search';
                       stream = DBProvider.db.getSearchProducts(value);
                     });
                   },
                   onFieldSubmitted: (value) {
                     if (value != '')
                       setState(() {
+                        currentStream = 'search';
                         flag = 1;
                         stream = DBProvider.db.getSearchProducts(value);
                       });
