@@ -127,14 +127,16 @@ app.get('/cart/:userId', (req, res) => {
     });
 });
 
+//make changes to your cart
 app.post('/cart',(req,res)=>{
     con.connect(function(err) {
         console.log(req.body);
         let body=req.body;
-        con.query(`select exists(select quantity from cart where userId='${body.userId}' and productId=${body.productId}) as res;`
-        +`call modifyCart('${body.userId}',${body.productId},${body.quantity})`, function(err, result) {
+        con.query(`select exists(select quantity from cart where userId=? and productId=?) as res;`
+        +`call modifyCart(?,?,?)`,
+        [body.userId,body.productId,body.userId,body.productId,body.quantity],
+        function(err, result) {
             console.log(result[0][0].res);
-            console.log(result[1]);
             if (err) res.send(err);
             if (result&&result[0][0].res) res.json({status:1});
             else res.json({status:2})
@@ -142,6 +144,17 @@ app.post('/cart',(req,res)=>{
     });
 })
 
+//make a review
+app.post('/review',(req,res)=>{
+    con.connect(function(err) {
+        console.log(req.body);
+        let body=req.body;
+        con.query(`call makeReview(?,?,?)`,[body.userId,body.productId,body.rating], function(err, result) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+})
 
 //get all shops details
 app.get('/shops', (req, res) => {
