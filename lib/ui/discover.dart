@@ -173,9 +173,11 @@ class _DiscoverState extends State<Discover>
         stream = DBProvider.db.getShopProducts(widget.args['shopId']);
       } else if (widget.args['stream'] == 'allProducts') {
         stream = DBProvider.db.getProducts();
-      }
-      else if (widget.args['stream'] == 'offer') {
+      } else if (widget.args['stream'] == 'offer') {
         stream = DBProvider.db.getOfferProducts();
+      } else if (widget.args['stream'] == 'search') {
+        stream =
+            DBProvider.db.getSearchProducts(widget.args['searchSubstring']);
       }
     }
 
@@ -207,6 +209,14 @@ class _DiscoverState extends State<Discover>
                     else if (widget.args['stream'] == 'allProducts')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'desc', '');
+                    else if (widget.args['stream'] == 'offer')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'], 'desc', '');
+                    else if (widget.args['stream'] == 'search')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'],
+                          'desc',
+                          widget.args['searchSubstring']);
                   });
                 }),
             SpeedDialChild(
@@ -229,6 +239,14 @@ class _DiscoverState extends State<Discover>
                     else if (widget.args['stream'] == 'allProducts')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'asc', '');
+                    else if (widget.args['stream'] == 'offer')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'], 'asc', '');
+                    else if (widget.args['stream'] == 'search')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'],
+                          'asc',
+                          widget.args['searchSubstring']);
                   });
                 }),
             SpeedDialChild(
@@ -315,6 +333,11 @@ class _DiscoverState extends State<Discover>
                   onChanged: (value) {
                     // checkTyping(value);
                     // initiateSearch(value);
+                  },
+                  onFieldSubmitted: (value) {
+                    setState(() {
+                      stream = DBProvider.db.getSearchProducts(value);
+                    });
                   },
                   controller: _controller,
                   decoration: InputDecoration(

@@ -181,7 +181,16 @@ class DBProvider {
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
     return products.isNotEmpty ? products : null;
   }
-
+  getSearchProducts(String searchSubstring) async {
+    Response response =
+        await get('http://10.0.2.2:3000/search/product/' + searchSubstring);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    List<Product> products = [];
+    jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
+    return products.isNotEmpty ? products : null;
+  }
   getCategoryProducts(String category) async {
     Response response =
         await get('http://10.0.2.2:3000/products/type/' + category);

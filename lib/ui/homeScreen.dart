@@ -43,6 +43,7 @@ class HomeScreenState extends State<HomeScreen> {
   List<String> locationList;
   String userId;
   TextEditingController _controller = TextEditingController();
+  String searchSubstring;
   checkTyping(value) {
     if (value.length > 0) {
       setState(() {
@@ -230,18 +231,16 @@ class HomeScreenState extends State<HomeScreen> {
                     )
                   : Padding(
                       padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                      child:  InkWell(
-                            child: Icon(
-                              Icons.shopping_cart,
-                              color: Colors.white,
-                            ),
-                            onTap: () {
-                              Navigator.of(widget.navContext)
-                                  .pushNamed('/cart', arguments: context);
-                            },
-                          )
-                      
-                    ),
+                      child: InkWell(
+                        child: Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
+                        onTap: () {
+                          Navigator.of(widget.navContext)
+                              .pushNamed('/cart', arguments: context);
+                        },
+                      )),
             ],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -257,15 +256,27 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
                 child: TextFormField(
                   onChanged: (value) {
+                    searchSubstring = value;
                     //checkTyping(value);
                     //initiateSearch(value, nearByShopsReferences);
+                  },
+                  onFieldSubmitted: (value) {
+                    Navigator.of(widget.navContext)
+                                    .pushNamed('/discover', arguments: {
+                                  'stream': 'allProducts',
+                                  'searchSubstring' : value,
+                                  'context': context
+                                });
                   },
                   controller: _controller,
                   decoration: InputDecoration(
                     hintText: "Search",
                     fillColor: Colors.white,
                     filled: true,
-                    suffixIcon: Icon(Icons.search, color: Colors.purple),
+                    suffixIcon: Icon(
+                      Icons.search,
+                      color: Colors.purple,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide(color: Colors.transparent),
