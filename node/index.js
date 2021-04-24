@@ -65,7 +65,7 @@ app.put('/user/:userId', (req, res) => {
         arg.push(req.params,userId)
         con.query(sql,arg, function(err, result, fields) {
             if (err) res.send(err);
-            if (result) res.send(result);
+            if (result) res.json({status:1});
         });
     });
 });
