@@ -53,6 +53,7 @@ app.put('/user/:userId', (req, res) => {
     con.connect(function(err) {
         var sql=`UPDATE user SET `;
         var arg=[]
+        console.log(req.body)
         if(req.body.name){
             sql+=`name=? `;
             arg.push(req.body.name)
@@ -63,6 +64,8 @@ app.put('/user/:userId', (req, res) => {
         }
         sql+= `WHERE userId=?`;
         arg.push(req.params.userId)
+        console.log(sql);
+        console.log(arg)
         con.query(sql,arg, function(err, result, fields) {
             if (err) res.json({status:0});
             if (result) res.json({status:1});
