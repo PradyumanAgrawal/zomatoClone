@@ -132,6 +132,7 @@ class _DiscoverState extends State<Discover>
   //var productList = new List<Product>();
   Future<dynamic> stream;
   String currentStream;
+  String searchSubstring;
   int flag = 0;
   @override
   Widget build(BuildContext context) {
@@ -177,6 +178,7 @@ class _DiscoverState extends State<Discover>
       } else if (widget.args['stream'] == 'offer') {
         stream = DBProvider.db.getOfferProducts();
       } else if (widget.args['stream'] == 'search') {
+        searchSubstring = widget.args['searchSubstring'];
         stream =
             DBProvider.db.getSearchProducts(widget.args['searchSubstring']);
       }
@@ -217,7 +219,7 @@ class _DiscoverState extends State<Discover>
                       stream = DBProvider.db.getCustomSortProducts(
                           currentStream,
                           'desc',
-                          widget.args['searchSubstring']);
+                          searchSubstring);
                   });
                 }),
             SpeedDialChild(
@@ -245,7 +247,7 @@ class _DiscoverState extends State<Discover>
                           widget.args['stream'], 'asc', '');
                     else if (currentStream == 'search')
                       stream = DBProvider.db.getCustomSortProducts(
-                          currentStream, 'asc', widget.args['searchSubstring']);
+                          currentStream, 'asc', searchSubstring);
                   });
                 }),
             SpeedDialChild(
@@ -333,6 +335,7 @@ class _DiscoverState extends State<Discover>
                     setState(() {
                       flag = 1;
                       currentStream = 'search';
+                      searchSubstring = value;
                       stream = DBProvider.db.getSearchProducts(value);
                     });
                   },
@@ -341,6 +344,7 @@ class _DiscoverState extends State<Discover>
                       setState(() {
                         currentStream = 'search';
                         flag = 1;
+                        searchSubstring = value;
                         stream = DBProvider.db.getSearchProducts(value);
                       });
                   },
