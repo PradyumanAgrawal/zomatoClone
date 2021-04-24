@@ -25,7 +25,7 @@ class _ProfileState extends State<Profile> {
   String name;
   String email;
   String phone;
-  File profilePic = null;
+  File profilePic;
   final picker = ImagePicker();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   newAddress() {}
@@ -84,10 +84,9 @@ class _ProfileState extends State<Profile> {
                           setState(() {
                             editVisible = false;
                           });
-                          bool status;
-                          // bool status = await FirestoreService().editProfile(
-                          //     name, email, phone, userDoc, profilePic);
-                          if (status) {
+                          int status;
+                          status = await userBloc.updateProfile(name, phone);
+                          if (status == 1) {
                             // Scaffold.of(context).showSnackBar(SnackBar(
                             //   content: Text('Updated!!'),
                             // ));
@@ -108,7 +107,8 @@ class _ProfileState extends State<Profile> {
                     child: Form(
                       key: _formKey,
                       child: Container(
-                        child: ListView(
+                        child: Column(
+                          //shrinkWrap: false,
                           children: <Widget>[
                             SizedBox(height: 30),
                             Center(
@@ -169,12 +169,12 @@ class _ProfileState extends State<Profile> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: TextFormField(
-                                // validator: (value) {
-                                //   if (value.isEmpty) {
-                                //     return 'Please Enter Name';
-                                //   }
-                                // },
-                                //initialValue:name,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please Enter Name';
+                                  }
+                                },
+                                initialValue: name,
                                 decoration: InputDecoration(
                                   hintText: "Name",
                                   labelText: "Name",

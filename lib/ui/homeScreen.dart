@@ -160,13 +160,6 @@ class HomeScreenState extends State<HomeScreen> {
     await FirestoreService().saveToken(token, uid);
   }
 
-  // void getShopRefList(List<DocumentSnapshot> documentSnapshots) {
-  //   nearByShopsReferences = [];
-  //   for (int i = 0; i < documentSnapshots.length; i++) {
-  //     nearByShopsReferences.add(documentSnapshots[i].reference);
-  //   }
-  // }
-
   final productBloc = ProductBloc();
   @override
   void dispose() {

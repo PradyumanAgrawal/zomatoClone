@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-//import 'package:my_flutter_app/functionalities/firestore_service.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
@@ -301,15 +300,41 @@ class _DescriptionState extends State<Description> {
                       )
                     ],
                   )),
-              // Visibility(
-              //   visible: document['sizes'].length != 0,
-              //   child: Divider(
-              //     color: Colors.purple.withOpacity(0.5),
-              //     height: 30,
-              //     indent: 50,
-              //     endIndent: 50,
-              //   ),
-              // ),
+              Divider(
+                color: Colors.purple.withOpacity(0.5),
+                height: 30,
+                indent: 50,
+                endIndent: 50,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 15.0),
+                child: Text(
+                  'User Ratings',
+                  style: TextStyle(
+                      letterSpacing: 1.5,
+                      fontSize: 22.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 20.0),
+              RatingBar.builder(
+                initialRating: 3.4,
+                minRating: 1,
+                ignoreGestures: false,
+                direction: Axis.horizontal,
+                allowHalfRating: true,
+                itemCount: 5,
+                glowColor: Colors.purple,
+                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => Icon(
+                  Icons.star,
+                  color: Colors.purple,
+                ),
+                onRatingUpdate: (rating) {
+                  print(rating);
+                },
+              ),
               // Visibility(
               //   visible: document['sizes'].length != 0,
               //   child: Padding(
