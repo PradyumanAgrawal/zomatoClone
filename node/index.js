@@ -284,6 +284,12 @@ app.get("/sort/:stream", (req, res) => {
         sql=`SELECT * FROM products where shopId=? order by price`
         args.push(req.query.meta);
     }
+    else if(req.params.stream.localeCompare("search")==0)
+    {
+        sql=`SELECT * FROM products where pName like ? order by price`
+        req.query.meta="%"+req.query.meta+"%"
+        args.push(req.query.meta);
+    }
     else if(req.params.stream.localeCompare("offer")==0)
     {
         sql=`SELECT * FROM products where discount is not NULL order by price`
