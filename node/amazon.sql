@@ -115,19 +115,14 @@ INSERT INTO tags VALUES('201','abcdef');
 
 
 DELIMITER $$ 
-create PROCEDURE modifyCart(in uId varchar(30),in pId int,in quantity int,out status int)
+create PROCEDURE makeReview(in uId varchar(30),in pId int,in score float)
 BEGIN
 	declare
-	prevqty int;
-    status=2;
-    insert ignore into cart values (userId,productId,quantity);
-    select quantity into prevqty from cart where userId = uId and productId=pId;
-    if(quantity=0) Then
-		delete from cart where userId = uId and productId=pId;
-        status=1
-    elseif(quantity!=prevqty)
-	  Update cart set quantity=quantity where  userId = uId and productId=pId;
-      status=1
+	prevrtg int;
+    insert ignore into rating values (userId,productId,score);
+    select rating into prevqty from rating where userId = uId and productId=pId;
+    if(score!=prevrtg)
+	    Update rating set rating=score where  userId = uId and productId=pId;
     end if;
 END $$
 DELIMITER ;
