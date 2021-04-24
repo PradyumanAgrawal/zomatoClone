@@ -249,7 +249,7 @@ class DBProvider {
     Response response = await post('http://10.0.2.2:3000/cart', body: {
       'userId': userId,
       'productId': productId.toString(),
-      'quantity': quantity.toString()
+      'quantity': quantity.toString(),
     });
     String body = response.body;
     final jsonData = json.decode(body);
@@ -301,5 +301,17 @@ class DBProvider {
     final jsonData = json.decode(body);
     assert(jsonData is Map);
     return jsonData['status'];
+  }
+
+  Future<void> setRating(String userId, int productId, double rating) async {
+    Response response = await post('http://10.0.2.2:3000/review', body:{
+      'userId': userId,
+      'productId': productId.toString(),
+      'rating': rating.toString(),
+    });
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is Map);
+    //return jsonData['status'];
   }
 }

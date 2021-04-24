@@ -217,9 +217,7 @@ class _DiscoverState extends State<Discover>
                           widget.args['stream'], 'desc', '');
                     else if (currentStream == 'search')
                       stream = DBProvider.db.getCustomSortProducts(
-                          currentStream,
-                          'desc',
-                          searchSubstring);
+                          currentStream, 'desc', searchSubstring);
                   });
                 }),
             SpeedDialChild(
@@ -368,149 +366,86 @@ class _DiscoverState extends State<Discover>
               preferredSize: Size(50, 80),
             ),
           ),
-          isTyping
-              ? (tempSearchStore.length == 0)
-                  ? isSearching
-                      ? SliverList(
-                          delegate: SliverChildListDelegate(<Widget>[
-                            Center(
-                                child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 30),
-                                    child: SpinKitChasingDots(
-                                        color: Colors.deepPurple)))
-                          ]),
-                        )
-                      : SliverList(
-                          delegate: SliverChildListDelegate(<Widget>[
-                            Center(
-                                child: Padding(
+          FutureBuilder(
+            future: null,
+            //LocalData().getUid(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              // if (!snapshot.hasData)
+              //   return SliverList(
+              //     delegate: SliverChildListDelegate(<Widget>[
+              //       Center(
+              //           child: Padding(
+              //               padding:
+              //                   const EdgeInsets.symmetric(vertical: 30),
+              //               child: SpinKitChasingDots(
+              //                   color: Colors.deepPurple)))
+              //     ]),
+              //   );
+              // String userId = snapshot.data;
+
+              return FutureBuilder(
+                future: stream,
+                //stream,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData)
+                    return SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          Center(
+                            child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 30),
-                              child: Text('No Results Found!'),
-                            ))
-                          ]),
-                        )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          print(tempSearchStore[index]);
-                          return itemCard(
-                              tempSearchStore[index].data['name'],
-                              tempSearchStore[index].data['catalogue'][0],
-                              tempSearchStore[index].data['description'],
-                              wishlist
-                                  .contains(tempSearchStore[index].documentID),
-                              tempSearchStore[index].data['price'],
-                              tempSearchStore[index].data['discount'] != null
-                                  ? tempSearchStore[index].data['discount']
-                                  : '0',
-                              tempSearchStore[index],
-                              context);
-                        },
-                        childCount: tempSearchStore.length,
+                              child:
+                                  SpinKitChasingDots(color: Colors.deepPurple),
+                            ),
+                          ),
+                        ],
                       ),
-                    )
-              : FutureBuilder(
-                  future: null,
-                  //LocalData().getUid(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    // if (!snapshot.hasData)
-                    //   return SliverList(
-                    //     delegate: SliverChildListDelegate(<Widget>[
-                    //       Center(
-                    //           child: Padding(
-                    //               padding:
-                    //                   const EdgeInsets.symmetric(vertical: 30),
-                    //               child: SpinKitChasingDots(
-                    //                   color: Colors.deepPurple)))
-                    //     ]),
-                    //   );
-                    // String userId = snapshot.data;
-                    return StreamBuilder(
-                      stream: null,
-                      //FirestoreService().getUser(userId),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        // if (!snapshot.hasData)
-                        //   return SliverList(
-                        //     delegate: SliverChildListDelegate(<Widget>[
-                        //       Center(
-                        //           child: Padding(
-                        //               padding: const EdgeInsets.symmetric(
-                        //                   vertical: 30),
-                        //               child: SpinKitChasingDots(
-                        //                   color: Colors.deepPurple)))
-                        //     ]),
-                        //   );
-                        // DocumentSnapshot document = snapshot.data;
-                        // wishlist = document['wishlist'];
-                        return FutureBuilder(
-                          future: stream,
-                          //stream,
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (!snapshot.hasData)
-                              return SliverList(
-                                delegate: SliverChildListDelegate(
-                                  <Widget>[
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 30),
-                                        child: SpinKitChasingDots(
-                                            color: Colors.deepPurple),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            if (snapshot.data.length == 0)
-                              return SliverList(
-                                delegate: SliverChildListDelegate(<Widget>[
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox(height: 50),
-                                      Image.asset(
-                                          'assets/images/noProducts.png'),
-                                      Text('No Products Yet!!',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ]),
-                              );
-                            return SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  Product document = snapshot.data[index];
-                                  return itemCard(
-                                      document.pName,
-                                      document.image,
-                                      document.description,
-                                      true,
-                                      document.price.toString(),
-                                      document.discount != null
-                                          ? document.discount.toString()
-                                          : '0',
-                                      document,
-                                      context);
-                                },
-                                childCount: snapshot.data.length,
-                              ),
-                            );
-                          },
-                        );
-                        /* return SliverList(delegate: SliverChildBuilderDelegate(
+                    );
+                  if (snapshot.data.length == 0)
+                    return SliverList(
+                      delegate: SliverChildListDelegate(<Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(height: 50),
+                            Image.asset('assets/images/noProducts.png'),
+                            Text('No Products Yet!!',
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ]),
+                    );
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        Product document = snapshot.data[index];
+                        return itemCard(
+                            document.pName,
+                            document.image,
+                            document.description,
+                            true,
+                            document.price.toString(),
+                            document.discount != null
+                                ? document.discount.toString()
+                                : '0',
+                            document,
+                            context);
+                      },
+                      childCount: snapshot.data.length,
+                    ),
+                  );
+                },
+              );
+              /* return SliverList(delegate: SliverChildBuilderDelegate(
                             (context, index){
                               return Text(wishlist[index]);
                             },
                             childCount: wishlist.length
                           )); */
-                      },
-                    );
-                  },
-                ), /* SliverList(
+            },
+          ), /* SliverList(
                   delegate: SliverChildListDelegate(
                     <Widget>[
                       FutureBuilder(

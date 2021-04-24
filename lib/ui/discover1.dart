@@ -65,43 +65,18 @@ class _Discover1State extends State<Discover1> {
                     ),
                     onPressed: () {},
                   ), */
-                  // Padding(
-                  //   padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                  //   child: (userProvider == null)
-                  //       ? Container()
-                  //       : StreamBuilder(
-                  //           stream: FirestoreService()
-                  //               .getUser(userProvider.documentID),
-                  //           builder:
-                  //               (BuildContext context, AsyncSnapshot snap) {
-                  //             if (!snap.hasData) {
-                  //               return Container();
-                  //             }
-                  //             var len = snap.data['cart'].keys
-                  //                 .toList()
-                  //                 .length
-                  //                 .toString();
-                  //             return Badge(
-                  //               child: InkWell(
-                  //                 child: Icon(
-                  //                   Icons.shopping_cart,
-                  //                   color: Colors.white,
-                  //                 ),
-                  //                 onTap: () {
-                  //                   Navigator.of(widget.navContext)
-                  //                       .pushNamed('/cart', arguments: context);
-                  //                 },
-                  //               ),
-                  //               badgeContent: Text(
-                  //                 len,
-                  //                 style: TextStyle(color: Colors.white),
-                  //               ),
-                  //               animationType: BadgeAnimationType.slide,
-                  //               showBadge: len != '0',
-                  //             );
-                  //           },
-                  //         ),
-                  // ),
+                  Padding(
+                      padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+                      child: InkWell(
+                        child: Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
+                        onTap: () {
+                          Navigator.of(widget.navContext)
+                              .pushNamed('/cart', arguments: context);
+                        },
+                      )),
                 ],
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(

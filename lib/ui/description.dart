@@ -27,6 +27,7 @@ class _DescriptionState extends State<Description> {
   User userProvider;
   String userId;
   int photoIndex = 0;
+  bool rated = false;
   List<String> photos = [];
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   _DescriptionState(Product document) {
@@ -307,33 +308,78 @@ class _DescriptionState extends State<Description> {
                 endIndent: 50,
               ),
               Padding(
-                padding: EdgeInsets.only(left: 15.0),
-                child: Text(
-                  'User Ratings',
-                  style: TextStyle(
-                      letterSpacing: 1.5,
-                      fontSize: 22.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
+                padding: EdgeInsets.only(left: 15.0, right: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'User Ratings',
+                      style: TextStyle(
+                          letterSpacing: 1.5,
+                          fontSize: 22.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          document.rating.toString(),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.grey,
+                          size: 20,
+                        )
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 20.0),
-              RatingBar.builder(
-                initialRating: 3.4,
-                minRating: 1,
-                ignoreGestures: false,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                glowColor: Colors.purple,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Colors.purple,
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 5),
+                child: Row(children: [
+                  Icon(
+                    Icons.person,
+                    color: Colors.grey,
+                    size: 18,
+                  ),
+                  SizedBox(width: 5),
+                  Text(document.numRating.toString(),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 15,
+                      ))
+                ]),
+              ),
+              SizedBox(height: 15.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: RatingBar.builder(
+                  initialRating: document.rating,
+                  minRating: 1,
+                  ignoreGestures: rated,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  glowColor: Colors.purple,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Colors.purple,
+                  ),
+                  onRatingUpdate: (rating) async {
+                    await DBProvider.db.setRating(userId, document.productId, rating);
+                    print(rating);
+                    setState(() {
+                      rated = true;
+                    });
+                  },
                 ),
-                onRatingUpdate: (rating) {
-                  print(rating);
-                },
               ),
               // Visibility(
               //   visible: document['sizes'].length != 0,
