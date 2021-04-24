@@ -222,15 +222,15 @@ app.get('/products', (req, res) => {
     });
 });
 
-//get all products details discount sorted
-// app.get('/products', (req, res) => {
+// //get all products details with offers sorted
+// app.get('/offers', (req, res) => {
 //     con.connect(function(err) {
 //         con.query(`SELECT * FROM products orderBy discount`, function(err, result, fields) {
 //             if (err) res.send(err);
 //             if (result) res.send(result);
 //         });
 //     });
-// });`
+// });
 
 //get details for one product
 app.get('/products/:productId', (req, res) => {
@@ -282,6 +282,11 @@ app.get("/sort/:stream", (req, res) => {
     {
         sql=`SELECT * FROM products where shopId=? order by price ?`
         args.push(req.query.meta);
+        args.push(req.query.order);
+    }
+    else if(req.params.stream.localeCompare("offer")==0)
+    {
+        sql=`SELECT * FROM products where discount is not NULL order by price ?`
         args.push(req.query.order);
     }
     else
