@@ -51,20 +51,20 @@ app.post('/user', (req, res) => {
 //update user profile
 app.put('/user/:userId', (req, res) => {
     con.connect(function(err) {
-        var sql=`UPDATE user SET`;
+        var sql=`UPDATE user SET `;
         var arg=[]
         if(req.body.name){
-            sql+=`name=?`;
+            sql+=`name=? `;
             arg.push(req.body.name)
         }
         if(req.body.mobileNo){
-            sql+=`mobileNo=?`;
+            sql+=`mobileNo=? `;
             arg.push(req.body.phone)
         }
         sql+= `WHERE userId=?`;
         arg.push(req.params.userId)
         con.query(sql,arg, function(err, result, fields) {
-            if (err) res.send(err);
+            if (err) res.json({status:0});
             if (result) res.json({status:1});
         });
     });
