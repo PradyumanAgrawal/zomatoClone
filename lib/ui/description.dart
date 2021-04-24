@@ -319,7 +319,7 @@ class _DescriptionState extends State<Description> {
               ),
               SizedBox(height: 20.0),
               RatingBar.builder(
-                initialRating: 3,
+                initialRating: 3.4,
                 minRating: 1,
                 ignoreGestures: false,
                 direction: Axis.horizontal,
