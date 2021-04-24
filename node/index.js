@@ -63,13 +63,9 @@ app.put('/user/:userId', (req, res) => {
         }
         sql+= `WHERE userId=?`;
         arg.push(req.params.userId)
-        console.log(sql);
-        console.log(arg)
         con.query(sql,arg, function(err, result, fields) {
             if (err) res.json({status:0});
             if (result) res.json({status:1});
-            console.log(err)
-            console.log(result)
         });
     });
 });
