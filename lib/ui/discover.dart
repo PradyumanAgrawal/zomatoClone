@@ -331,13 +331,17 @@ class _DiscoverState extends State<Discover>
                 ),
                 child: TextFormField(
                   onChanged: (value) {
-                    // checkTyping(value);
-                    // initiateSearch(value);
-                  },
-                  onFieldSubmitted: (value) {
                     setState(() {
+                      flag = 1;
                       stream = DBProvider.db.getSearchProducts(value);
                     });
+                  },
+                  onFieldSubmitted: (value) {
+                    if (value != '')
+                      setState(() {
+                        flag = 1;
+                        stream = DBProvider.db.getSearchProducts(value);
+                      });
                   },
                   controller: _controller,
                   decoration: InputDecoration(

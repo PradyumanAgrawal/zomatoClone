@@ -152,7 +152,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
 
   getCustomSortProducts(String stream, String order, String meta) async {
@@ -168,7 +168,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
 
   getShopProducts(String shopId) async {
@@ -179,7 +179,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
   getSearchProducts(String searchSubstring) async {
     Response response =
@@ -189,7 +189,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
   getCategoryProducts(String category) async {
     Response response =
@@ -199,7 +199,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
 
   //Get all products for discount section
@@ -211,7 +211,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
 
   //get a single product based on productId

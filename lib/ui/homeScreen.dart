@@ -261,12 +261,12 @@ class HomeScreenState extends State<HomeScreen> {
                     //initiateSearch(value, nearByShopsReferences);
                   },
                   onFieldSubmitted: (value) {
-                    Navigator.of(widget.navContext)
-                                    .pushNamed('/discover', arguments: {
-                                  'stream': 'allProducts',
-                                  'searchSubstring' : value,
-                                  'context': context
-                                });
+                    Navigator.of(widget.navContext).pushNamed('/discover',
+                        arguments: {
+                          'stream': 'search',
+                          'searchSubstring': searchSubstring,
+                          'context': context
+                        });
                   },
                   controller: _controller,
                   decoration: InputDecoration(
