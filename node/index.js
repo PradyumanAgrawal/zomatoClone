@@ -293,7 +293,7 @@ app.get("/sort/:stream", (req, res) => {
         sql=`SELECT * FROM products order by price`
     }    
 
-    if(args.query.order.localeCompare("desc")==0)
+    if(req.query.order.localeCompare("desc")==0)
     {
         sql+=' DESC'
     }
