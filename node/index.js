@@ -58,7 +58,7 @@ app.put('/user/:userId', (req, res) => {
             sql+=`name=? `;
             arg.push(req.body.name)
         }
-        if(req.body.mobileNo){
+        if(req.body.phone){
             sql+=`mobileNo=? `;
             arg.push(req.body.phone)
         }
