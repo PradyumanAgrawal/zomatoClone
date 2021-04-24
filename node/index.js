@@ -264,7 +264,8 @@ app.get("/search/product/:query", (req, res) => {
 
 app.get("/search/shop/:query", (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM shop where shopName like %?%`,req.params.query, function(err, result, fields) {
+        req.params.query="%"+req.params.query+"%"
+        con.query(`SELECT * FROM shop where shopName like ?`,req.params.query, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
