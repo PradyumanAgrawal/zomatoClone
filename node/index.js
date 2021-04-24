@@ -63,13 +63,9 @@ app.put('/user/:userId', (req, res) => {
         }
         sql+= `WHERE userId=?`;
         arg.push(req.params.userId)
-        console.log(sql);
-        console.log(arg)
         con.query(sql,arg, function(err, result, fields) {
             if (err) res.json({status:0});
             if (result) res.json({status:1});
-            console.log(err)
-            console.log(result)
         });
     });
 });
@@ -226,15 +222,15 @@ app.get('/products', (req, res) => {
     });
 });
 
-//get all products details discount sorted
-// app.get('/products', (req, res) => {
+// //get all products details with offers sorted
+// app.get('/offers', (req, res) => {
 //     con.connect(function(err) {
 //         con.query(`SELECT * FROM products orderBy discount`, function(err, result, fields) {
 //             if (err) res.send(err);
 //             if (result) res.send(result);
 //         });
 //     });
-// });`
+// });
 
 //get details for one product
 app.get('/products/:productId', (req, res) => {
@@ -258,7 +254,8 @@ app.get('/products/type/:type', (req, res) => {
 
 app.get("/search/product/:query", (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products where pName is like %?%`,req.params.query, function(err, result, fields) {
+        req.params.query="%"+req.params.query+"%"
+        con.query(`SELECT * FROM products where pName like ?`,req.params.query, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -267,7 +264,7 @@ app.get("/search/product/:query", (req, res) => {
 
 app.get("/search/shop/:query", (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM shop where shopName is like %?%`,req.params.query, function(err, result, fields) {
+        con.query(`SELECT * FROM shop where shopName like %?%`,req.params.query, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -286,6 +283,11 @@ app.get("/sort/:stream", (req, res) => {
     {
         sql=`SELECT * FROM products where shopId=? order by price ?`
         args.push(req.query.meta);
+        args.push(req.query.order);
+    }
+    else if(req.params.stream.localeCompare("offer")==0)
+    {
+        sql=`SELECT * FROM products where discount is not NULL order by price ?`
         args.push(req.query.order);
     }
     else
