@@ -85,11 +85,11 @@ class _ProfileState extends State<Profile> {
                             editVisible = false;
                           });
                           int status;
-                          status = await userBloc.updateProfile(name,phone);
+                          status = await userBloc.updateProfile(name, phone);
                           if (status == 1) {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('Updated!!'),
-                            ));
+                            // Scaffold.of(context).showSnackBar(SnackBar(
+                            //   content: Text('Updated!!'),
+                            // ));
                             Navigator.of(context).pop();
                           }
                         }
@@ -174,7 +174,7 @@ class _ProfileState extends State<Profile> {
                                     return 'Please Enter Name';
                                   }
                                 },
-                                initialValue:name,
+                                initialValue: name,
                                 decoration: InputDecoration(
                                   hintText: "Name",
                                   labelText: "Name",
