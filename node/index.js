@@ -182,7 +182,7 @@ app.get('/shops/:shopId', (req, res) => {
 //get details for products for one shop
 app.get('/shops/:shopId/products', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products where shopId=?`,[req.params.shopId], function(err, result, fields) {
+        con.query(`SELECT * FROM products where shopId=? order by rating DESC`,[req.params.shopId], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -261,7 +261,7 @@ app.get('/products/:productId', (req, res) => {
 //get all products for one categories
 app.get('/products/type/:type', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM products where category=?`,req.params.type, function(err, result, fields) {
+        con.query(`SELECT * FROM products where category=? order by rating DESC`,req.params.type, function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -271,9 +271,9 @@ app.get('/products/type/:type', (req, res) => {
 app.get("/search/product/:query", (req, res) => {
     con.connect(function(err) {
         req.params.query="%"+req.params.query+"%"
-        con.query(`Select * from products where productId in (Select productId FROM tags where tags like ?)`
+        con.query(`select * from (Select * from products where productId in (Select productId FROM tags where tags like ?)`
         +` union `+
-        `SELECT * FROM products where pName like ? `,[req.params.query,req.params.query], function(err, result, fields) {
+        `SELECT * FROM products where pName like ? ) s order by rating DESC`,[req.params.query,req.params.query], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
