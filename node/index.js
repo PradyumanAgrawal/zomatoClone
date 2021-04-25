@@ -308,9 +308,9 @@ app.get("/sort/:stream", (req, res) => {
     }
     else if(req.params.stream.localeCompare("search")==0)
     {
-        sql=`Select * from ${table} where productId in (Select productId FROM tags where tags like ?) order by price`
+        sql=`Select * from (Select * from ${table} where productId in (Select productId FROM tags where tags like ?)`
         +` union `+
-        `SELECT * FROM ${table} where pName like ? order by price`
+        `SELECT * FROM ${table} where pName like ?) order by price`
 
         //sql=`SELECT * FROM ${table} where pName like ? order by price`
         req.query.meta="%"+req.query.meta+"%"
