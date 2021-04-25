@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/blocs/productBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
@@ -13,6 +14,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
 
 class Discover extends StatefulWidget {
@@ -36,6 +38,7 @@ class _DiscoverState extends State<Discover>
   bool isTyping = false;
   bool isSearching = false;
   TextEditingController _controller = TextEditingController();
+  User userProvider;
   checkTyping(value) {
     if (value.length > 0) {
       setState(() {
@@ -139,6 +142,7 @@ class _DiscoverState extends State<Discover>
     // shops =
     //     List.from(Provider.of<List<Shop>>(widget.args['context']));
     //getShopIdList(nearByShopsSnapshots);
+    //userProvider = Provider.of<User>(widget.navContext);
     if (false)
       return Scaffold(
         appBar: AppBar(
@@ -573,13 +577,13 @@ class _DiscoverState extends State<Discover>
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
                             image: NetworkImage(document.image),
-                            fit: BoxFit.contain,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 4.0),
+                  SizedBox(width: 10.0),
                   Flexible(
                     flex: 20,
                     child: Container(
@@ -688,9 +692,9 @@ class _DiscoverState extends State<Discover>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Flexible(flex: 5, child: Container()),
+                                //Flexible(flex: 5, child: Container()),
                                 Flexible(
-                                  flex: 5,
+                                  flex: 50,
                                   child: Material(
                                     elevation: 7,
                                     borderRadius: BorderRadius.circular(10),
@@ -730,86 +734,60 @@ class _DiscoverState extends State<Discover>
                                     ),
                                   ),
                                 ),
-                                // Flexible(
-                                //   flex: 40,
-                                //   child: Material(
-                                //     elevation: 7,
-                                //     borderRadius: BorderRadius.circular(10),
-                                //     shadowColor: Colors.purple,
-                                //     child: Container(
-                                //         decoration: BoxDecoration(
-                                //           color: (document['inStock'])
-                                //               ? Colors.purple[300]
-                                //               : Colors.grey[300],
-                                //           borderRadius: BorderRadius.only(
-                                //               topRight: Radius.circular(10),
-                                //               bottomRight: Radius.circular(10)),
-                                //         ),
-                                //         height: 40,
-                                //         width:
-                                //             MediaQuery.of(context).size.width *
-                                //                 (1 / 3) *
-                                //                 (2.7 / 3),
-                                //         child: Center(
-                                //           child: Visibility(
-                                //             visible: document['inStock'],
-                                //             replacement: Center(
-                                //               child: Text(
-                                //                 'Out of stock!!',
-                                //                 style: TextStyle(
-                                //                   fontWeight: FontWeight.bold,
-                                //                   color: Colors.white,
-                                //                 ),
-                                //               ),
-                                //             ),
-                                //             child: FlatButton(
-                                //               onPressed: () async {
-                                //                 if (document['sizes'].length ==
-                                //                     0) {
-                                //                   int status =
-                                //                       await FirestoreService()
-                                //                           .addToCart(
-                                //                               document
-                                //                                   .documentID,
-                                //                               1,
-                                //                               '',
-                                //                               false,
-                                //                               document);
-                                //                   if (status == 2) {
-                                //                     Fluttertoast.showToast(
-                                //                       msg:
-                                //                           "Product added to the cart!",
-                                //                     );
-                                //                   } else if (status == 1) {
-                                //                     Fluttertoast.showToast(
-                                //                       msg:
-                                //                           "This product is already in the cart",
-                                //                     );
-                                //                   } else if (status == 0) {
-                                //                     Fluttertoast.showToast(
-                                //                       msg:
-                                //                           "Something went wrong!!!",
-                                //                     );
-                                //                   }
-                                //                 } else {
-                                //                   Fluttertoast.showToast(
-                                //                     msg:
-                                //                         "Please open and select a size",
-                                //                   );
-                                //                 }
-                                //               },
-                                //               child: Text(
-                                //                 'Add To Cart',
-                                //                 style: TextStyle(
-                                //                     color: Colors.white,
-                                //                     fontWeight: FontWeight.bold,
-                                //                     fontSize: 12),
-                                //               ),
-                                //             ),
-                                //           ),
-                                //         )),
-                                //   ),
-                                // )
+                                Flexible(
+                                  flex: 40,
+                                  child: Material(
+                                    elevation: 7,
+                                    borderRadius: BorderRadius.circular(10),
+                                    shadowColor: Colors.purple,
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.purple[300],
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                        ),
+                                        height: 40,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                (1 / 3) *
+                                                (2.7 / 3),
+                                        child: Center(
+                                          child: FlatButton(
+                                            onPressed: () async {
+                                              String userId =
+                                                  await LocalData().getUid();
+                                              int status = await DBProvider.db
+                                                  .updateCart(userId,
+                                                      document.productId, 1);
+                                              if (status == 2) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Product added to the cart!",
+                                                );
+                                              } else if (status == 1) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "This product is already in the cart",
+                                                );
+                                              } else if (status == 0) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Something went wrong!!!",
+                                                );
+                                              }
+                                            },
+                                            child: Text(
+                                              'Add To Cart',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                        )),
+                                  ),
+                                )
                               ],
                             ),
                           )

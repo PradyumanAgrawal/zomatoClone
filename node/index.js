@@ -109,7 +109,7 @@ app.delete('/address/:addrId', (req, res) => {
 app.post('/address', (req, res) => {
     con.connect(function(err) {
         let body=req.body;
-        con.query(`INSERT IGNORE INTO Address(userId,city,line1,line2,name,phone,state) values (?,?,?,?,?,?,?)`,[body.userId,body.city,body.line1,body.line2,body.name,body.phone,body.state], function(err, result) {
+        con.query(`INSERT INTO Address(userId,city,line1,line2,name,phone,state) values (?,?,?,?,?,?,?)`,[body.userId,body.city,body.line1,body.line2,body.name,body.phone,body.state], function(err, result) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -119,7 +119,8 @@ app.post('/address', (req, res) => {
 //get cart details for one user
 app.get('/cart/:userId', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM cart natural join products where userId=?`,[req.params.userId], function(err, result, fields) {
+        con.query(`SELECT * FROM (SELECT * FROM cart where userId = ?) c`
+        +` natural join products`,[req.params.userId], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -199,7 +200,8 @@ app.get('/categories', (req, res) => {
 //Get all orders for one specific addrId
 app.get('/orders/:userId', (req, res) => {
     con.connect(function(err) {
-        con.query(`SELECT * FROM orders natural join Address natural join products where userId=?`,[req.params.userId], function(err, result, fields) {
+        con.query(` select * from (SELECT * FROM Address where userId = ? ) a`
+        +` natural join orders natural join products`,[req.params.userId], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
