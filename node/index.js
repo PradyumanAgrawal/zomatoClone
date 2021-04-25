@@ -130,8 +130,6 @@ app.get('/cart/:userId', (req, res) => {
 //make changes to your cart
 app.post('/cart',(req,res)=>{
     con.connect(function(err) {
-        console.log(req.body);
-        let body=req.body;
         con.query(`select exists(select quantity from cart where userId=? and productId=?) as res;`
         +`call modifyCart(?,?,?)`,
         [body.userId,body.productId,body.userId,body.productId,body.quantity],
@@ -149,7 +147,7 @@ app.post('/review',(req,res)=>{
     con.connect(function(err) {
         console.log(req.body);
         let body=req.body;
-        con.query(`call makeReview(?,?,?)`,[body.userId,parseInt(body.productId),parseFloat(body.rating)], function(err, result) {
+        con.query(`call makeReview(?,?,?)`,[body.userId,body.productId,body.rating], function(err, result) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
@@ -289,28 +287,32 @@ app.get("/search/shop/:query", (req, res) => {
 app.get("/sort/:stream", (req, res) => {
     var sql;
     var args=[];
+    var table="products";
+    if(req.query.isVeg){
+        table=vegProd
+    }
     if(req.params.stream.localeCompare("category")==0){
-        sql=`SELECT * FROM products where category=? order by price`
+        sql=`SELECT * FROM ${table} where category=? order by price`
         args.push(req.query.meta);
     }
     else if(req.params.stream.localeCompare("shop")==0)
     {
-        sql=`SELECT * FROM products where shopId=? order by price`
+        sql=`SELECT * FROM ${table} where shopId=? order by price`
         args.push(req.query.meta);
     }
     else if(req.params.stream.localeCompare("search")==0)
     {
-        sql=`SELECT * FROM products where pName like ? order by price`
+        sql=`SELECT * FROM ${table} where pName like ? order by price`
         req.query.meta="%"+req.query.meta+"%"
         args.push(req.query.meta);
     }
     else if(req.params.stream.localeCompare("offer")==0)
     {
-        sql=`SELECT * FROM products where discount is not NULL order by price`
+        sql=`SELECT * FROM ${table} where discount is not NULL order by price`
     }
     else
     {
-        sql=`SELECT * FROM products order by price`
+        sql=`SELECT * FROM ${table} order by price`
     }    
 
     if(req.query.order.localeCompare("desc")==0)
