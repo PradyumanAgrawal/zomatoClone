@@ -188,7 +188,7 @@ class _DiscoverState extends State<Discover>
         stream =
             DBProvider.db.getSearchProducts(widget.args['searchSubstring']);
       }
-    } else {
+    } else if(flag ==1) {
       if (currentStream == 'category')
         stream = DBProvider.db.getCustomSortProducts(
             widget.args['stream'], order, widget.args['category'], isVeg);
@@ -361,7 +361,7 @@ class _DiscoverState extends State<Discover>
                 child: TextFormField(
                   onChanged: (value) {
                     setState(() {
-                      flag = 1;
+                      flag = 2;
                       currentStream = 'search';
                       searchSubstring = value;
                       stream = DBProvider.db.getSearchProducts(value);
@@ -371,7 +371,7 @@ class _DiscoverState extends State<Discover>
                     if (value != '')
                       setState(() {
                         currentStream = 'search';
-                        flag = 1;
+                        flag = 2;
                         searchSubstring = value;
                         stream = DBProvider.db.getSearchProducts(value);
                       });
