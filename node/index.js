@@ -271,7 +271,9 @@ app.get('/products/type/:type', (req, res) => {
 app.get("/search/product/:query", (req, res) => {
     con.connect(function(err) {
         req.params.query="%"+req.params.query+"%"
-        con.query(`SELECT * FROM products where pName like ?`,req.params.query, function(err, result, fields) {
+        con.query(`Select * from products where productId in (Select productId FROM tags where tags like ?)`
+        +`union`+
+        `SELECT * FROM products where pName like ?`,[req.params.query.req.params.query], function(err, result, fields) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
