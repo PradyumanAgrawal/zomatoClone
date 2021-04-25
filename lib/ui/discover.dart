@@ -216,7 +216,7 @@ class _DiscoverState extends State<Discover>
           children: [
             SpeedDialChild(
                 child: Icon(
-                  LineAwesomeIcons.sort,
+                  LineAwesomeIcons.sort_amount_down,
                 ),
                 label: "price : high to low",
                 backgroundColor: Colors.purple[300],
@@ -229,7 +229,7 @@ class _DiscoverState extends State<Discover>
                 }),
             SpeedDialChild(
                 child: Icon(
-                  LineAwesomeIcons.sort,
+                  LineAwesomeIcons.sort_amount_down_alt,
                 ),
                 label: "price : low to high",
                 backgroundColor: Colors.purple[300],
