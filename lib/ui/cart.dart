@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/blocs/cartBloc.dart';
-import 'package:my_flutter_app/functionalities/firestore_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/models/cartItem.dart';
 import 'package:my_flutter_app/models/productModel.dart';
@@ -312,9 +311,10 @@ class _CartState extends State<Cart> {
                               tag: productDoc.image,
                               child: Container(
                                 decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
                                   image: DecorationImage(
                                     image: NetworkImage(productDoc.image),
-                                    fit: BoxFit.contain,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
@@ -325,7 +325,7 @@ class _CartState extends State<Cart> {
                           flex: 2,
                           child: Container(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Flexible(
                                   flex: 20,
@@ -350,72 +350,72 @@ class _CartState extends State<Cart> {
                                   ),
                                 ),
                                 SizedBox(height: 10),
-                                Visibility(
-                                  visible: (variant != ''),
-                                  child: Text(variant),
-                                ),
                                 Flexible(
                                   flex: 20,
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: (productDoc.discount == null
-                                                ? '0'
-                                                : productDoc.discount
-                                                    .toString()) !=
-                                            '0'
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                '\u{20B9} ' +
-                                                    '${int.parse(productDoc.price.toString()) * quantity}',
-                                                style: TextStyle(
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                    color: Colors.grey,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    fontSize: 13),
-                                              ),
-                                              Text(
-                                                  ' ' +
-                                                      productDoc.discount
-                                                          .toString() +
-                                                      "% off",
+                                  child: Center(
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: (productDoc.discount == null
+                                                  ? '0'
+                                                  : productDoc.discount
+                                                      .toString()) !=
+                                              '0'
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  '\u{20B9} ' +
+                                                      '${int.parse(productDoc.price.toString()) * quantity}',
                                                   style: TextStyle(
-                                                      fontSize: 10,
-                                                      color: Colors.grey)),
-                                              Text(
-                                                "  " +
-                                                    '\u{20B9} ' +
-                                                    '${(productDoc.price * (1 - productDoc.discount / 100.0) * quantity).roundToDouble()}',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16),
-                                              )
-                                            ],
-                                          )
-                                        : Text(
-                                            '\u{20B9} ' +
-                                                '${productDoc.price * quantity}',
-                                            style: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                    /* Text(
-                                      'Price: ' +
-                                          '\u{20B9}' +
-                                          (int.parse(productDoc['price']) *
-                                                  quantity)
-                                              .toString(),
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.deepPurple[900]),
-                                    ), */
+                                                      decoration: TextDecoration
+                                                          .lineThrough,
+                                                      color: Colors.grey,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize: 13),
+                                                ),
+                                                Text(
+                                                    ' ' +
+                                                        productDoc.discount
+                                                            .toString() +
+                                                        "% off",
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors.grey)),
+                                                Text(
+                                                  "  " +
+                                                      '\u{20B9} ' +
+                                                      '${(productDoc.price * (1 - productDoc.discount / 100.0) * quantity).roundToDouble()}',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16),
+                                                )
+                                              ],
+                                            )
+                                          : Text(
+                                              '\u{20B9} ' +
+                                                  '${productDoc.price * quantity}',
+                                              style: TextStyle(
+                                                  fontSize: 16.0,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                      /* Text(
+                                        'Price: ' +
+                                            '\u{20B9}' +
+                                            (int.parse(productDoc['price']) *
+                                                    quantity)
+                                                .toString(),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.deepPurple[900]),
+                                      ), */
+                                    ),
                                   ),
                                 ),
                               ],

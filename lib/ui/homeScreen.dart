@@ -43,6 +43,7 @@ class HomeScreenState extends State<HomeScreen> {
   List<String> locationList;
   String userId;
   TextEditingController _controller = TextEditingController();
+  String searchSubstring;
   checkTyping(value) {
     if (value.length > 0) {
       setState(() {
@@ -230,18 +231,16 @@ class HomeScreenState extends State<HomeScreen> {
                     )
                   : Padding(
                       padding: const EdgeInsets.only(right: 10.0, top: 10.0),
-                      child:  InkWell(
-                            child: Icon(
-                              Icons.shopping_cart,
-                              color: Colors.white,
-                            ),
-                            onTap: () {
-                              Navigator.of(widget.navContext)
-                                  .pushNamed('/cart', arguments: context);
-                            },
-                          )
-                      
-                    ),
+                      child: InkWell(
+                        child: Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
+                        onTap: () {
+                          Navigator.of(widget.navContext)
+                              .pushNamed('/cart', arguments: context);
+                        },
+                      )),
             ],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -257,15 +256,27 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
                 child: TextFormField(
                   onChanged: (value) {
+                    searchSubstring = value;
                     //checkTyping(value);
                     //initiateSearch(value, nearByShopsReferences);
+                  },
+                  onFieldSubmitted: (value) {
+                    Navigator.of(widget.navContext).pushNamed('/discover',
+                        arguments: {
+                          'stream': 'search',
+                          'searchSubstring': searchSubstring,
+                          'context': context
+                        });
                   },
                   controller: _controller,
                   decoration: InputDecoration(
                     hintText: "Search",
                     fillColor: Colors.white,
                     filled: true,
-                    suffixIcon: Icon(Icons.search, color: Colors.purple),
+                    suffixIcon: Icon(
+                      Icons.search,
+                      color: Colors.purple,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide(color: Colors.transparent),
@@ -422,6 +433,7 @@ class HomeScreenState extends State<HomeScreen> {
                       Builder(
                         builder: (context) {
                           List<String> posters = [
+                            'https://i.pinimg.com/originals/b0/ee/c2/b0eec2dfd3226463d599b0e655718c65.jpg',
                             'https://cdnb.artstation.com/p/assets/images/images/025/858/179/large/ruchita-ghatage-food-poster.jpg?1587143002',
                             'https://penji.co/wp-content/uploads/2020/12/Food_Poster_Design_Examples_and_Tips_for_Getting_Customers-min.jpg',
                             'https://i.ytimg.com/vi/WGyqJ-rqqtY/maxresdefault.jpg',

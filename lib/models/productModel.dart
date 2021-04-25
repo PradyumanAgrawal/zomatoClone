@@ -9,6 +9,8 @@ class Product {
   String image;
   int discount;
   String category;
+  double rating;
+  int numRating;
 
   Product({
     this.productId,
@@ -19,6 +21,8 @@ class Product {
     this.image,
     this.discount,
     this.category,
+    this.rating,
+    this.numRating,
   });
 
   factory Product.fromMap(Map<String, dynamic> json) => new Product(
@@ -30,6 +34,8 @@ class Product {
         image: json["image"],
         discount: json["discount"],
         category: json["category"],
+        rating: json["rating"] * 1.0,
+        numRating: json["numRating"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -41,6 +47,8 @@ class Product {
         "image": image,
         "discount": discount,
         "category": category,
+        "rating": rating,
+        "numRating": numRating,
       };
 }
 

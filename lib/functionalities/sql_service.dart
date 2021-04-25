@@ -152,7 +152,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
 
   getCustomSortProducts(String stream, String order, String meta) async {
@@ -168,7 +168,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
 
   getShopProducts(String shopId) async {
@@ -179,9 +179,18 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
-
+  getSearchProducts(String searchSubstring) async {
+    Response response =
+        await get('http://10.0.2.2:3000/search/product/' + searchSubstring);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    List<Product> products = [];
+    jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
+    return products;
+  }
   getCategoryProducts(String category) async {
     Response response =
         await get('http://10.0.2.2:3000/products/type/' + category);
@@ -190,7 +199,7 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
 
   //Get all products for discount section
@@ -202,16 +211,17 @@ class DBProvider {
     assert(jsonData is List);
     List<Product> products = [];
     jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
-    return products.isNotEmpty ? products : null;
+    return products;
   }
 
   //get a single product based on productId
-  getSingleProd(String productId) async {
-    final db = await database;
-    List<Map<String, Object>> res = await db
-        .query("products", where: "productId = ?", whereArgs: [productId]);
-    Product product = Product.fromMap(res[0]);
-    return product;
+  Future<Product> getSingleProd(String productId) async {
+    Response response = await get('http://10.0.2.2:3000/products/' + productId);
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    Product prod = Product.fromMap(jsonData[0]);
+    return prod;
   }
 
   Future<void> registerUser(
@@ -240,7 +250,7 @@ class DBProvider {
     Response response = await post('http://10.0.2.2:3000/cart', body: {
       'userId': userId,
       'productId': productId.toString(),
-      'quantity': quantity.toString()
+      'quantity': quantity.toString(),
     });
     String body = response.body;
     final jsonData = json.decode(body);
@@ -292,5 +302,17 @@ class DBProvider {
     final jsonData = json.decode(body);
     assert(jsonData is Map);
     return jsonData['status'];
+  }
+
+  Future<void> setRating(String userId, int productId, double rating) async {
+    Response response = await post('http://10.0.2.2:3000/review', body:{
+      'userId': userId,
+      'productId': productId.toString(),
+      'rating': rating.toString(),
+    });
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is Map);
+    //return jsonData['status'];
   }
 }

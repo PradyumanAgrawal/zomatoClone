@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_flutter_app/blocs/productBloc.dart';
 import 'package:my_flutter_app/functionalities/firestore_service.dart';
@@ -13,6 +14,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/productModel.dart';
 import 'package:my_flutter_app/models/shopModel.dart';
+import 'package:my_flutter_app/models/userModel.dart';
 import 'package:provider/provider.dart';
 
 class Discover extends StatefulWidget {
@@ -36,6 +38,7 @@ class _DiscoverState extends State<Discover>
   bool isTyping = false;
   bool isSearching = false;
   TextEditingController _controller = TextEditingController();
+  User userProvider;
   checkTyping(value) {
     if (value.length > 0) {
       setState(() {
@@ -131,13 +134,15 @@ class _DiscoverState extends State<Discover>
 
   //var productList = new List<Product>();
   Future<dynamic> stream;
-
+  String currentStream;
+  String searchSubstring;
   int flag = 0;
   @override
   Widget build(BuildContext context) {
     // shops =
     //     List.from(Provider.of<List<Shop>>(widget.args['context']));
     //getShopIdList(nearByShopsSnapshots);
+    //userProvider = Provider.of<User>(widget.navContext);
     if (false)
       return Scaffold(
         appBar: AppBar(
@@ -166,6 +171,7 @@ class _DiscoverState extends State<Discover>
           ),
         ),
       );
+    currentStream = widget.args['stream'];
     if (flag == 0) {
       if (widget.args['stream'] == 'category') {
         stream = DBProvider.db.getCategoryProducts(widget.args['category']);
@@ -173,9 +179,12 @@ class _DiscoverState extends State<Discover>
         stream = DBProvider.db.getShopProducts(widget.args['shopId']);
       } else if (widget.args['stream'] == 'allProducts') {
         stream = DBProvider.db.getProducts();
-      }
-      else if (widget.args['stream'] == 'offer') {
+      } else if (widget.args['stream'] == 'offer') {
         stream = DBProvider.db.getOfferProducts();
+      } else if (widget.args['stream'] == 'search') {
+        searchSubstring = widget.args['searchSubstring'];
+        stream =
+            DBProvider.db.getSearchProducts(widget.args['searchSubstring']);
       }
     }
 
@@ -196,17 +205,23 @@ class _DiscoverState extends State<Discover>
                 onTap: () {
                   setState(() {
                     flag = 1;
-                    if (widget.args['stream'] == 'category')
+                    if (currentStream == 'category')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'],
                           'desc',
                           widget.args['category']);
-                    else if (widget.args['stream'] == 'shop')
+                    else if (currentStream == 'shop')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'desc', widget.args['shopId']);
-                    else if (widget.args['stream'] == 'allProducts')
+                    else if (currentStream == 'allProducts')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'desc', '');
+                    else if (currentStream == 'offer')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'], 'desc', '');
+                    else if (currentStream == 'search')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          currentStream, 'desc', searchSubstring);
                   });
                 }),
             SpeedDialChild(
@@ -218,17 +233,23 @@ class _DiscoverState extends State<Discover>
                 onTap: () {
                   setState(() {
                     flag = 1;
-                    if (widget.args['stream'] == 'category')
+                    if (currentStream == 'category')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'],
                           'asc',
                           widget.args['category']);
-                    else if (widget.args['stream'] == 'shop')
+                    else if (currentStream == 'shop')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'asc', widget.args['shopId']);
-                    else if (widget.args['stream'] == 'allProducts')
+                    else if (currentStream == 'allProducts')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'], 'asc', '');
+                    else if (currentStream == 'offer')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          widget.args['stream'], 'asc', '');
+                    else if (currentStream == 'search')
+                      stream = DBProvider.db.getCustomSortProducts(
+                          currentStream, 'asc', searchSubstring);
                   });
                 }),
             SpeedDialChild(
@@ -313,8 +334,21 @@ class _DiscoverState extends State<Discover>
                 ),
                 child: TextFormField(
                   onChanged: (value) {
-                    // checkTyping(value);
-                    // initiateSearch(value);
+                    setState(() {
+                      flag = 1;
+                      currentStream = 'search';
+                      searchSubstring = value;
+                      stream = DBProvider.db.getSearchProducts(value);
+                    });
+                  },
+                  onFieldSubmitted: (value) {
+                    if (value != '')
+                      setState(() {
+                        currentStream = 'search';
+                        flag = 1;
+                        searchSubstring = value;
+                        stream = DBProvider.db.getSearchProducts(value);
+                      });
                   },
                   controller: _controller,
                   decoration: InputDecoration(
@@ -336,149 +370,86 @@ class _DiscoverState extends State<Discover>
               preferredSize: Size(50, 80),
             ),
           ),
-          isTyping
-              ? (tempSearchStore.length == 0)
-                  ? isSearching
-                      ? SliverList(
-                          delegate: SliverChildListDelegate(<Widget>[
-                            Center(
-                                child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 30),
-                                    child: SpinKitChasingDots(
-                                        color: Colors.deepPurple)))
-                          ]),
-                        )
-                      : SliverList(
-                          delegate: SliverChildListDelegate(<Widget>[
-                            Center(
-                                child: Padding(
+          FutureBuilder(
+            future: null,
+            //LocalData().getUid(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              // if (!snapshot.hasData)
+              //   return SliverList(
+              //     delegate: SliverChildListDelegate(<Widget>[
+              //       Center(
+              //           child: Padding(
+              //               padding:
+              //                   const EdgeInsets.symmetric(vertical: 30),
+              //               child: SpinKitChasingDots(
+              //                   color: Colors.deepPurple)))
+              //     ]),
+              //   );
+              // String userId = snapshot.data;
+
+              return FutureBuilder(
+                future: stream,
+                //stream,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData)
+                    return SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          Center(
+                            child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 30),
-                              child: Text('No Results Found!'),
-                            ))
-                          ]),
-                        )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          print(tempSearchStore[index]);
-                          return itemCard(
-                              tempSearchStore[index].data['name'],
-                              tempSearchStore[index].data['catalogue'][0],
-                              tempSearchStore[index].data['description'],
-                              wishlist
-                                  .contains(tempSearchStore[index].documentID),
-                              tempSearchStore[index].data['price'],
-                              tempSearchStore[index].data['discount'] != null
-                                  ? tempSearchStore[index].data['discount']
-                                  : '0',
-                              tempSearchStore[index],
-                              context);
-                        },
-                        childCount: tempSearchStore.length,
+                              child:
+                                  SpinKitChasingDots(color: Colors.deepPurple),
+                            ),
+                          ),
+                        ],
                       ),
-                    )
-              : FutureBuilder(
-                  future: null,
-                  //LocalData().getUid(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    // if (!snapshot.hasData)
-                    //   return SliverList(
-                    //     delegate: SliverChildListDelegate(<Widget>[
-                    //       Center(
-                    //           child: Padding(
-                    //               padding:
-                    //                   const EdgeInsets.symmetric(vertical: 30),
-                    //               child: SpinKitChasingDots(
-                    //                   color: Colors.deepPurple)))
-                    //     ]),
-                    //   );
-                    // String userId = snapshot.data;
-                    return StreamBuilder(
-                      stream: null,
-                      //FirestoreService().getUser(userId),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        // if (!snapshot.hasData)
-                        //   return SliverList(
-                        //     delegate: SliverChildListDelegate(<Widget>[
-                        //       Center(
-                        //           child: Padding(
-                        //               padding: const EdgeInsets.symmetric(
-                        //                   vertical: 30),
-                        //               child: SpinKitChasingDots(
-                        //                   color: Colors.deepPurple)))
-                        //     ]),
-                        //   );
-                        // DocumentSnapshot document = snapshot.data;
-                        // wishlist = document['wishlist'];
-                        return FutureBuilder(
-                          future: stream,
-                          //stream,
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (!snapshot.hasData)
-                              return SliverList(
-                                delegate: SliverChildListDelegate(
-                                  <Widget>[
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 30),
-                                        child: SpinKitChasingDots(
-                                            color: Colors.deepPurple),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            if (snapshot.data.length == 0)
-                              return SliverList(
-                                delegate: SliverChildListDelegate(<Widget>[
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox(height: 50),
-                                      Image.asset(
-                                          'assets/images/noProducts.png'),
-                                      Text('No Products Yet!!',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ]),
-                              );
-                            return SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  Product document = snapshot.data[index];
-                                  return itemCard(
-                                      document.pName,
-                                      document.image,
-                                      document.description,
-                                      true,
-                                      document.price.toString(),
-                                      document.discount != null
-                                          ? document.discount.toString()
-                                          : '0',
-                                      document,
-                                      context);
-                                },
-                                childCount: snapshot.data.length,
-                              ),
-                            );
-                          },
-                        );
-                        /* return SliverList(delegate: SliverChildBuilderDelegate(
+                    );
+                  if (snapshot.data.length == 0)
+                    return SliverList(
+                      delegate: SliverChildListDelegate(<Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(height: 50),
+                            Image.asset('assets/images/noProducts.png'),
+                            Text('No Products Yet!!',
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ]),
+                    );
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        Product document = snapshot.data[index];
+                        return itemCard(
+                            document.pName,
+                            document.image,
+                            document.description,
+                            true,
+                            document.price.toString(),
+                            document.discount != null
+                                ? document.discount.toString()
+                                : '0',
+                            document,
+                            context);
+                      },
+                      childCount: snapshot.data.length,
+                    ),
+                  );
+                },
+              );
+              /* return SliverList(delegate: SliverChildBuilderDelegate(
                             (context, index){
                               return Text(wishlist[index]);
                             },
                             childCount: wishlist.length
                           )); */
-                      },
-                    );
-                  },
-                ), /* SliverList(
+            },
+          ), /* SliverList(
                   delegate: SliverChildListDelegate(
                     <Widget>[
                       FutureBuilder(
@@ -606,13 +577,13 @@ class _DiscoverState extends State<Discover>
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
                             image: NetworkImage(document.image),
-                            fit: BoxFit.contain,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 4.0),
+                  SizedBox(width: 10.0),
                   Flexible(
                     flex: 20,
                     child: Container(
@@ -721,9 +692,9 @@ class _DiscoverState extends State<Discover>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Flexible(flex: 5, child: Container()),
+                                //Flexible(flex: 5, child: Container()),
                                 Flexible(
-                                  flex: 5,
+                                  flex: 50,
                                   child: Material(
                                     elevation: 7,
                                     borderRadius: BorderRadius.circular(10),
@@ -763,86 +734,60 @@ class _DiscoverState extends State<Discover>
                                     ),
                                   ),
                                 ),
-                                // Flexible(
-                                //   flex: 40,
-                                //   child: Material(
-                                //     elevation: 7,
-                                //     borderRadius: BorderRadius.circular(10),
-                                //     shadowColor: Colors.purple,
-                                //     child: Container(
-                                //         decoration: BoxDecoration(
-                                //           color: (document['inStock'])
-                                //               ? Colors.purple[300]
-                                //               : Colors.grey[300],
-                                //           borderRadius: BorderRadius.only(
-                                //               topRight: Radius.circular(10),
-                                //               bottomRight: Radius.circular(10)),
-                                //         ),
-                                //         height: 40,
-                                //         width:
-                                //             MediaQuery.of(context).size.width *
-                                //                 (1 / 3) *
-                                //                 (2.7 / 3),
-                                //         child: Center(
-                                //           child: Visibility(
-                                //             visible: document['inStock'],
-                                //             replacement: Center(
-                                //               child: Text(
-                                //                 'Out of stock!!',
-                                //                 style: TextStyle(
-                                //                   fontWeight: FontWeight.bold,
-                                //                   color: Colors.white,
-                                //                 ),
-                                //               ),
-                                //             ),
-                                //             child: FlatButton(
-                                //               onPressed: () async {
-                                //                 if (document['sizes'].length ==
-                                //                     0) {
-                                //                   int status =
-                                //                       await FirestoreService()
-                                //                           .addToCart(
-                                //                               document
-                                //                                   .documentID,
-                                //                               1,
-                                //                               '',
-                                //                               false,
-                                //                               document);
-                                //                   if (status == 2) {
-                                //                     Fluttertoast.showToast(
-                                //                       msg:
-                                //                           "Product added to the cart!",
-                                //                     );
-                                //                   } else if (status == 1) {
-                                //                     Fluttertoast.showToast(
-                                //                       msg:
-                                //                           "This product is already in the cart",
-                                //                     );
-                                //                   } else if (status == 0) {
-                                //                     Fluttertoast.showToast(
-                                //                       msg:
-                                //                           "Something went wrong!!!",
-                                //                     );
-                                //                   }
-                                //                 } else {
-                                //                   Fluttertoast.showToast(
-                                //                     msg:
-                                //                         "Please open and select a size",
-                                //                   );
-                                //                 }
-                                //               },
-                                //               child: Text(
-                                //                 'Add To Cart',
-                                //                 style: TextStyle(
-                                //                     color: Colors.white,
-                                //                     fontWeight: FontWeight.bold,
-                                //                     fontSize: 12),
-                                //               ),
-                                //             ),
-                                //           ),
-                                //         )),
-                                //   ),
-                                // )
+                                Flexible(
+                                  flex: 40,
+                                  child: Material(
+                                    elevation: 7,
+                                    borderRadius: BorderRadius.circular(10),
+                                    shadowColor: Colors.purple,
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.purple[300],
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                        ),
+                                        height: 40,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                (1 / 3) *
+                                                (2.7 / 3),
+                                        child: Center(
+                                          child: FlatButton(
+                                            onPressed: () async {
+                                              String userId =
+                                                  await LocalData().getUid();
+                                              int status = await DBProvider.db
+                                                  .updateCart(userId,
+                                                      document.productId, 1);
+                                              if (status == 2) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Product added to the cart!",
+                                                );
+                                              } else if (status == 1) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "This product is already in the cart",
+                                                );
+                                              } else if (status == 0) {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Something went wrong!!!",
+                                                );
+                                              }
+                                            },
+                                            child: Text(
+                                              'Add To Cart',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                        )),
+                                  ),
+                                )
                               ],
                             ),
                           )

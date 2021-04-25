@@ -5,6 +5,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_flutter_app/blocs/productBloc.dart';
+import 'package:my_flutter_app/blocs/singleProdBloc.dart';
 import 'package:my_flutter_app/functionalities/local_data.dart';
 import 'package:my_flutter_app/functionalities/sql_service.dart';
 import 'package:my_flutter_app/models/productModel.dart';
@@ -27,17 +29,26 @@ class _DescriptionState extends State<Description> {
   User userProvider;
   String userId;
   int photoIndex = 0;
+  bool rated = false;
+  SingleProductBloc productBloc;
   List<String> photos = [];
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   _DescriptionState(Product document) {
     this.document = document;
-    //this.photos.addAll(document['catalogue']);
+    productBloc = SingleProductBloc(productId: document.productId.toString());
     photos.add(document.image);
   }
   String shopContact;
   LatLng shopLocation;
   int index = 0;
   int selectedVariant;
+
+  @override
+  dispose() {
+    productBloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // for (int i = 0; i < document['sizesInStock'].length; i++) {
@@ -306,35 +317,95 @@ class _DescriptionState extends State<Description> {
                 indent: 50,
                 endIndent: 50,
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 15.0),
-                child: Text(
-                  'User Ratings',
-                  style: TextStyle(
-                      letterSpacing: 1.5,
-                      fontSize: 22.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              RatingBar.builder(
-                initialRating: 3.4,
-                minRating: 1,
-                ignoreGestures: false,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                glowColor: Colors.purple,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Colors.purple,
-                ),
-                onRatingUpdate: (rating) {
-                  print(rating);
-                },
-              ),
+              StreamBuilder(
+                  stream: productBloc.product,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Center(
+                          child: SpinKitChasingDots(color: Colors.deepPurple));
+                    Product prod = snapshot.data;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 15.0, right: 25.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'User Ratings',
+                                style: TextStyle(
+                                    letterSpacing: 1.5,
+                                    fontSize: 22.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    prod.rating.toString(),
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.grey,
+                                    size: 20,
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, top: 5),
+                          child: Row(children: [
+                            Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+                            SizedBox(width: 5),
+                            Text(prod.numRating.toString(),
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 15,
+                                ))
+                          ]),
+                        ),
+                        SizedBox(height: 15.0),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: RatingBar.builder(
+                            initialRating: prod.rating,
+                            minRating: 1,
+                            ignoreGestures: rated,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            glowColor: Colors.purple,
+                            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.purple,
+                            ),
+                            onRatingUpdate: (rating) async {
+                              await productBloc.setRating(
+                                  userId, prod.productId, rating);
+                              print(rating);
+                              setState(() {
+                                rated = true;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+
               // Visibility(
               //   visible: document['sizes'].length != 0,
               //   child: Padding(
