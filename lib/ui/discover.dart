@@ -137,6 +137,7 @@ class _DiscoverState extends State<Discover>
   Future<dynamic> stream;
   String currentStream;
   String searchSubstring;
+  String order = 'asc';
   int flag = 0;
   @override
   Widget build(BuildContext context) {
@@ -187,6 +188,22 @@ class _DiscoverState extends State<Discover>
         stream =
             DBProvider.db.getSearchProducts(widget.args['searchSubstring']);
       }
+    } else {
+      if (currentStream == 'category')
+        stream = DBProvider.db.getCustomSortProducts(
+            widget.args['stream'], order, widget.args['category'], isVeg);
+      else if (currentStream == 'shop')
+        stream = DBProvider.db.getCustomSortProducts(
+            widget.args['stream'], order, widget.args['shopId'], isVeg);
+      else if (currentStream == 'allProducts')
+        stream = DBProvider.db
+            .getCustomSortProducts(widget.args['stream'], order, '', isVeg);
+      else if (currentStream == 'offer')
+        stream = DBProvider.db
+            .getCustomSortProducts(widget.args['stream'], order, '', isVeg);
+      else if (currentStream == 'search')
+        stream = DBProvider.db.getCustomSortProducts(
+            currentStream, order, searchSubstring, isVeg);
     }
 
     return Scaffold(
@@ -207,27 +224,7 @@ class _DiscoverState extends State<Discover>
                   setState(() {
                     flag = 1;
                     isVeg = isVeg;
-                    if (currentStream == 'category')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'],
-                          'desc',
-                          widget.args['category'],
-                          isVeg);
-                    else if (currentStream == 'shop')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'],
-                          'desc',
-                          widget.args['shopId'],
-                          isVeg);
-                    else if (currentStream == 'allProducts')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'desc', '', isVeg);
-                    else if (currentStream == 'offer')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'desc', '', isVeg);
-                    else if (currentStream == 'search')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          currentStream, 'desc', searchSubstring, isVeg);
+                    order = 'desc';
                   });
                 }),
             SpeedDialChild(
@@ -240,27 +237,28 @@ class _DiscoverState extends State<Discover>
                   setState(() {
                     flag = 1;
                     isVeg = isVeg;
-                    if (currentStream == 'category')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'],
-                          'asc',
-                          widget.args['category'],
-                          isVeg);
-                    else if (currentStream == 'shop')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'],
-                          'asc',
-                          widget.args['shopId'],
-                          isVeg);
-                    else if (currentStream == 'allProducts')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'asc', '', isVeg);
-                    else if (currentStream == 'offer')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'asc', '', isVeg);
-                    else if (currentStream == 'search')
-                      stream = DBProvider.db.getCustomSortProducts(
-                          currentStream, 'asc', searchSubstring, isVeg);
+                    order = 'asc';
+                    // if (currentStream == 'category')
+                    //   stream = DBProvider.db.getCustomSortProducts(
+                    //       widget.args['stream'],
+                    //       'asc',
+                    //       widget.args['category'],
+                    //       isVeg);
+                    // else if (currentStream == 'shop')
+                    //   stream = DBProvider.db.getCustomSortProducts(
+                    //       widget.args['stream'],
+                    //       'asc',
+                    //       widget.args['shopId'],
+                    //       isVeg);
+                    // else if (currentStream == 'allProducts')
+                    //   stream = DBProvider.db.getCustomSortProducts(
+                    //       widget.args['stream'], 'asc', '', isVeg);
+                    // else if (currentStream == 'offer')
+                    //   stream = DBProvider.db.getCustomSortProducts(
+                    //       widget.args['stream'], 'asc', '', isVeg);
+                    // else if (currentStream == 'search')
+                    //   stream = DBProvider.db.getCustomSortProducts(
+                    //       currentStream, 'asc', searchSubstring, isVeg);
                   });
                 }),
             SpeedDialChild(
@@ -271,7 +269,21 @@ class _DiscoverState extends State<Discover>
                 backgroundColor: Colors.purple[300],
                 onTap: () {
                   setState(() {
+                    flag = 1;
                     isVeg = !isVeg;
+                  });
+                  //_showMyDialog();
+                }),
+            SpeedDialChild(
+                child: Icon(
+                  LineAwesomeIcons.trash_alt,
+                ),
+                label: "Clear filter",
+                backgroundColor: Colors.purple[300],
+                onTap: () {
+                  setState(() {
+                    flag = 0;
+                    isVeg = false;
                   });
                   //_showMyDialog();
                 })
