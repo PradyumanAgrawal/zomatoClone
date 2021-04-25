@@ -238,6 +238,16 @@ app.get('/products', (req, res) => {
     });
 });
 
+//get all products details
+app.get('/featured', (req, res) => {
+    con.connect(function(err) {
+        con.query(`SELECT * FROM products order by rating desc limit 7`,[req.query.sort,req.query.order], function(err, result, fields) {
+            if (err) res.send(err);
+            if (result) res.send(result);
+        });
+    });
+});
+
 // //get all products details with offers sorted
 // app.get('/offers', (req, res) => {
 //     con.connect(function(err) {
