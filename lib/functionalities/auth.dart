@@ -50,7 +50,7 @@ class AuthService {
       if (user != null) {
         String token; // = await _messaging.getToken();
         await DBProvider.db.registerUser(
-            user.uid, user.email, 'New User', 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png');
+            user.uid, user.email, 'New User', 'https://mpng.subpng.com/20181128/gif/kisspng-ninja-portable-network-graphics-computer-icons-ava-macmacmac-5bfea49c377331.5470002815434149402271.jpg');
         localData.saveData(
             userEmail: email,
             password: password,
