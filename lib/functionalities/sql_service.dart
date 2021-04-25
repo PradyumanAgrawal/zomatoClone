@@ -155,6 +155,16 @@ class DBProvider {
     return products;
   }
 
+  getFeatProducts() async {
+    Response response = await get('http://10.0.2.2:3000/featured');
+    String body = response.body;
+    final jsonData = json.decode(body);
+    assert(jsonData is List);
+    List<Product> products = [];
+    jsonData.forEach((prod) => {products.add(Product.fromMap(prod))});
+    return products;
+  }
+
   getCustomSortProducts(String stream, String order, String meta, bool isVeg) async {
     String path = 'http://10.0.2.2:3000/sort/' +
         stream +

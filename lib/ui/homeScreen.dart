@@ -529,7 +529,7 @@ class HomeScreenState extends State<HomeScreen> {
                           //     ),
                           //   );
                           return StreamBuilder(
-                            stream: productBloc.products,
+                            stream: productBloc.featProducts,
                             //FirestoreService().getHomeProducts(nearByShopsReferences),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData)
