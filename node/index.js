@@ -288,7 +288,7 @@ app.get("/sort/:stream", (req, res) => {
     var sql;
     var args=[];
     var table="products";
-    if(req.query.isVeg){
+    if(req.query.isVeg&&(!req.query.isVeg.localeCompare("true"))){
         table="vegProducts"
     }
     if(req.params.stream.localeCompare("category")==0){
@@ -314,7 +314,7 @@ app.get("/sort/:stream", (req, res) => {
     {
         sql=`SELECT * FROM ${table} order by price`
     }    
-
+    console.log(sql)
     if(req.query.order.localeCompare("desc")==0)
     {
         sql+=' DESC'
