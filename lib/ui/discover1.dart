@@ -17,13 +17,16 @@ class Discover1 extends StatefulWidget {
 
 class _Discover1State extends State<Discover1> {
   Map iconMap = {
-    'street food': LineAwesomeIcons.user_tie,
-    'italian': LineAwesomeIcons.book_open,
-    'chinese': LineAwesomeIcons.home,
+    'street food': LineAwesomeIcons.hotdog,
+    'italian': LineAwesomeIcons.pizza_slice,
+    'chinese': LineAwesomeIcons.dragon,
     'health and diet': LineAwesomeIcons.heart,
     'asian': LineAwesomeIcons.atom,
-    'beverages': LineAwesomeIcons.shopping_bag,
-    'Electronics': LineAwesomeIcons.mobile
+    'beverages': LineAwesomeIcons.glass_cheers,
+    'bakery': LineAwesomeIcons.cookie_bite,
+    'korean': LineAwesomeIcons.vihara,
+    'north indian': LineAwesomeIcons.pepper_hot,
+    'south indian': LineAwesomeIcons.fish,
   };
   //List<String> locationList;
   DocumentSnapshot userProvider;

@@ -155,13 +155,13 @@ class DBProvider {
     return products;
   }
 
-  getCustomSortProducts(String stream, String order, String meta) async {
+  getCustomSortProducts(String stream, String order, String meta, bool isVeg) async {
     String path = 'http://10.0.2.2:3000/sort/' +
         stream +
         '?order=' +
         order +
         '&meta=' +
-        meta;
+        meta + '&isVeg='+ (isVeg ? 'true' : 'false');
     Response response = await get(path);
     String body = response.body;
     final jsonData = json.decode(body);

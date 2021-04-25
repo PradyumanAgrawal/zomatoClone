@@ -26,8 +26,14 @@ class _MyAppState extends State<MyApp> {
           primaryColorDark: Colors.deepPurple[900],
           primaryColorLight: Colors.deepPurple[100],
           accentColor: Colors.orange[300],
+          // primaryColor: Color(0xE64A19),
+          // primaryColorLight: Color(0xFFCDD2),
+          // primaryColorDark: Color(0xD32F2F),
+          // accentColor: Color(0x795548),
+
           dividerTheme: DividerThemeData(
             color: Colors.purple.withOpacity(0.5),
+            //color: Color(0xBDBDBD),
             space: 30,
             indent: 40,
             endIndent: 40,

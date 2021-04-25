@@ -35,6 +35,7 @@ class _DiscoverState extends State<Discover>
   List<DocumentSnapshot> nearByShopsSnapshots;
   List<DocumentReference> nearByShopsReferences;
   List<Shop> shops;
+  bool isVeg = false;
   bool isTyping = false;
   bool isSearching = false;
   TextEditingController _controller = TextEditingController();
@@ -205,23 +206,28 @@ class _DiscoverState extends State<Discover>
                 onTap: () {
                   setState(() {
                     flag = 1;
+                    isVeg = isVeg;
                     if (currentStream == 'category')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'],
                           'desc',
-                          widget.args['category']);
+                          widget.args['category'],
+                          isVeg);
                     else if (currentStream == 'shop')
                       stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'desc', widget.args['shopId']);
+                          widget.args['stream'],
+                          'desc',
+                          widget.args['shopId'],
+                          isVeg);
                     else if (currentStream == 'allProducts')
                       stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'desc', '');
+                          widget.args['stream'], 'desc', '', isVeg);
                     else if (currentStream == 'offer')
                       stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'desc', '');
+                          widget.args['stream'], 'desc', '', isVeg);
                     else if (currentStream == 'search')
                       stream = DBProvider.db.getCustomSortProducts(
-                          currentStream, 'desc', searchSubstring);
+                          currentStream, 'desc', searchSubstring, isVeg);
                   });
                 }),
             SpeedDialChild(
@@ -233,33 +239,41 @@ class _DiscoverState extends State<Discover>
                 onTap: () {
                   setState(() {
                     flag = 1;
+                    isVeg = isVeg;
                     if (currentStream == 'category')
                       stream = DBProvider.db.getCustomSortProducts(
                           widget.args['stream'],
                           'asc',
-                          widget.args['category']);
+                          widget.args['category'],
+                          isVeg);
                     else if (currentStream == 'shop')
                       stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'asc', widget.args['shopId']);
+                          widget.args['stream'],
+                          'asc',
+                          widget.args['shopId'],
+                          isVeg);
                     else if (currentStream == 'allProducts')
                       stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'asc', '');
+                          widget.args['stream'], 'asc', '', isVeg);
                     else if (currentStream == 'offer')
                       stream = DBProvider.db.getCustomSortProducts(
-                          widget.args['stream'], 'asc', '');
+                          widget.args['stream'], 'asc', '', isVeg);
                     else if (currentStream == 'search')
                       stream = DBProvider.db.getCustomSortProducts(
-                          currentStream, 'asc', searchSubstring);
+                          currentStream, 'asc', searchSubstring, isVeg);
                   });
                 }),
             SpeedDialChild(
                 child: Icon(
-                  LineAwesomeIcons.filter,
+                  LineAwesomeIcons.heart,
                 ),
-                label: "filter",
+                label: (!isVeg) ? "Veg" : "Clear Veg",
                 backgroundColor: Colors.purple[300],
                 onTap: () {
-                  _showMyDialog();
+                  setState(() {
+                    isVeg = !isVeg;
+                  });
+                  //_showMyDialog();
                 })
           ]),
       body: CustomScrollView(
