@@ -53,11 +53,11 @@ app.put('/user/:userId', (req, res) => {
         var sql=`UPDATE user SET `;
         var arg=[]
         if(req.body.name){
-            sql+=`name=? `;
+            sql+=`name=? ,`;
             arg.push(req.body.name)
         }
         if(req.body.phone){
-            sql+=`,mobileNo=? `;
+            sql+=`mobileNo=? `;
             arg.push(req.body.phone)
         }
         sql+= `WHERE userId=?`;
