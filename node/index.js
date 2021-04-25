@@ -308,8 +308,13 @@ app.get("/sort/:stream", (req, res) => {
     }
     else if(req.params.stream.localeCompare("search")==0)
     {
-        sql=`SELECT * FROM ${table} where pName like ? order by price`
+        sql=`Select * from ${table} where productId in (Select productId FROM tags where tags like ?) order by price`
+        +` union `+
+        `SELECT * FROM ${table} where pName like ? order by price`
+
+        //sql=`SELECT * FROM ${table} where pName like ? order by price`
         req.query.meta="%"+req.query.meta+"%"
+        args.push(req.query.meta);
         args.push(req.query.meta);
     }
     else if(req.params.stream.localeCompare("offer")==0)
@@ -320,7 +325,6 @@ app.get("/sort/:stream", (req, res) => {
     {
         sql=`SELECT * FROM ${table} order by price`
     }    
-    console.log(sql)
     if(req.query.order.localeCompare("desc")==0)
     {
         sql+=' DESC'
