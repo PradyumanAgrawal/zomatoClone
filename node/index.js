@@ -146,7 +146,7 @@ app.post('/review',(req,res)=>{
     con.connect(function(err) {
         console.log(req.body);
         let body=req.body;
-        con.query(`call makeReview(?,?,?)`,[body.userId,parseInt(body.productId),parseFloat(body.rating)], function(err, result) {
+        con.query(`call makeReview(?,?,?)`,[body.userId,body.productId,body.rating], function(err, result) {
             if (err) res.send(err);
             if (result) res.send(result);
         });
