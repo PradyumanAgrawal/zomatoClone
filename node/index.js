@@ -289,7 +289,7 @@ app.get("/sort/:stream", (req, res) => {
     var args=[];
     var table="products";
     if(req.query.isVeg){
-        table=vegProd
+        table="vegProducts"
     }
     if(req.params.stream.localeCompare("category")==0){
         sql=`SELECT * FROM ${table} where category=? order by price`
