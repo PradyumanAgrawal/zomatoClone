@@ -287,28 +287,32 @@ app.get("/search/shop/:query", (req, res) => {
 app.get("/sort/:stream", (req, res) => {
     var sql;
     var args=[];
+    var table="products";
+    if(req.query.isVeg){
+        table=vegProd
+    }
     if(req.params.stream.localeCompare("category")==0){
-        sql=`SELECT * FROM products where category=? order by price`
+        sql=`SELECT * FROM ${table} where category=? order by price`
         args.push(req.query.meta);
     }
     else if(req.params.stream.localeCompare("shop")==0)
     {
-        sql=`SELECT * FROM products where shopId=? order by price`
+        sql=`SELECT * FROM ${table} where shopId=? order by price`
         args.push(req.query.meta);
     }
     else if(req.params.stream.localeCompare("search")==0)
     {
-        sql=`SELECT * FROM products where pName like ? order by price`
+        sql=`SELECT * FROM ${table} where pName like ? order by price`
         req.query.meta="%"+req.query.meta+"%"
         args.push(req.query.meta);
     }
     else if(req.params.stream.localeCompare("offer")==0)
     {
-        sql=`SELECT * FROM products where discount is not NULL order by price`
+        sql=`SELECT * FROM ${table} where discount is not NULL order by price`
     }
     else
     {
-        sql=`SELECT * FROM products order by price`
+        sql=`SELECT * FROM ${table} order by price`
     }    
 
     if(req.query.order.localeCompare("desc")==0)
